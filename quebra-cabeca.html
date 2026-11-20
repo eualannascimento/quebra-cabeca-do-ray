@@ -915,12 +915,51 @@
       touch-action: none;
     }
 
-    /* Barra de Ferramentas Recolhível */
-    .game-toolbar {
+    /* Controles Fixos Visíveis no Canto Superior Esquerdo (Voltar + Expandir Ferramentas) */
+    .game-top-dock {
       position: absolute;
       top: 12px;
       left: 14px;
-      background: rgba(24, 18, 29, 0.94);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 52;
+    }
+
+    .game-dock-btn {
+      background: rgba(24, 18, 29, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-strong);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .game-dock-btn:hover {
+      background: rgba(38, 28, 46, 0.98);
+      border-color: var(--accent);
+    }
+
+    .game-dock-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Barra de Ferramentas Expansível (inicia oculta) */
+    .game-toolbar {
+      position: absolute;
+      top: 56px;
+      left: 14px;
+      background: rgba(24, 18, 29, 0.95);
       backdrop-filter: blur(14px);
       border: 1px solid var(--border-strong);
       border-radius: 12px;
@@ -931,12 +970,13 @@
       gap: 3px;
       z-index: 50;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
-      max-width: calc(100vw - 195px);
-      transition: transform 0.25s ease, opacity 0.2s ease;
+      max-width: calc(100vw - 28px);
+      transform-origin: top left;
+      transition: transform 0.22s ease, opacity 0.18s ease;
     }
 
     .game-toolbar.collapsed {
-      transform: translateY(-150%);
+      transform: translateY(-10px) scale(0.98);
       opacity: 0;
       pointer-events: none;
     }
@@ -973,30 +1013,6 @@
       background: var(--border-strong);
       margin: 0 2px;
       flex-shrink: 0;
-    }
-
-    #btn-reopen-toolbar {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(24, 18, 29, 0.92);
-      border: 1px solid var(--border-strong);
-      color: #fff;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      z-index: 48;
-      display: none;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-    }
-
-    #btn-reopen-toolbar.visible {
-      display: inline-flex;
     }
 
     /* HUD de Progresso no Canto Superior Direito */
@@ -1040,9 +1056,8 @@
     /* Paleta de Cores da Mesa */
     .color-popover {
       position: absolute;
-      top: 62px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 108px;
+      left: 14px;
       background: var(--bg-surface);
       border: 1px solid var(--border-strong);
       border-radius: 12px;
@@ -1443,11 +1458,12 @@
   <div id="game-stage">
     <canvas id="game-canvas"></canvas>
 
-    <button id="btn-reopen-toolbar">☰ Ferramentas</button>
+    <div class="game-top-dock">
+      <button class="game-dock-btn" id="btn-g-exit" title="Salvar e voltar para a plataforma">← Voltar</button>
+      <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Expandir ou ocultar ferramentas">☰ Ferramentas</button>
+    </div>
 
-    <div class="game-toolbar" id="game-toolbar">
-      <button class="tool-btn" id="btn-g-exit" title="Salvar e voltar para a plataforma">🌸 Menu</button>
-      <div class="tool-sep"></div>
+    <div class="game-toolbar collapsed" id="game-toolbar">
       <button class="tool-btn" id="btn-g-preview" title="Ver foto completa [F]">🖼️ Ver Foto</button>
       <button class="tool-btn" id="btn-g-ghost" title="Mostrar marca d'água no centro">👻 Guia Fundo</button>
       <button class="tool-btn" id="btn-g-edges" title="Mostrar apenas peças da borda">📐 Só Bordas</button>
@@ -1981,7 +1997,7 @@
         return { x: (sx - this.panX) / this.scale, y: (sy - this.panY) / this.scale };
       }
 
-      async startPuzzle(imgSrc, title, targetCount, hardmode, savedState = null, demoCount = 0) {
+      async startPuzzle(imgSrc, title, targetCount, hardmode, savedState = null, demoConfig = 0) {
         this.puzzleTitle = title;
         this.imageSrc = imgSrc;
         this.hardmode = hardmode;
@@ -1992,6 +2008,9 @@
         this.victoryWaveProgress = -1;
         this.pocket = [];
         this.updatePocketBadge(0, 0);
+
+        const demoMounted = typeof demoConfig === 'number' ? demoConfig : (demoConfig?.mounted || 0);
+        const demoOutside = typeof demoConfig === 'object' && demoConfig ? (demoConfig.outside || 0) : 0;
 
         this.image = new Image();
         this.image.onload = async () => {
@@ -2013,20 +2032,31 @@
             this.cols = c;
             this.rows = r;
             this.totalPieces = c * r;
-            this.elapsedSeconds = demoCount > 0 ? 145 : 0;
+            this.elapsedSeconds = (demoMounted > 0 || demoOutside > 0) ? 145 : 0;
             this.setupBoard();
             await this.generateMeshAsync();
-            if (demoCount > 0) this.applyDemoMounted(demoCount);
+            if (demoMounted > 0) this.applyDemoMounted(demoMounted);
+            if (demoOutside > 0) this.applyDemoOutsideCluster(demoOutside);
             this.organizeOutsideFrame();
             this.saveToAccount();
           }
 
           document.getElementById('guide-img').src = imgSrc;
+          const tb = document.getElementById('game-toolbar');
+          const tbBtn = document.getElementById('btn-reopen-toolbar');
+          if (tb) tb.classList.add('collapsed');
+          if (tbBtn) {
+            tbBtn.classList.remove('active');
+            tbBtn.setAttribute('aria-expanded', 'false');
+            tbBtn.textContent = '☰ Ferramentas';
+          }
+          document.getElementById('color-popover')?.classList.remove('open');
           this.centerView();
           this.startTimer();
           this.updateHUD();
           this.requestRender();
-          showToast(`${title} • ${this.totalPieces} peças`);
+          const demoMsg = demoOutside > 0 ? ` (${demoOutside} pré-montadas fora)` : '';
+          showToast(`${title} • ${this.totalPieces} peças${demoMsg}`);
         };
         this.image.src = imgSrc;
       }
@@ -2168,6 +2198,62 @@
         });
       }
 
+      applyDemoOutsideCluster(count) {
+        const free = this.pieces.filter(p => !p.locked);
+        if (free.length < 2) return;
+        const limit = Math.min(count, free.length);
+        const selected = [];
+        const visited = new Set();
+        const queue = [free[0]];
+        visited.add(free[0].id);
+
+        while (queue.length && selected.length < limit) {
+          const cur = queue.shift();
+          selected.push(cur);
+          const neighbors = free.filter(p =>
+            !visited.has(p.id) &&
+            ((Math.abs(p.row - cur.row) === 1 && p.col === cur.col) ||
+             (Math.abs(p.col - cur.col) === 1 && p.row === cur.row))
+          );
+          neighbors.sort((a, b) => (a.row - b.row) || (a.col - b.col));
+          for (const n of neighbors) {
+            if (!visited.has(n.id)) {
+              visited.add(n.id);
+              queue.push(n);
+            }
+          }
+        }
+
+        if (selected.length < 2) return;
+        const baseGroup = selected[0].group;
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        selected.forEach(p => {
+          minX = Math.min(minX, p.targetX);
+          maxX = Math.max(maxX, p.targetX + this.pieceWidth);
+          minY = Math.min(minY, p.targetY);
+          maxY = Math.max(maxY, p.targetY + this.pieceHeight);
+        });
+
+        const clusterW = maxX - minX;
+        const shiftX = (this.boardX - Math.max(this.pieceWidth * 1.4, 38) - clusterW) - minX;
+        const shiftY = (this.boardY + this.pieceHeight * 0.5) - minY;
+
+        selected.forEach(p => {
+          const oldGroup = p.group;
+          p.x = p.targetX + shiftX;
+          p.y = p.targetY + shiftY;
+          p.rotation = 0;
+          if (oldGroup !== baseGroup) {
+            oldGroup.pieces.forEach(op => {
+              op.group = baseGroup;
+              if (!baseGroup.pieces.includes(op)) baseGroup.pieces.push(op);
+            });
+            const idx = this.groups.indexOf(oldGroup);
+            if (idx > -1) this.groups.splice(idx, 1);
+          }
+        });
+      }
+
       createPieceGraphics(piece) {
         const pw = this.pieceWidth, ph = this.pieceHeight;
         const pad = Math.max(pw, ph) * 0.48;
@@ -2267,31 +2353,68 @@
         const vertRows = Math.max(3, Math.floor(this.boardHeight / spacingY));
         const counts = [0, 0, 0, 0];
 
-        this.pieces.filter(p => !p.locked).forEach((p, idx) => {
-          const side = idx % 4;
-          const pos = counts[side]++;
-          if (side === 0) {
-            p.x = this.boardX - margin - (Math.floor(pos / vertRows) + 1) * spacingX;
-            p.y = this.boardY + (pos % vertRows) * spacingY;
-          } else if (side === 1) {
-            p.x = this.boardX + this.boardWidth + margin + Math.floor(pos / vertRows) * spacingX;
-            p.y = this.boardY + (pos % vertRows) * spacingY;
-          } else if (side === 2) {
-            p.x = this.boardX + (pos % horizCols) * spacingX;
-            p.y = this.boardY - margin - (Math.floor(pos / horizCols) + 1) * spacingY;
-          } else {
-            p.x = this.boardX + (pos % horizCols) * spacingX;
-            p.y = this.boardY + this.boardHeight + margin + Math.floor(pos / horizCols) * spacingY;
+        // Mantém grupos já encaixados fora do quadro intactos e reserva suas áreas
+        const clusterBoxes = this.groups
+          .filter(g => !g.locked && g.pieces.length > 1 && g.pieces.every(p => p.x !== -99999))
+          .map(g => {
+            let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+            g.pieces.forEach(p => {
+              x1 = Math.min(x1, p.x);
+              y1 = Math.min(y1, p.y);
+              x2 = Math.max(x2, p.x + this.pieceWidth);
+              y2 = Math.max(y2, p.y + this.pieceHeight);
+            });
+            return {
+              x1: x1 - this.pieceWidth * 0.65,
+              y1: y1 - this.pieceHeight * 0.65,
+              x2: x2 + this.pieceWidth * 0.65,
+              y2: y2 + this.pieceHeight * 0.65
+            };
+          });
+
+        const overlapsCluster = (px, py) => clusterBoxes.some(b =>
+          px + this.pieceWidth > b.x1 && px < b.x2 && py + this.pieceHeight > b.y1 && py < b.y2
+        );
+
+        let singleIdx = 0;
+        this.groups.forEach(grp => {
+          if (grp.locked || grp.pieces.length !== 1) return;
+          const p = grp.pieces[0];
+          if (p.x === -99999) return;
+          const side = singleIdx++ % 4;
+          let px = 0, py = 0;
+          for (let tries = 0; tries < 200; tries++) {
+            const pos = counts[side]++;
+            if (side === 0) {
+              px = this.boardX - margin - (Math.floor(pos / vertRows) + 1) * spacingX;
+              py = this.boardY + (pos % vertRows) * spacingY;
+            } else if (side === 1) {
+              px = this.boardX + this.boardWidth + margin + Math.floor(pos / vertRows) * spacingX;
+              py = this.boardY + (pos % vertRows) * spacingY;
+            } else if (side === 2) {
+              px = this.boardX + (pos % horizCols) * spacingX;
+              py = this.boardY - margin - (Math.floor(pos / horizCols) + 1) * spacingY;
+            } else {
+              px = this.boardX + (pos % horizCols) * spacingX;
+              py = this.boardY + this.boardHeight + margin + Math.floor(pos / horizCols) * spacingY;
+            }
+            if (!overlapsCluster(px, py)) break;
           }
+          p.x = px;
+          p.y = py;
         });
         this.requestRender();
       }
 
       shuffleOutsideFrame() {
         const mx = this.boardWidth * 0.9, my = this.boardHeight * 0.8;
-        this.pieces.forEach((p, idx) => {
-          if (p.locked) return;
-          const z = idx % 4;
+        let idx = 0;
+        this.groups.forEach(grp => {
+          if (grp.locked) return;
+          if (grp.pieces.length > 1) return; // Preserva grupos já conectados fora do quadro
+          const p = grp.pieces[0];
+          if (!p || p.x === -99999) return;
+          const z = idx++ % 4;
           if (z === 0) { p.x = this.boardX - mx + Math.random() * mx * 0.85; p.y = this.boardY + Math.random() * this.boardHeight - this.pieceHeight / 2; }
           else if (z === 1) { p.x = this.boardX + this.boardWidth + Math.random() * mx * 0.85; p.y = this.boardY + Math.random() * this.boardHeight - this.pieceHeight / 2; }
           else if (z === 2) { p.x = this.boardX + Math.random() * this.boardWidth - this.pieceWidth / 2; p.y = this.boardY - my + Math.random() * my * 0.85; }
@@ -2387,14 +2510,14 @@
         const hit = this.getPieceAt(pos.x, pos.y);
 
         if (btn === 2) {
-          if (hit && !hit.locked) {
+          if (hit && !hit.locked && hit.group.pieces.length === 1) {
             if (this.pocket.length < 15) {
               this.pocket.push(hit);
               hit.x = -99999; hit.y = -99999;
               this.updatePocketBadge(cx, cy);
               this.requestRender();
             }
-          } else if (this.pocket.length > 0) {
+          } else if (this.pocket.length > 0 && (!hit || hit.locked)) {
             const p = this.pocket.pop();
             p.x = pos.x - this.pieceWidth / 2;
             p.y = pos.y - this.pieceHeight / 2;
@@ -3030,12 +3153,14 @@
         showToast('Aplicação zerada com sucesso!');
       }
 
-      // Suporte à demonstração direta (?demo=50)
-      const demoN = parseInt(params.get('demo'));
-      if (demoN > 0) {
+      // Suporte à demonstração direta (?demo=50 ou ?pieces=500&demoOutside=10)
+      const demoN = parseInt(params.get('demo')) || 0;
+      const demoOutsideN = parseInt(params.get('demoOutside')) || 0;
+      const demoPiecesN = parseInt(params.get('pieces')) || 100;
+      if (demoN > 0 || demoOutsideN > 0) {
         pendingItem = gallery[0];
         document.getElementById('platform-shell').classList.add('hidden');
-        engine.startPuzzle(gallery[0].src, gallery[0].title, 100, false, null, demoN);
+        engine.startPuzzle(gallery[0].src, gallery[0].title, demoPiecesN, false, null, { mounted: demoN, outside: demoOutsideN });
       }
 
       // Navegação em Abas
@@ -3234,17 +3359,18 @@
         e.currentTarget.textContent = audio.muted ? '🔇' : '🔊';
       });
 
-      // Esconder / Mostrar barra superior
+      // Esconder / Expandir menu de ferramentas dentro do quebra-cabeça
       const gToolbar = document.getElementById('game-toolbar');
       const btnReopen = document.getElementById('btn-reopen-toolbar');
-      document.getElementById('btn-g-collapse').addEventListener('click', () => {
-        gToolbar.classList.add('collapsed');
-        btnReopen.classList.add('visible');
-      });
-      btnReopen.addEventListener('click', () => {
-        gToolbar.classList.remove('collapsed');
-        btnReopen.classList.remove('visible');
-      });
+      const setToolbarExpanded = (expanded) => {
+        gToolbar.classList.toggle('collapsed', !expanded);
+        btnReopen.classList.toggle('active', expanded);
+        btnReopen.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        btnReopen.textContent = expanded ? '▲ Ferramentas' : '☰ Ferramentas';
+        if (!expanded) colorPop.classList.remove('open');
+      };
+      document.getElementById('btn-g-collapse').addEventListener('click', () => setToolbarExpanded(false));
+      btnReopen.addEventListener('click', () => setToolbarExpanded(gToolbar.classList.contains('collapsed')));
 
       // Zoom Touchpad
       document.getElementById('btn-zoom-in').addEventListener('click', () => engine.zoomBy(1.22));
