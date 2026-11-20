@@ -1,30 +1,110 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quebra Cabeça do Ray — Plataforma Offline</title>
+  <script>
+    try {
+      var qp = new URLSearchParams(window.location.search).get('theme');
+      var st = JSON.parse(localStorage.getItem('quebra_cabeca_ray_prefs_v1') || '{}').theme;
+      var t = qp || st || 'light';
+      if (t === 'light' || t === 'dark' || t === 'black') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232D7FF9'/%3E%3Cpath d='M23 16c-3 0-5 2-5 5v6h-4c-2.8 0-5 2.2-5 5s2.2 5 5 5h4v11c0 2.8 2.2 5 5 5h10v-4c0-2.8 2.2-5 5-5s5 2.2 5 5v4h7c2.8 0 5-2.2 5-5V37h-4c-2.8 0-5-2.2-5-5s2.2-5 5-5h4v-6c0-2.8-2.2-5-5-5H37v-3c0-2.8-2.2-5-5-5s-5 2.2-5 5v3h-4z' fill='%23ffffff'/%3E%3C/svg%3E">
   <style>
-    :root {
-      --bg-base: #131019;
-      --bg-surface: #1d1826;
-      --bg-elevated: #272034;
-      --bg-elevated-hover: #322942;
-      --accent: #e85d75;
-      --accent-hover: #f04865;
-      --accent-soft: rgba(232, 93, 117, 0.16);
-      --info: #60a5fa;
-      --success: #34d399;
+    /* =========================================================
+       TEMAS ESTILO THINGS 3 (LIGHT / DARK / BLACK OLED)
+       ========================================================= */
+    :root, :root[data-theme="light"] {
+      --bg-base: #F5F6F8;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #EBEEF3;
+      --bg-elevated-hover: #E1E6EE;
+      --topbar-bg: rgba(255, 255, 255, 0.94);
+      --accent: #2D7FF9;
+      --accent-hover: #1E6EE6;
+      --accent-soft: rgba(45, 127, 249, 0.12);
+      --info: #0284C7;
+      --success: #16A34A;
+      --success-soft: rgba(22, 163, 74, 0.12);
+      --warning: #D97706;
+      --danger: #DC2626;
+      --text-main: #1C1E21;
+      --text-muted: #646E7A;
+      --border: rgba(15, 23, 42, 0.09);
+      --border-strong: rgba(15, 23, 42, 0.16);
+      --thumb-bg: #E5E9F0;
+      --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --card-hover-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      --shadow-lg: 0 18px 42px rgba(15, 23, 42, 0.16);
+      --modal-backdrop: rgba(15, 23, 42, 0.36);
+      --hud-surface: rgba(24, 27, 32, 0.92);
+      --hud-text: #F3F4F6;
+      --hud-muted: #9CA3AF;
+    }
+
+    :root[data-theme="dark"] {
+      --bg-base: #1E2022;
+      --bg-surface: #26292C;
+      --bg-elevated: #2F3337;
+      --bg-elevated-hover: #383D42;
+      --topbar-bg: rgba(38, 41, 44, 0.94);
+      --accent: #4D9BFF;
+      --accent-hover: #6BAEFF;
+      --accent-soft: rgba(77, 155, 255, 0.16);
+      --info: #38BDF8;
+      --success: #34D399;
       --success-soft: rgba(52, 211, 153, 0.16);
-      --warning: #fbbf24;
-      --text-main: #f5f2f8;
-      --text-muted: #a79eb8;
-      --border: rgba(255, 255, 255, 0.09);
-      --border-strong: rgba(255, 255, 255, 0.18);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
+      --warning: #FBBF24;
+      --danger: #FB7185;
+      --text-main: #F1F3F5;
+      --text-muted: #9AA0A6;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --thumb-bg: #17191B;
+      --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      --card-hover-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
       --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.55);
+      --modal-backdrop: rgba(10, 12, 14, 0.72);
+      --hud-surface: rgba(28, 30, 34, 0.93);
+      --hud-text: #F1F3F5;
+      --hud-muted: #9AA0A6;
+    }
+
+    :root[data-theme="black"] {
+      --bg-base: #000000;
+      --bg-surface: #0C0D0F;
+      --bg-elevated: #16181C;
+      --bg-elevated-hover: #202329;
+      --topbar-bg: rgba(10, 11, 13, 0.96);
+      --accent: #4D9BFF;
+      --accent-hover: #6BAEFF;
+      --accent-soft: rgba(77, 155, 255, 0.18);
+      --info: #38BDF8;
+      --success: #34D399;
+      --success-soft: rgba(52, 211, 153, 0.18);
+      --warning: #FBBF24;
+      --danger: #FB7185;
+      --text-main: #FFFFFF;
+      --text-muted: #8E959E;
+      --border: rgba(255, 255, 255, 0.11);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --thumb-bg: #050506;
+      --card-shadow: none;
+      --card-hover-shadow: 0 8px 24px rgba(255, 255, 255, 0.05);
+      --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.85);
+      --modal-backdrop: rgba(0, 0, 0, 0.82);
+      --hud-surface: rgba(12, 13, 16, 0.94);
+      --hud-text: #FFFFFF;
+      --hud-muted: #8E959E;
+    }
+
+    :root {
+      --radius-sm: 8px;
+      --radius-md: 11px;
+      --radius-lg: 14px;
     }
 
     * {
@@ -40,34 +120,40 @@
       overflow: hidden;
       background-color: var(--bg-base);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.45;
       user-select: none;
       -webkit-user-select: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    button {
+      font-family: inherit;
+      color: inherit;
     }
 
     button:focus-visible, input:focus-visible {
-      outline: 2px solid var(--info);
+      outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
 
     /* =========================================================
-       BOTÕES BASE E COMPONENTES
+       BOTÕES BASE E COMPONENTES (ESTILO CLEAN THINGS 3)
        ========================================================= */
     .btn {
       background: var(--bg-elevated);
       color: var(--text-main);
       border: 1px solid var(--border);
-      padding: 9px 16px;
+      padding: 8px 15px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: background 0.15s ease, transform 0.12s ease, border-color 0.15s ease;
+      gap: 7px;
+      transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
       white-space: nowrap;
     }
 
@@ -83,7 +169,7 @@
     .btn-primary {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: #ffffff;
     }
 
     .btn-primary:hover {
@@ -92,13 +178,13 @@
     }
 
     .btn-success {
-      background: #059669;
-      border-color: #10b981;
-      color: #fff;
+      background: #16A34A;
+      border-color: #16A34A;
+      color: #ffffff;
     }
 
     .btn-success:hover {
-      background: #047857;
+      background: #15803D;
     }
 
     .btn-ghost {
@@ -108,20 +194,21 @@
     }
 
     .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--bg-elevated);
       color: var(--text-main);
     }
 
     .btn-danger-text {
-      color: #fb7185;
+      color: var(--danger);
     }
 
     /* =========================================================
-       PLATAFORMA PRINCIPAL (LOBBY EM ABAS)
+       PLATAFORMA PRINCIPAL (TELA CHEIA SEM SCROLL DA PÁGINA)
        ========================================================= */
     #platform-shell {
       position: absolute;
       inset: 0;
+      height: 100vh;
       background: var(--bg-base);
       display: flex;
       flex-direction: column;
@@ -134,96 +221,134 @@
     }
 
     .topbar {
-      background: rgba(29, 24, 38, 0.96);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 12px clamp(16px, 3vw, 36px);
+      padding: 10px clamp(16px, 2.2vw, 28px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
+      flex-shrink: 0;
       z-index: 20;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
     }
 
     .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 4px 14px rgba(232, 93, 117, 0.35);
+      font-size: 18px;
+      box-shadow: 0 3px 10px var(--accent-soft);
     }
 
     .brand-title {
-      font-size: clamp(17px, 2vw, 21px);
-      font-weight: 800;
+      font-size: clamp(16px, 1.8vw, 19px);
+      font-weight: 700;
       letter-spacing: -0.3px;
+      color: var(--text-main);
     }
 
     .brand-sub {
-      font-size: 12px;
-      color: var(--success);
-      font-weight: 600;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
     /* Abas de Navegação Central */
     .nav-tabs {
       display: flex;
-      background: var(--bg-base);
-      padding: 4px;
-      border-radius: 12px;
+      background: var(--bg-elevated);
+      padding: 3px;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      gap: 4px;
+      gap: 3px;
     }
 
     .nav-tab {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      transition: all 0.15s ease;
+      gap: 6px;
     }
 
     .nav-tab:hover {
       color: var(--text-main);
-      background: rgba(255, 255, 255, 0.04);
     }
 
     .nav-tab[aria-selected="true"] {
-      background: var(--bg-elevated);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
     }
 
     .tab-badge {
       background: var(--accent);
-      color: #fff;
+      color: #ffffff;
       font-size: 11px;
       font-weight: 700;
-      padding: 1px 7px;
+      padding: 1px 6px;
       border-radius: 999px;
     }
 
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Seletor de Temas (Light / Dark / Black) */
+    .theme-switcher {
+      display: inline-flex;
+      background: var(--bg-elevated);
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      gap: 2px;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.14s ease;
+    }
+
+    .theme-btn:hover {
+      color: var(--text-main);
+    }
+
+    .theme-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     }
 
     .account-chip {
@@ -231,43 +356,56 @@
       align-items: center;
       gap: 8px;
       background: var(--bg-elevated);
+      color: var(--text-main);
       border: 1px solid var(--border);
-      padding: 5px 12px 5px 6px;
+      padding: 4px 12px 4px 5px;
       border-radius: 999px;
       cursor: pointer;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, background 0.15s;
     }
 
     .account-chip:hover {
       border-color: var(--accent);
+      background: var(--bg-elevated-hover);
     }
 
     .account-avatar {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: #382d4c;
+      background: var(--accent-soft);
+      color: var(--text-main);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: 16px;
     }
 
     .account-name {
       font-size: 13px;
       font-weight: 600;
+      color: var(--text-main);
     }
 
-    /* Área Rolável da Plataforma */
+    /* Área Principal sem scroll externo (Largura total 100%) */
     .platform-scroll {
       flex: 1;
-      overflow-y: auto;
-      padding: clamp(18px, 3vw, 32px) clamp(16px, 3vw, 36px) 60px;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 14px clamp(16px, 2.2vw, 28px) 10px;
     }
 
     .platform-container {
-      max-width: 1320px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: none;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .tab-panel {
@@ -275,70 +413,80 @@
     }
 
     .tab-panel.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* =========================================================
-       ABA 1: DESCOBRIR (CATÁLOGO & AÇÕES RÁPIDAS)
+       ABA 1: DESCOBRIR (TOPO FIXO + SÓ O BLOCO DE CARDS ROLA)
        ========================================================= */
+    .discover-fixed-top {
+      flex-shrink: 0;
+    }
+
     .quick-banner {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin-bottom: 26px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .quick-card {
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 16px;
-      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      gap: 12px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
     }
 
     .quick-card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       border-color: var(--accent);
-      background: var(--bg-elevated);
+      box-shadow: var(--card-hover-shadow);
     }
 
     .quick-card.upload-drop {
-      border: 2px dashed rgba(232, 93, 117, 0.55);
-      background: linear-gradient(135deg, rgba(232, 93, 117, 0.1), rgba(29, 24, 38, 0.9));
+      border: 1.5px dashed var(--accent);
+      background: var(--accent-soft);
     }
 
     .quick-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       background: var(--bg-elevated);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 20px;
       flex-shrink: 0;
     }
 
     .quick-info h3 {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
-      margin-bottom: 3px;
+      color: var(--text-main);
+      margin-bottom: 2px;
     }
 
     .quick-info p {
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--text-muted);
     }
 
     /* Busca e Categorias */
     .filter-bar {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -353,8 +501,8 @@
 
     .search-box span {
       position: absolute;
-      left: 14px;
-      font-size: 15px;
+      left: 13px;
+      font-size: 14px;
       pointer-events: none;
     }
 
@@ -363,10 +511,11 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 11px 16px 11px 42px;
-      border-radius: var(--radius-md);
-      font-size: 14px;
+      padding: 9px 14px 9px 38px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
       outline: none;
+      box-shadow: var(--card-shadow);
     }
 
     .search-box input:focus {
@@ -376,31 +525,90 @@
     .count-pill {
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      padding: 10px 16px;
-      border-radius: var(--radius-md);
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
       font-size: 13px;
       color: var(--text-muted);
       font-weight: 600;
     }
 
+    .scope-switcher {
+      display: inline-flex;
+      background: var(--bg-elevated);
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      gap: 3px;
+    }
+
+    .scope-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .scope-btn:hover {
+      color: var(--text-main);
+    }
+
+    .scope-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    .puzzle-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .puzzle-alt-btn {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .puzzle-alt-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-main);
+    }
+
     .categories-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 6px;
+      margin-bottom: 12px;
     }
 
     .cat-pill {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 8px 16px;
+      padding: 6px 12px;
       border-radius: 999px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .cat-pill:hover {
@@ -411,13 +619,35 @@
     .cat-pill.active {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: #ffffff;
+    }
+
+    .cat-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+    }
+
+    .cat-pill.active .cat-count {
+      background: rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+    }
+
+    /* Único bloco com scroll na aba Descobrir */
+    .gallery-scroll-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 2px 4px 18px 2px;
     }
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+      gap: 16px;
     }
 
     .puzzle-card {
@@ -428,19 +658,20 @@
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .puzzle-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       border-color: var(--accent);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+      box-shadow: var(--card-hover-shadow);
     }
 
     .puzzle-thumb {
       width: 100%;
       aspect-ratio: 16 / 10;
-      background: #0d0a12;
+      background: var(--thumb-bg);
       overflow: hidden;
       position: relative;
     }
@@ -454,28 +685,28 @@
 
     .puzzle-badge-corner {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(19, 16, 25, 0.85);
+      top: 8px;
+      right: 8px;
+      background: var(--hud-surface);
       backdrop-filter: blur(6px);
-      color: var(--success);
-      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #34D399;
+      border: 1px solid rgba(52, 211, 153, 0.45);
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 3px 8px;
       border-radius: 999px;
     }
 
     .puzzle-card-body {
-      padding: 13px 15px;
+      padding: 11px 13px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .puzzle-card-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       color: var(--text-main);
       overflow: hidden;
@@ -484,54 +715,66 @@
     }
 
     .puzzle-play-tag {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--accent);
       background: var(--accent-soft);
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 6px;
       flex-shrink: 0;
     }
 
     .load-more-box {
       text-align: center;
-      margin-top: 28px;
+      margin-top: 22px;
     }
 
     /* =========================================================
-       ABA 2: EM ANDAMENTO (ALTERNAR ENTRE JOGOS CRIADOS)
+       ABA 2: EM ANDAMENTO (SÓ A LISTA ROLA)
        ========================================================= */
+    .tab-fixed-head {
+      flex-shrink: 0;
+    }
+
+    .tab-scroll-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 2px 4px 18px 2px;
+    }
+
     .section-heading {
       font-size: 20px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .section-lead {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      margin-bottom: 22px;
+      margin-bottom: 14px;
     }
 
     .inprogress-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
     }
 
     .save-card {
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-md);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: var(--card-shadow);
     }
 
     .save-thumb {
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: #0d0a12;
+      background: var(--thumb-bg);
       position: relative;
       overflow: hidden;
     }
@@ -621,23 +864,37 @@
        ========================================================= */
     .account-layout {
       display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 24px;
-      align-items: start;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .account-col {
+      min-height: 0;
+      overflow-y: auto;
+      padding: 2px 4px 16px 2px;
     }
 
     @media (max-width: 900px) {
       .account-layout {
         grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .account-col {
+        overflow-y: visible;
       }
     }
 
     .panel-box {
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 22px;
-      margin-bottom: 20px;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
     }
 
     .panel-title {
@@ -771,7 +1028,7 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(10, 7, 15, 0.84);
+      background: var(--modal-backdrop);
       backdrop-filter: blur(10px);
       display: none;
       align-items: center;
@@ -927,10 +1184,10 @@
     }
 
     .game-dock-btn {
-      background: rgba(24, 18, 29, 0.92);
+      background: var(--hud-surface);
       backdrop-filter: blur(12px);
-      border: 1px solid var(--border-strong);
-      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--hud-text);
       padding: 7px 14px;
       border-radius: 999px;
       font-size: 13px;
@@ -939,19 +1196,19 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
       transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
     }
 
     .game-dock-btn:hover {
-      background: rgba(38, 28, 46, 0.98);
+      background: rgba(38, 42, 49, 0.98);
       border-color: var(--accent);
     }
 
     .game-dock-btn.active {
-      background: var(--accent-soft);
+      background: var(--accent);
       border-color: var(--accent);
-      color: var(--accent);
+      color: #ffffff;
     }
 
     /* Barra de Ferramentas Expansível (inicia oculta) */
@@ -959,9 +1216,9 @@
       position: absolute;
       top: 56px;
       left: 14px;
-      background: rgba(24, 18, 29, 0.95);
+      background: var(--hud-surface);
       backdrop-filter: blur(14px);
-      border: 1px solid var(--border-strong);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 12px;
       padding: 5px 8px;
       display: flex;
@@ -969,7 +1226,7 @@
       align-items: center;
       gap: 3px;
       z-index: 50;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
       max-width: calc(100vw - 28px);
       transform-origin: top left;
       transition: transform 0.22s ease, opacity 0.18s ease;
@@ -984,7 +1241,7 @@
     .tool-btn {
       background: transparent;
       border: 1px solid transparent;
-      color: #d8d1e5;
+      color: var(--hud-text);
       padding: 6px 9px;
       border-radius: 8px;
       font-size: 12.5px;
@@ -997,20 +1254,20 @@
     }
 
     .tool-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
     }
 
     .tool-btn.active {
-      background: var(--accent-soft);
+      background: var(--accent);
       border-color: var(--accent);
-      color: var(--accent);
+      color: #ffffff;
     }
 
     .tool-sep {
       width: 1px;
       height: 20px;
-      background: var(--border-strong);
+      background: rgba(255, 255, 255, 0.16);
       margin: 0 2px;
       flex-shrink: 0;
     }
@@ -1020,14 +1277,15 @@
       position: absolute;
       top: 12px;
       right: 14px;
-      background: rgba(24, 18, 29, 0.92);
+      background: var(--hud-surface);
+      color: var(--hud-text);
       backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 12px;
       padding: 8px 14px;
       min-width: 155px;
       z-index: 50;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
     }
 
     .hud-row {
@@ -1043,9 +1301,10 @@
       position: absolute;
       bottom: 16px;
       left: 16px;
-      background: rgba(24, 18, 29, 0.9);
+      background: var(--hud-surface);
+      color: var(--hud-text);
       backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 10px;
       padding: 4px;
       display: flex;
@@ -1091,8 +1350,8 @@
       bottom: 16px;
       right: 16px;
       width: 240px;
-      background: rgba(24, 18, 29, 0.94);
-      border: 1px solid var(--border-strong);
+      background: var(--hud-surface);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
       overflow: hidden;
       z-index: 65;
@@ -1112,7 +1371,7 @@
       align-items: center;
       font-size: 12px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--hud-text);
       cursor: grab;
     }
 
@@ -1143,7 +1402,8 @@
     #loading-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(19, 16, 25, 0.92);
+      background: var(--modal-backdrop);
+      color: #ffffff;
       backdrop-filter: blur(8px);
       z-index: 500;
       display: none;
@@ -1177,8 +1437,8 @@
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--bg-elevated);
-      color: #fff;
+      background: var(--bg-surface);
+      color: var(--text-main);
       padding: 10px 22px;
       border-radius: 999px;
       font-size: 13px;
@@ -1238,8 +1498,14 @@
       </nav>
 
       <div class="topbar-right">
+        <div class="theme-switcher" role="group" aria-label="Tema visual">
+          <button type="button" class="theme-btn active" data-theme-set="light" title="Tema Claro (Things 3)">☀️ Claro</button>
+          <button type="button" class="theme-btn" data-theme-set="dark" title="Tema Escuro">🌙 Escuro</button>
+          <button type="button" class="theme-btn" data-theme-set="black" title="Tema Preto OLED">⬛ Black</button>
+        </div>
+        <button class="btn" id="btn-lobby-help" title="Como jogar">❓ Ajuda</button>
         <button class="btn" id="btn-fullscreen-lobby" title="Deixar em Tela Cheia">⛶ Tela Cheia</button>
-        <button class="account-chip" id="btn-quick-account" title="Ver conta e estatísticas">
+        <button class="account-chip" id="btn-quick-account" title="Ver ou editar conta e estatísticas">
           <div class="account-avatar" id="top-avatar">🐱</div>
           <span class="account-name" id="top-name">Ray</span>
         </button>
@@ -1251,97 +1517,134 @@
 
         <!-- ABA 1: DESCOBRIR -->
         <section class="tab-panel active" id="panel-discover" role="tabpanel">
-          <!-- Ações Rápidas -->
-          <div class="quick-banner">
-            <div class="quick-card upload-drop" id="card-upload">
-              <input type="file" id="file-input" accept="image/*" style="display: none;">
-              <div class="quick-icon">📁</div>
-              <div class="quick-info">
-                <h3>Usar Foto do Computador</h3>
-                <p>Clique ou arraste qualquer foto para montar.</p>
+          <div class="discover-fixed-top">
+            <!-- Ações Rápidas -->
+            <div class="quick-banner">
+              <div class="quick-card upload-drop" id="card-upload">
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                <div class="quick-icon">📁</div>
+                <div class="quick-info">
+                  <h3>Usar Foto do Computador</h3>
+                  <p>Clique ou arraste qualquer foto para montar.</p>
+                </div>
+              </div>
+
+              <div class="quick-card" id="card-surprise">
+                <div class="quick-icon">🎲</div>
+                <div class="quick-info">
+                  <h3>Escolher Surpresa</h3>
+                  <p>Sorteia uma bela imagem da galeria.</p>
+                </div>
+              </div>
+
+              <div class="quick-card" id="card-continue-last" style="display: none; border-color: var(--success);">
+                <div class="quick-icon" style="background: var(--success-soft); color: var(--success);">▶</div>
+                <div class="quick-info">
+                  <h3 id="last-game-title">Continuar Último Jogo</h3>
+                  <p id="last-game-meta">0% concluído</p>
+                </div>
               </div>
             </div>
 
-            <div class="quick-card" id="card-surprise">
-              <div class="quick-icon">🎲</div>
-              <div class="quick-info">
-                <h3>Escolher Surpresa</h3>
-                <p>Sorteia uma bela imagem da galeria.</p>
+            <!-- Busca & Filtro Novos vs Já Criados -->
+            <div class="filter-bar">
+              <div class="scope-switcher" role="group" aria-label="Separar novos e já criados">
+                <button type="button" class="scope-btn active" data-scope="new">✨ Novos para Montar <span class="cat-count" id="scope-new-count">0</span></button>
+                <button type="button" class="scope-btn" data-scope="created">📌 Já Criados <span class="cat-count" id="scope-created-count">0</span></button>
               </div>
-            </div>
-
-            <div class="quick-card" id="card-continue-last" style="display: none; border-color: var(--success);">
-              <div class="quick-icon" style="background: var(--success-soft); color: var(--success);">▶</div>
-              <div class="quick-info">
-                <h3 id="last-game-title">Continuar Último Jogo</h3>
-                <p id="last-game-meta">0% concluído</p>
+              <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Mercedes, BMW, Pesqueira, Canastra, Foz, Café, Vinho, Churrasco, Rede...)">
               </div>
+              <div class="count-pill" id="gallery-count-pill">0 imagens</div>
+            </div>
+
+            <!-- Categorias com Contagem Real -->
+            <div class="categories-row" id="categories-row">
+              <button class="cat-pill active" data-cat="all">Todas <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="nature">🌿 Natureza <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="countries">🌎 Lugares & Cidades <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="vehicles">🚙 Carros & Marcas <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="gastronomy">☕ Café, Vinho & Churrasco <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="animals">🦁 Animais <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="flowers">🌸 Flores <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="art">🎨 Arte & Pinturas <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="diy">🛠️ Construção, Redes & Casas <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="aviation">✈️ Aeroportos & Aviação <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="sports">⚽ Esportes <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="planets">🪐 Planetas & Espaço <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="wally">🔍 Onde Está / Música <span class="cat-count">0</span></button>
+              <button class="cat-pill" data-cat="photography">📷 Fotografia <span class="cat-count">0</span></button>
             </div>
           </div>
 
-          <!-- Busca -->
-          <div class="filter-bar">
-            <div class="search-box">
-              <span>🔍</span>
-              <input type="text" id="search-input" placeholder="Buscar imagem (ex: Paris, Montanha, Lua, Futebol, Tigre, Flores...)">
+          <div class="gallery-scroll-area" id="gallery-scroll-area">
+            <div class="gallery-grid" id="gallery-grid"></div>
+
+            <div class="load-more-box" id="load-more-box" style="display: none;">
+              <button class="btn btn-primary" id="btn-load-more" style="padding: 11px 26px;">
+                + Mostrar Mais Imagens
+              </button>
             </div>
-            <div class="count-pill" id="gallery-count-pill">540 imagens</div>
-          </div>
 
-          <!-- Categorias -->
-          <div class="categories-row" id="categories-row">
-            <button class="cat-pill active" data-cat="all">Todas</button>
-            <button class="cat-pill" data-cat="nature">🌿 Natureza</button>
-            <button class="cat-pill" data-cat="countries">🏛️ Países & Monumentos</button>
-            <button class="cat-pill" data-cat="planets">🪐 Planetas & Espaço</button>
-            <button class="cat-pill" data-cat="sports">⚽ Times & Esportes</button>
-            <button class="cat-pill" data-cat="animals">🦁 Animais</button>
-            <button class="cat-pill" data-cat="art">🎨 Arte & Pinturas</button>
-            <button class="cat-pill" data-cat="vehicles">🚂 Veículos</button>
-            <button class="cat-pill" data-cat="flowers">🌸 Flores</button>
-            <button class="cat-pill" data-cat="photography">📷 Fotografia</button>
-          </div>
-
-          <div class="gallery-grid" id="gallery-grid"></div>
-
-          <div class="load-more-box" id="load-more-box" style="display: none;">
-            <button class="btn btn-primary" id="btn-load-more" style="padding: 12px 28px;">
-              + Mostrar Mais Imagens
-            </button>
+            <footer style="margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
+              Quebra Cabeça do Ray — Projeto experimental para fins estritamente acadêmicos e educacionais, sem fins lucrativos. Uso offline e não comercial.
+            </footer>
           </div>
         </section>
 
         <!-- ABA 2: EM ANDAMENTO (ALTERNAR ENTRE JOGOS CRIADOS) -->
         <section class="tab-panel" id="panel-inprogress" role="tabpanel">
-          <h2 class="section-heading">⏳ Seus Quebra-Cabeças em Andamento</h2>
-          <p class="section-lead">Alterne livremente entre os quebra-cabeças que você já começou. Seu progresso é salvo automaticamente.</p>
-          <div id="inprogress-container"></div>
+          <div class="tab-fixed-head">
+            <h2 class="section-heading">⏳ Seus Quebra-Cabeças em Andamento</h2>
+            <p class="section-lead">Alterne livremente entre os quebra-cabeças que você já começou. Seu progresso é salvo automaticamente.</p>
+          </div>
+          <div class="tab-scroll-area" id="inprogress-container"></div>
         </section>
 
         <!-- ABA 3: MINHA CONTA & ANALYTICS -->
         <section class="tab-panel" id="panel-account" role="tabpanel">
           <div class="account-layout">
-            <!-- Coluna Esquerda: Perfis e Backup -->
-            <div>
+            <!-- Coluna Esquerda: Perfis, Edição e Backup -->
+            <div class="account-col">
               <div class="panel-box">
                 <div class="panel-title">👤 Contas da Família</div>
                 <div class="profiles-stack" id="profiles-stack"></div>
 
-                <div class="field-label" style="margin-top: 16px;">Criar Nova Conta Local</div>
+                <div class="field-label" style="margin-top: 14px;">✏️ Editar Conta Ativa (<span id="edit-profile-label">Ray</span>)</div>
+                <div class="avatar-strip" id="edit-avatar-strip">
+                  <button type="button" class="avatar-choice edit-av-choice">🐱</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🦊</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🐼</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🦁</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🦉</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🚀</button>
+                  <button type="button" class="avatar-choice edit-av-choice">⚽</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🌸</button>
+                  <button type="button" class="avatar-choice edit-av-choice">⭐</button>
+                  <button type="button" class="avatar-choice edit-av-choice">🏎️</button>
+                  <button type="button" class="avatar-choice edit-av-choice">☕</button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                  <input type="text" class="text-input" id="input-edit-name" placeholder="Novo nome..." maxlength="20">
+                  <button class="btn btn-primary" id="btn-save-profile">Salvar</button>
+                </div>
+
+                <div class="field-label" style="border-top: 1px solid var(--border); padding-top: 12px;">➕ Criar Nova Conta Local</div>
                 <div class="avatar-strip" id="avatar-strip">
-                  <button type="button" class="avatar-choice selected">🐱</button>
-                  <button type="button" class="avatar-choice">🦊</button>
-                  <button type="button" class="avatar-choice">🐼</button>
-                  <button type="button" class="avatar-choice">🦁</button>
-                  <button type="button" class="avatar-choice">🦉</button>
-                  <button type="button" class="avatar-choice">🚀</button>
-                  <button type="button" class="avatar-choice">⚽</button>
-                  <button type="button" class="avatar-choice">🌸</button>
-                  <button type="button" class="avatar-choice">⭐</button>
+                  <button type="button" class="avatar-choice new-av-choice selected">🐱</button>
+                  <button type="button" class="avatar-choice new-av-choice">🦊</button>
+                  <button type="button" class="avatar-choice new-av-choice">🐼</button>
+                  <button type="button" class="avatar-choice new-av-choice">🦁</button>
+                  <button type="button" class="avatar-choice new-av-choice">🦉</button>
+                  <button type="button" class="avatar-choice new-av-choice">🚀</button>
+                  <button type="button" class="avatar-choice new-av-choice">⚽</button>
+                  <button type="button" class="avatar-choice new-av-choice">🌸</button>
+                  <button type="button" class="avatar-choice new-av-choice">⭐</button>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                  <input type="text" class="text-input" id="input-profile-name" placeholder="Nome (ex: Ray, Mãe, Sofia)..." maxlength="20">
-                  <button class="btn btn-primary" id="btn-add-profile">Criar</button>
+                  <input type="text" class="text-input" id="input-profile-name" placeholder="Nome (ex: Mãe, Sofia)..." maxlength="20">
+                  <button class="btn" id="btn-add-profile">Criar</button>
                 </div>
               </div>
 
@@ -1360,7 +1663,7 @@
             </div>
 
             <!-- Coluna Direita: Analytics & Troféus -->
-            <div>
+            <div class="account-col">
               <div class="panel-box">
                 <div class="panel-title">📊 Estatísticas de <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
                 <div class="analytics-grid">
@@ -1398,10 +1701,6 @@
         </section>
 
       </div>
-
-      <footer style="max-width: 1320px; margin: 40px auto 0; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
-        Quebra Cabeça do Ray — Projeto experimental para fins estritamente acadêmicos e educacionais, sem fins lucrativos. Uso offline e não comercial.
-      </footer>
     </main>
   </div>
 
@@ -1487,6 +1786,7 @@
       <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
       <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
       <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
+      <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
     </div>
 
     <!-- HUD de Progresso -->
@@ -1498,9 +1798,9 @@
       <div class="progress-track" style="height: 6px; margin-bottom: 5px;">
         <div class="progress-fill" id="hud-bar"></div>
       </div>
-      <div class="hud-row" style="margin-bottom: 0; color: var(--text-muted); font-size: 11px;">
+      <div class="hud-row" style="margin-bottom: 0; color: var(--hud-muted); font-size: 11px;">
         <span id="hud-pieces">0 / 0</span>
-        <strong id="hud-timer" style="color: #fff;">00:00</strong>
+        <strong id="hud-timer" style="color: var(--hud-text);">00:00</strong>
       </div>
     </div>
 
@@ -1511,11 +1811,11 @@
       <button class="tool-btn" id="btn-zoom-in" title="Aproximar Zoom">➕</button>
     </div>
 
-    <!-- Miniatura Flutuante -->
-    <div class="floating-guide" id="floating-guide">
+    <!-- Miniatura Flutuante (fechada por padrão) -->
+    <div class="floating-guide hidden" id="floating-guide">
       <div class="guide-header" id="guide-drag-handle">
         <span>Foto de Referência</span>
-        <button class="btn-ghost" id="btn-close-guide" style="border:none; cursor:pointer; font-size:16px;">&times;</button>
+        <button class="btn-ghost" id="btn-close-guide" style="border:none; cursor:pointer; font-size:16px; color:var(--hud-text);">&times;</button>
       </div>
       <img id="guide-img" src="" alt="Foto guia">
     </div>
@@ -1724,6 +2024,16 @@
         this.data.activeId = p.id;
         this.persistImmediate();
         return p;
+      }
+
+      updateProfile(id, name, avatar) {
+        const prof = this.data.profiles.find(p => p.id === id);
+        if (!prof) return false;
+        const trimmed = (name || '').trim();
+        if (trimmed) prof.name = trimmed;
+        if (avatar) prof.avatar = avatar;
+        this.persistImmediate();
+        return true;
       }
 
       deleteProfile(id) {
@@ -2083,6 +2393,8 @@
           }
 
           document.getElementById('guide-img').src = imgSrc;
+          document.getElementById('floating-guide')?.classList.add('hidden');
+          document.getElementById('btn-g-preview')?.classList.remove('active');
           const tb = document.getElementById('game-toolbar');
           const tbBtn = document.getElementById('btn-reopen-toolbar');
           if (tb) tb.classList.add('collapsed');
@@ -2096,7 +2408,6 @@
           this.startTimer();
           this.updateHUD();
           this.requestRender();
-          maybeShowFirstHelp();
           const demoMsg = demoOutside > 0 ? ` (${demoOutside} pré-montadas fora)` : '';
           showToast(`${title} • ${this.totalPieces} peças${demoMsg}`);
         };
@@ -3093,9 +3404,10 @@
        5. CONTROLADOR DA PLATAFORMA (UI)
        ========================================================= */
     let engine;
+    let currentScope = 'new'; // 'new' = Novos para Montar (padrão), 'created' = Já Criados
     let currentCat = 'all';
     let currentSearch = '';
-    let galleryLimit = 24;
+    let galleryLimit = 36;
     let pendingItem = null;
     let pendingPieces = 100;
     let pendingHard = false;
@@ -3105,11 +3417,44 @@
     function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
     let prefs = loadPrefs();
 
-    // Na primeira vez que a pessoa abre um quebra-cabeça, mostra o "Como Jogar" automaticamente
-    function maybeShowFirstHelp() {
-      if (prefs.seenHelp || new URLSearchParams(window.location.search).has('demo')) return;
-      prefs.seenHelp = true; savePrefs(prefs);
-      setTimeout(() => document.getElementById('modal-help').classList.add('open'), 700);
+    function applyTheme(theme) {
+      const valid = ['light', 'dark', 'black'].includes(theme) ? theme : 'light';
+      document.documentElement.setAttribute('data-theme', valid);
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeSet === valid);
+      });
+      prefs.theme = valid;
+      savePrefs(prefs);
+    }
+
+    function getCreatedSrcSet(prof) {
+      const set = new Set();
+      (prof.activePuzzles || []).forEach(x => { if (x.imageSrc) set.add(x.imageSrc); });
+      (prof.trophies || []).forEach(x => { if (x.src) set.add(x.src); });
+      return set;
+    }
+
+    function updateCategoryCounts() {
+      const prof = storage.getActiveProfile();
+      const createdSet = getCreatedSrcSet(prof);
+      const newTotal = gallery.filter(i => !createdSet.has(i.src)).length;
+      const createdTotal = gallery.filter(i => createdSet.has(i.src)).length;
+      const sNew = document.getElementById('scope-new-count');
+      const sCre = document.getElementById('scope-created-count');
+      if (sNew) sNew.textContent = newTotal.toLocaleString('pt-BR');
+      if (sCre) sCre.textContent = createdTotal.toLocaleString('pt-BR');
+
+      const scoped = gallery.filter(i => currentScope === 'created' ? createdSet.has(i.src) : !createdSet.has(i.src));
+      const counts = {};
+      scoped.forEach(item => {
+        counts[item.cat] = (counts[item.cat] || 0) + 1;
+      });
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        const cat = pill.dataset.cat;
+        const badge = pill.querySelector('.cat-count');
+        const val = cat === 'all' ? scoped.length : (counts[cat] || 0);
+        if (badge) badge.textContent = val.toLocaleString('pt-BR');
+      });
     }
 
     function showWelcomeBack(save) {
@@ -3175,13 +3520,14 @@
         document.getElementById('card-continue-last').style.display = 'none';
       }
 
+      updateCategoryCounts();
       renderGallery(false);
       renderInProgressTab();
       renderAccountTab();
     }
 
     function renderGallery(resetLimit = true) {
-      if (resetLimit) galleryLimit = 24;
+      if (resetLimit) galleryLimit = 36;
       const grid = document.getElementById('gallery-grid');
       const loadMoreBox = document.getElementById('load-more-box');
       const countPill = document.getElementById('gallery-count-pill');
@@ -3189,38 +3535,80 @@
 
       const prof = storage.getActiveProfile();
       const inProgressMap = new Map((prof.activePuzzles || []).map(x => [x.imageSrc, x]));
+      const completedSet = new Set((prof.trophies || []).map(x => x.src));
+      const createdSet = getCreatedSrcSet(prof);
 
-      let list = currentCat === 'all' ? gallery : gallery.filter(i => i.cat === currentCat);
+      let list = gallery.filter(i => currentScope === 'created' ? createdSet.has(i.src) : !createdSet.has(i.src));
+      if (currentCat !== 'all') {
+        list = list.filter(i => i.cat === currentCat);
+      }
       if (currentSearch) {
-        const q = normalizeText(currentSearch);
-        list = list.filter(i => normalizeText(i.title).includes(q));
+        let q = normalizeText(currentSearch)
+          .replace(/\bwhaly\b/g, 'wally')
+          .replace(/\bdyi\b/g, 'diy')
+          .replace(/\bespresso\b/g, 'expresso');
+        const terms = q.split(/\s+/).filter(Boolean);
+        list = list.filter(i => {
+          const hay = normalizeText(`${i.title} ${i.tags || ''}`);
+          return terms.every(t => hay.includes(t));
+        });
       }
 
-      countPill.textContent = `${list.length} imagens`;
+      countPill.textContent = `${list.length} ${list.length === 1 ? 'imagem' : 'imagens'}`;
       if (list.length === 0) {
         loadMoreBox.style.display = 'none';
-        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria.</p></div>`;
+        const emptyMsg = currentScope === 'created' && !currentSearch
+          ? `<h4>Nenhum quebra-cabeça criado ainda nesta seleção</h4><p>Escolha qualquer imagem em "✨ Novos para Montar" para começar!</p>`
+          : `<h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria.</p>`;
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${emptyMsg}</div>`;
         return;
       }
 
       list.slice(0, galleryLimit).forEach(item => {
         const activeSave = inProgressMap.get(item.src);
+        const isDone = completedSet.has(item.src);
         const card = document.createElement('div');
         card.className = 'puzzle-card';
-        card.innerHTML = `
-          <div class="puzzle-thumb">
-            <img src="${item.src}" alt="${item.title}" loading="lazy">
-            ${activeSave ? `<div class="puzzle-badge-corner">${activeSave.pct}% montado</div>` : ''}
-          </div>
-          <div class="puzzle-card-body">
-            <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
-            <div class="puzzle-play-tag">${activeSave ? 'Retomar' : 'Montar'}</div>
-          </div>
-        `;
-        card.addEventListener('click', () => {
-          if (activeSave) openSavedPuzzle(activeSave);
-          else openNewConfig(item);
-        });
+
+        if (currentScope === 'created') {
+          const badgeHtml = activeSave
+            ? `<div class="puzzle-badge-corner">${activeSave.pct}% montado</div>`
+            : (isDone ? `<div class="puzzle-badge-corner">🏆 Concluído</div>` : '');
+          card.innerHTML = `
+            <div class="puzzle-thumb">
+              <img src="${item.src}" alt="${item.title}" loading="lazy">
+              ${badgeHtml}
+            </div>
+            <div class="puzzle-card-body">
+              <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
+              <div class="puzzle-card-actions">
+                ${activeSave ? `<div class="puzzle-play-tag btn-act-resume">▶ Retomar</div>` : ''}
+                <button type="button" class="puzzle-alt-btn btn-act-newcfg" title="Criar outro quebra-cabeça com outra configuração desta foto">+ Outra Config</button>
+              </div>
+            </div>
+          `;
+          card.querySelector('.puzzle-thumb').addEventListener('click', () => {
+            if (activeSave) openSavedPuzzle(activeSave);
+            else openNewConfig(item);
+          });
+          const resBtn = card.querySelector('.btn-act-resume');
+          if (resBtn) resBtn.addEventListener('click', (e) => { e.stopPropagation(); openSavedPuzzle(activeSave); });
+          card.querySelector('.btn-act-newcfg').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openNewConfig(item);
+          });
+        } else {
+          card.innerHTML = `
+            <div class="puzzle-thumb">
+              <img src="${item.src}" alt="${item.title}" loading="lazy">
+            </div>
+            <div class="puzzle-card-body">
+              <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
+              <div class="puzzle-play-tag">Montar</div>
+            </div>
+          `;
+          card.addEventListener('click', () => openNewConfig(item));
+        }
         grid.appendChild(card);
       });
 
@@ -3241,7 +3629,7 @@
         container.innerHTML = `
           <div class="empty-state">
             <h4>Nenhum quebra-cabeça em andamento ainda</h4>
-            <p>Escolha uma das 540 imagens na aba Descobrir para começar sua primeira montagem.</p>
+            <p>Escolha uma das ${gallery.length} imagens na aba Descobrir para começar sua primeira montagem.</p>
             <button class="btn btn-primary" onclick="switchTab('discover')">Explorar Galeria</button>
           </div>`;
         return;
@@ -3289,6 +3677,22 @@
       const prof = storage.getActiveProfile();
       document.getElementById('stats-owner-label').textContent = `${prof.avatar} ${prof.name}`;
 
+      // Sincroniza formulário de edição da conta ativa
+      const editLabel = document.getElementById('edit-profile-label');
+      const editInput = document.getElementById('input-edit-name');
+      if (editLabel) editLabel.textContent = prof.name;
+      if (editInput) editInput.value = prof.name;
+      let anyAvMatch = false;
+      document.querySelectorAll('.edit-av-choice').forEach(btn => {
+        const match = btn.textContent === prof.avatar;
+        if (match) anyAvMatch = true;
+        btn.classList.toggle('selected', match);
+      });
+      if (!anyAvMatch) {
+        const firstAv = document.querySelector('.edit-av-choice');
+        if (firstAv) firstAv.classList.add('selected');
+      }
+
       // Contas
       const stack = document.getElementById('profiles-stack');
       stack.innerHTML = '';
@@ -3305,12 +3709,14 @@
             </div>
           </div>
           <div style="display:flex; gap:6px;">
-            ${!isAct ? `<button class="btn btn-use" style="padding:5px 10px; font-size:12px;">Usar</button>` : ''}
+            ${!isAct ? `<button class="btn btn-use" style="padding:5px 10px; font-size:12px;">Usar</button>` : `<button class="btn btn-edit-focus" style="padding:5px 10px; font-size:12px;" title="Editar nome e ícone">✏️</button>`}
             ${storage.data.profiles.length > 1 ? `<button class="btn btn-ghost btn-danger-text btn-del" style="padding:5px 8px; font-size:12px;">✕</button>` : ''}
           </div>
         `;
         const useBtn = row.querySelector('.btn-use');
         if (useBtn) useBtn.addEventListener('click', () => { storage.setActiveProfile(p.id); refreshAllUI(); showToast(`Conta alterada para ${p.name}`); });
+        const editFocusBtn = row.querySelector('.btn-edit-focus');
+        if (editFocusBtn) editFocusBtn.addEventListener('click', () => { const i = document.getElementById('input-edit-name'); i?.focus(); i?.select(); });
         const delBtn = row.querySelector('.btn-del');
         if (delBtn) delBtn.addEventListener('click', () => {
           if (confirm(`Excluir a conta "${p.name}"?`)) { storage.deleteProfile(p.id); refreshAllUI(); }
@@ -3387,10 +3793,20 @@
         try { window.history.replaceState({}, '', window.location.pathname); } catch (e) {}
       }
 
+      applyTheme(params.get('theme') || prefs.theme || 'light');
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyTheme(btn.dataset.themeSet));
+      });
+      if (['discover', 'inprogress', 'account'].includes(params.get('tab'))) {
+        setTimeout(() => switchTab(params.get('tab')), 20);
+      }
+      document.getElementById('btn-lobby-help').addEventListener('click', () => {
+        document.getElementById('modal-help').classList.add('open');
+      });
+
       engine = new PuzzleEngine();
 
-      const allCatBtn = document.querySelector('.cat-pill[data-cat="all"]');
-      if (allCatBtn) allCatBtn.textContent = `Todas (${gallery.length})`;
+      updateCategoryCounts();
       document.getElementById('gallery-count-pill').textContent = `${gallery.length} imagens`;
 
       refreshAllUI();
@@ -3447,7 +3863,16 @@
       });
       document.getElementById('btn-quick-account').addEventListener('click', () => switchTab('account'));
 
-      // Busca & Categorias
+      // Escopo (Novos para Montar vs Já Criados), Busca & Categorias
+      document.querySelectorAll('.scope-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentScope = btn.dataset.scope;
+          updateCategoryCounts();
+          renderGallery(true);
+        });
+      });
       document.getElementById('search-input').addEventListener('input', (e) => {
         currentSearch = e.target.value.trim();
         renderGallery(true);
@@ -3461,13 +3886,16 @@
         });
       });
       document.getElementById('btn-load-more').addEventListener('click', () => {
-        galleryLimit += 24;
+        galleryLimit += 36;
         renderGallery(false);
       });
 
       // Ações rápidas
       document.getElementById('card-surprise').addEventListener('click', () => {
-        openNewConfig(gallery[Math.floor(Math.random() * gallery.length)]);
+        const createdSet = getCreatedSrcSet(storage.getActiveProfile());
+        const pool = gallery.filter(i => !createdSet.has(i.src));
+        const srcList = pool.length ? pool : gallery;
+        openNewConfig(srcList[Math.floor(Math.random() * srcList.length)]);
       });
       document.getElementById('card-continue-last').addEventListener('click', () => {
         const list = storage.getActiveProfile().activePuzzles || [];
@@ -3508,11 +3936,31 @@
         reader.readAsDataURL(file);
       }
 
-      // Contas & Backup
-      let chosenAvatar = '🐱';
-      document.querySelectorAll('.avatar-choice').forEach(btn => {
+      // Contas & Backup (Editar ativa + Criar nova)
+      let editedAvatar = storage.getActiveProfile().avatar || '🐱';
+      document.querySelectorAll('.edit-av-choice').forEach(btn => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('.avatar-choice').forEach(b => b.classList.remove('selected'));
+          document.querySelectorAll('.edit-av-choice').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          editedAvatar = btn.textContent;
+        });
+      });
+      document.getElementById('btn-save-profile').addEventListener('click', () => {
+        const prof = storage.getActiveProfile();
+        const inp = document.getElementById('input-edit-name');
+        const newName = inp.value.trim();
+        if (!newName) { showToast('Digite um nome válido.'); return; }
+        const selAv = document.querySelector('.edit-av-choice.selected');
+        const av = selAv ? selAv.textContent : (editedAvatar || prof.avatar);
+        storage.updateProfile(prof.id, newName, av);
+        refreshAllUI();
+        showToast(`Perfil atualizado para ${av} ${newName}!`);
+      });
+
+      let chosenAvatar = '🐱';
+      document.querySelectorAll('.new-av-choice').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.new-av-choice').forEach(b => b.classList.remove('selected'));
           btn.classList.add('selected');
           chosenAvatar = btn.textContent;
         });
@@ -3596,8 +4044,15 @@
         refreshAllUI();
       });
 
-      document.getElementById('btn-g-preview').addEventListener('click', () => document.getElementById('floating-guide').classList.toggle('hidden'));
-      document.getElementById('btn-close-guide').addEventListener('click', () => document.getElementById('floating-guide').classList.add('hidden'));
+      document.getElementById('btn-g-preview').addEventListener('click', (e) => {
+        const fg = document.getElementById('floating-guide');
+        fg.classList.toggle('hidden');
+        e.currentTarget.classList.toggle('active', !fg.classList.contains('hidden'));
+      });
+      document.getElementById('btn-close-guide').addEventListener('click', () => {
+        document.getElementById('floating-guide').classList.add('hidden');
+        document.getElementById('btn-g-preview')?.classList.remove('active');
+      });
 
       document.getElementById('btn-g-ghost').addEventListener('click', (e) => {
         engine.showGhost = !engine.showGhost;

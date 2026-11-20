@@ -14,10 +14,11 @@ Oferecer uma plataforma simples, responsiva e **100% offline** de montagem de qu
 
 ## ✨ Funcionalidades Principais
 
-- **🔍 Galeria Offline com 540 Imagens Reais:** Fotografias organizadas em categorias (*Natureza*, *Países & Monumentos*, *Planetas & Espaço*, *Times & Esportes*, *Animais*, *Arte & Pinturas*, *Veículos*, *Flores* e *Fotografia*), com busca instantânea sem acentos e carregamento paginado leve.
+- **🎨 Design Clean Estilo Things 3 + 3 Temas:** Visual minimalista inspirado no Things 3 com alternância instantânea entre **☀️ Claro**, **🌙 Escuro** e **⬛ Black (OLED)**, aproveitando 100% da largura da tela e rolando apenas o bloco de quebra-cabeças.
+- **🔍 Galeria Offline com 1.260 Imagens & Legendas em Português:** Fotografias organizadas em categorias com contagem ao vivo e separação automática entre **✨ Novos para Montar** (padrão) e **📌 Já Criados** (*Natureza*, *Lugares & Cidades*, *Carros & Marcas*, *Café, Vinho & Churrasco*, *Animais*, *Flores*, *Arte & Pinturas*, *Construção, Redes & Casas*, *Aeroportos & Aviação*, *Esportes*, *Planetas & Espaço*, *Onde Está / Música* e *Fotografia*), com busca tolerante a acentos e variações.
 - **📁 Suas Próprias Fotos:** Carregue ou arraste qualquer imagem do computador direto para a janela.
 - **⏳ Múltiplos Jogos em Andamento:** Inicie vários quebra-cabeças e alterne livremente entre eles, acompanhando o progresso em peças (`X de Y`) e porcentagem (`%`).
-- **📊 Contas Locais & Estatísticas:** Crie perfis locais para membros da família, acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
+- **📊 Contas Locais Editáveis & Analytics:** Crie e edite contas da família (nome e avatar), acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
 - **🧩 Jogabilidade Fluida e Otimizada:**
   - Suporte de **12 até 1000 peças**, nos modos **Clássico** e **Desafio** (com rotação via `Q` / `E`).
   - Peças com encaixe clássico (pescoço fino + cabeça redonda), formato levemente diferente em cada peça, relevo suave e emendas invisíveis no tabuleiro; texturas em alta resolução com nitidez leve.
