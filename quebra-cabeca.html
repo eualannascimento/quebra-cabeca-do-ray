@@ -222,7 +222,6 @@
 
     .topbar {
       background: var(--topbar-bg);
-      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
       padding: 10px clamp(16px, 2.2vw, 28px);
       display: flex;
@@ -238,6 +237,15 @@
       display: flex;
       align-items: center;
       gap: 11px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 10px;
+      padding: 2px 6px 2px 2px;
+    }
+
+    .brand-group:hover {
+      background: var(--bg-elevated);
     }
 
     .brand-mark {
@@ -658,14 +666,11 @@
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--card-shadow);
-      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      contain: layout style paint;
     }
 
     .puzzle-card:hover {
-      transform: translateY(-2px);
       border-color: var(--accent);
-      box-shadow: var(--card-hover-shadow);
     }
 
     .puzzle-thumb {
@@ -688,7 +693,6 @@
       top: 8px;
       right: 8px;
       background: var(--hud-surface);
-      backdrop-filter: blur(6px);
       color: #34D399;
       border: 1px solid rgba(52, 211, 153, 0.45);
       font-size: 11px;
@@ -1160,16 +1164,41 @@
     }
 
     .cfg-controls-row {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 14px;
-      align-items: center;
+      display: block;
       margin-bottom: 10px;
     }
 
-    @media (max-width: 820px) {
-      .cfg-controls-row { grid-template-columns: 1fr; }
-      .cfg-full-img { padding: 54px 12px 260px; }
+    .avatar-picker-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid var(--border-strong);
+      font-size: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .avatar-picker-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .avatar-popover {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px;
+      margin-top: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+
+    .avatar-popover.open {
+      display: flex;
     }
 
     .cfg-actions-row {
@@ -1543,9 +1572,8 @@
     #loading-overlay {
       position: fixed;
       inset: 0;
-      background: var(--modal-backdrop);
+      background: rgba(12, 14, 18, 0.90);
       color: #ffffff;
-      backdrop-filter: blur(8px);
       z-index: 500;
       display: none;
       flex-direction: column;
@@ -1617,13 +1645,13 @@
        ========================================================= -->
   <div id="platform-shell">
     <header class="topbar">
-      <div class="brand-group">
+      <a href="#inicio" class="brand-group" id="brand-home-link" title="Ir para a página inicial (Descobrir)">
         <div class="brand-mark">🧩</div>
         <div>
           <div class="brand-title">Quebra Cabeça do Ray</div>
           <div class="brand-sub">100% Offline • Sem Travamentos</div>
         </div>
-      </div>
+      </a>
 
       <!-- Navegação em Plataforma -->
       <nav class="nav-tabs" role="tablist" aria-label="Seções principais">
@@ -1749,11 +1777,18 @@
             <!-- Coluna Esquerda: Perfis, Edição e Backup -->
             <div class="account-col">
               <div class="panel-box">
-                <div class="panel-title">👤 Contas da Família</div>
-                <div class="profiles-stack" id="profiles-stack"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <div class="panel-title" style="margin-bottom: 0;">👤 Conta & Perfis</div>
+                  <button type="button" class="btn" id="btn-toggle-new-profile" style="padding: 5px 10px; font-size: 12px;">+ Nova Conta</button>
+                </div>
 
-                <div class="field-label" style="margin-top: 14px;">✏️ Editar Conta Ativa (<span id="edit-profile-label">Ray</span>)</div>
-                <div class="avatar-strip" id="edit-avatar-strip">
+                <!-- Editor rápido e limpo da conta ativa -->
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <button type="button" class="avatar-picker-btn" id="btn-edit-avatar" title="Trocar ícone do perfil">🐱</button>
+                  <input type="text" class="text-input" id="input-edit-name" placeholder="Seu nome..." maxlength="20" style="flex: 1;">
+                  <button type="button" class="btn btn-primary" id="btn-save-profile" style="padding: 8px 12px;">Salvar</button>
+                </div>
+                <div class="avatar-popover" id="edit-avatar-strip">
                   <button type="button" class="avatar-choice edit-av-choice">🐱</button>
                   <button type="button" class="avatar-choice edit-av-choice">🦊</button>
                   <button type="button" class="avatar-choice edit-av-choice">🐼</button>
@@ -1766,27 +1801,16 @@
                   <button type="button" class="avatar-choice edit-av-choice">🏎️</button>
                   <button type="button" class="avatar-choice edit-av-choice">☕</button>
                 </div>
-                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                  <input type="text" class="text-input" id="input-edit-name" placeholder="Novo nome..." maxlength="20">
-                  <button class="btn btn-primary" id="btn-save-profile">Salvar</button>
+
+                <!-- Criar nova conta (recolhido até clicar em + Nova Conta) -->
+                <div id="new-profile-drawer" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" class="text-input" id="input-profile-name" placeholder="Nome da nova conta..." maxlength="20" style="flex: 1;">
+                    <button type="button" class="btn btn-primary" id="btn-add-profile">Criar</button>
+                  </div>
                 </div>
 
-                <div class="field-label" style="border-top: 1px solid var(--border); padding-top: 12px;">➕ Criar Nova Conta Local</div>
-                <div class="avatar-strip" id="avatar-strip">
-                  <button type="button" class="avatar-choice new-av-choice selected">🐱</button>
-                  <button type="button" class="avatar-choice new-av-choice">🦊</button>
-                  <button type="button" class="avatar-choice new-av-choice">🐼</button>
-                  <button type="button" class="avatar-choice new-av-choice">🦁</button>
-                  <button type="button" class="avatar-choice new-av-choice">🦉</button>
-                  <button type="button" class="avatar-choice new-av-choice">🚀</button>
-                  <button type="button" class="avatar-choice new-av-choice">⚽</button>
-                  <button type="button" class="avatar-choice new-av-choice">🌸</button>
-                  <button type="button" class="avatar-choice new-av-choice">⭐</button>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" class="text-input" id="input-profile-name" placeholder="Nome (ex: Mãe, Sofia)..." maxlength="20">
-                  <button class="btn" id="btn-add-profile">Criar</button>
-                </div>
+                <div class="profiles-stack" id="profiles-stack" style="margin-top: 12px; margin-bottom: 0;"></div>
               </div>
 
               <div class="panel-box">
@@ -1865,30 +1889,14 @@
 
       <div class="cfg-bottom-dock">
         <div class="cfg-controls-row">
-          <div>
-            <div class="field-label">Modo de Jogo</div>
-            <div class="mode-grid" style="margin-bottom: 0;">
-              <div class="choice-box selected" id="mode-normal" style="padding: 9px 6px;">
-                <div style="font-weight: 700; font-size: 13px;">Clássico</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Posição certa</div>
-              </div>
-              <div class="choice-box" id="mode-challenge" style="padding: 9px 6px;">
-                <div style="font-weight: 700; font-size: 13px;">Desafio 🔥</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Girar Q / E</div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="field-label">Quantas peças? (Até 1000 peças)</div>
-            <div class="sizes-grid" style="margin-bottom: 0;">
-              <div class="size-box" data-val="24"><strong>24</strong><div style="font-size:10px; color:var(--text-muted);">Rápido</div></div>
-              <div class="size-box" data-val="50"><strong>50</strong><div style="font-size:10px; color:var(--text-muted);">Fácil</div></div>
-              <div class="size-box selected" data-val="100"><strong>100</strong><div style="font-size:10px; color:var(--text-muted);">Médio</div></div>
-              <div class="size-box" data-val="250"><strong>250</strong><div style="font-size:10px; color:var(--text-muted);">Grande</div></div>
-              <div class="size-box" data-val="500"><strong>500</strong><div style="font-size:10px; color:var(--text-muted);">Difícil</div></div>
-              <div class="size-box" data-val="1000"><strong>1000</strong><div style="font-size:10px; color:var(--text-muted);">Mestre</div></div>
-            </div>
+          <div class="field-label">Quantas peças? (Até 1000 peças)</div>
+          <div class="sizes-grid" style="margin-bottom: 0;">
+            <div class="size-box" data-val="24"><strong>24</strong><div style="font-size:10px; color:var(--text-muted);">Rápido</div></div>
+            <div class="size-box" data-val="50"><strong>50</strong><div style="font-size:10px; color:var(--text-muted);">Fácil</div></div>
+            <div class="size-box selected" data-val="100"><strong>100</strong><div style="font-size:10px; color:var(--text-muted);">Médio</div></div>
+            <div class="size-box" data-val="250"><strong>250</strong><div style="font-size:10px; color:var(--text-muted);">Grande</div></div>
+            <div class="size-box" data-val="500"><strong>500</strong><div style="font-size:10px; color:var(--text-muted);">Difícil</div></div>
+            <div class="size-box" data-val="1000"><strong>1000</strong><div style="font-size:10px; color:var(--text-muted);">Mestre</div></div>
           </div>
         </div>
 
@@ -2156,9 +2164,9 @@
         clearTimeout(this.saveTimer);
         this.saveTimer = setTimeout(() => {
           const run = () => this.persistImmediate(false);
-          if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 1500 });
+          if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 2000 });
           else run();
-        }, 2200);
+        }, 4000);
       }
 
       getActiveProfile() {
@@ -2428,6 +2436,8 @@
         this.staticCanvas = document.createElement('canvas');
         this.staticCtx = this.staticCanvas.getContext('2d', { alpha: false });
         this.staticDirty = true;
+        this.prevDragRect = null;
+        this.rafId = null;
         this.atlases = [];
         this.scratchCanvas = document.createElement('canvas');
         this.scratchCtx = this.scratchCanvas.getContext('2d');
@@ -2473,7 +2483,8 @@
       }
 
       initRenderLoop() {
-        const tick = () => {
+        this._tick = () => {
+          this.rafId = null;
           if (this.pendingMove) {
             const pm = this.pendingMove;
             this.pendingMove = null;
@@ -2486,18 +2497,27 @@
             this.dirty = false;
             this.renderFrame();
           }
-          requestAnimationFrame(tick);
+          if (this.pendingMove || this.dirty || this.staticDirty || hasAnims || this.draggedGroup) {
+            this.scheduleRender();
+          }
         };
-        requestAnimationFrame(tick);
+        this.scheduleRender();
+      }
+
+      scheduleRender() {
+        if (!this.rafId) this.rafId = requestAnimationFrame(this._tick);
       }
 
       invalidateStatic() {
         this.staticDirty = true;
+        this.prevDragRect = null;
         this.dirty = true;
+        this.scheduleRender();
       }
 
       requestRender() {
         this.dirty = true;
+        this.scheduleRender();
       }
 
       // Ao arrastar uma peça até a beirada da tela, a mesa rola sozinha (útil em quebra-cabeças grandes)
@@ -2515,12 +2535,12 @@
       }
 
       resize() {
-        const maxDpr = this.totalPieces > 200 ? 1.25 : 1.5;
-        this.dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+        // DPR 1:1 nativo maximiza FPS em GPU integrada / rasterização CPU no Chrome Windows 10
+        this.dpr = 1;
         this.width = this.stage.clientWidth;
         this.height = this.stage.clientHeight;
-        const cw = Math.max(1, Math.floor(this.width * this.dpr));
-        const ch = Math.max(1, Math.floor(this.height * this.dpr));
+        const cw = Math.max(1, Math.floor(this.width));
+        const ch = Math.max(1, Math.floor(this.height));
         this.canvas.width = cw;
         this.canvas.height = ch;
         this.staticCanvas.width = cw;
@@ -2738,7 +2758,7 @@
             targetY: this.boardY + sp.row * this.pieceHeight,
             x: sp.locked ? (this.boardX + sp.col * this.pieceWidth) : (inPocket ? -99999 : this.boardX + (sp.x + oldBw / 2) * kk),
             y: sp.locked ? (this.boardY + sp.row * this.pieceHeight) : (inPocket ? -99999 : this.boardY + (sp.y + oldBh / 2) * kk),
-            rotation: sp.rotation || 0, locked: sp.locked, group: null, cachedCanvas: null,
+            rotation: 0, locked: sp.locked, group: null, cachedCanvas: null,
             offsetX: 0, offsetY: 0, drawW: 0, drawH: 0
           };
           if (piece.locked) this.bakePieceToBoardCache(piece);
@@ -3232,14 +3252,6 @@
             fg.classList.toggle('hidden');
             document.getElementById('btn-g-preview')?.classList.toggle('active', !fg.classList.contains('hidden'));
           }
-          else if (e.code === 'KeyQ' && this.hardmode && this.draggedGroup) {
-            this.draggedGroup.pieces.forEach(p => p.rotation = (p.rotation + 270) % 360);
-            this.requestRender();
-          }
-          else if (e.code === 'KeyE' && this.hardmode && this.draggedGroup) {
-            this.draggedGroup.pieces.forEach(p => p.rotation = (p.rotation + 90) % 360);
-            this.requestRender();
-          }
         });
       }
 
@@ -3486,21 +3498,31 @@
         const a = p.atlas;
         if (!a) return;
         ctx.globalAlpha = (this.onlyEdges && !p.isEdge) ? 0.16 : 1.0;
-        if (p.rotation === 0) {
-          ctx.drawImage(a.canvas, a.sx, a.sy, a.sw, a.sh, p.x - p.offsetX, p.y - p.offsetY, p.drawW, p.drawH);
-        } else {
-          const cx = p.x + this.pieceWidth / 2, cy = p.y + this.pieceHeight / 2;
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.drawImage(a.canvas, a.sx, a.sy, a.sw, a.sh, -this.pieceWidth / 2 - p.offsetX, -this.pieceHeight / 2 - p.offsetY, p.drawW, p.drawH);
-          ctx.restore();
-        }
+        ctx.drawImage(a.canvas, a.sx, a.sy, a.sw, a.sh, p.x - p.offsetX, p.y - p.offsetY, p.drawW, p.drawH);
         if (this.highlightUnconnected) {
           ctx.strokeStyle = '#e85d75';
           ctx.lineWidth = 2.0 / this.scale;
           ctx.strokeRect(p.x, p.y, this.pieceWidth, this.pieceHeight);
         }
+      }
+
+      getGroupScreenRect(grp) {
+        if (!grp || !grp.pieces.length) return null;
+        let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+        for (const p of grp.pieces) {
+          if (p.x === -99999) continue;
+          const px1 = p.x - p.offsetX, py1 = p.y - p.offsetY;
+          if (px1 < x1) x1 = px1;
+          if (py1 < y1) y1 = py1;
+          if (px1 + p.drawW > x2) x2 = px1 + p.drawW;
+          if (py1 + p.drawH > y2) y2 = py1 + p.drawH;
+        }
+        if (x1 === Infinity) return null;
+        const rx = Math.max(0, Math.floor((x1 * this.scale + this.panX) * this.dpr) - 4);
+        const ry = Math.max(0, Math.floor((y1 * this.scale + this.panY) * this.dpr) - 4);
+        const rx2 = Math.min(this.canvas.width, Math.ceil((x2 * this.scale + this.panX) * this.dpr) + 4);
+        const ry2 = Math.min(this.canvas.height, Math.ceil((y2 * this.scale + this.panY) * this.dpr) + 4);
+        return (rx2 > rx && ry2 > ry) ? { x: rx, y: ry, w: rx2 - rx, h: ry2 - ry } : null;
       }
 
       renderStaticLayer() {
@@ -3513,7 +3535,7 @@
         ctx.translate(this.panX, this.panY);
         ctx.scale(this.scale, this.scale);
         ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'medium';
+        ctx.imageSmoothingQuality = this.isPanning ? 'low' : 'medium';
 
         // 1. Tabuleiro Base
         ctx.fillStyle = '#21192a';
@@ -3559,26 +3581,36 @@
       }
 
       renderFrame() {
-        if (this.staticDirty) {
-          this.renderStaticLayer();
-          this.staticDirty = false;
-        }
+        const hasAnims = this.snapPulses.length > 0 || this.hintAnim !== null ||
+                         this.victoryWaveProgress >= 0 || (this.isFinished && this.confetti.length > 0);
         const ctx = this.ctx;
         const now = performance.now();
 
-        // Blit único da mesa inteira cacheada (< 0.3ms!)
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.drawImage(this.staticCanvas, 0, 0);
+        if (this.staticDirty) {
+          this.renderStaticLayer();
+          this.staticDirty = false;
+          this.prevDragRect = null;
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.drawImage(this.staticCanvas, 0, 0);
+        } else if (!hasAnims && this.prevDragRect && this.draggedGroup) {
+          // Dirty-rect restore: copia só o retângulo pequeno onde a peça estava (~100x mais rápido em CPU)
+          const r = this.prevDragRect;
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.drawImage(this.staticCanvas, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+        } else {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.drawImage(this.staticCanvas, 0, 0);
+          this.prevDragRect = null;
+        }
 
-        const hasForeground = this.draggedGroup || this.snapPulses.length > 0 ||
-                              this.hintAnim !== null || this.victoryWaveProgress >= 0;
+        const hasForeground = this.draggedGroup || hasAnims;
         if (hasForeground) {
           ctx.save();
           ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
           ctx.translate(this.panX, this.panY);
           ctx.scale(this.scale, this.scale);
           ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'medium';
+          ctx.imageSmoothingQuality = this.draggedGroup ? 'low' : 'medium';
 
           // Onda luminosa de conclusão sobre o quadro montado
           if (this.victoryWaveProgress >= 0) {
@@ -3599,6 +3631,9 @@
               if (p.x !== -99999) this.drawLoosePiece(ctx, p);
             }
             ctx.globalAlpha = 1.0;
+            this.prevDragRect = !hasAnims ? this.getGroupScreenRect(this.draggedGroup) : null;
+          } else {
+            this.prevDragRect = null;
           }
 
           // 3. Pulsos de brilho ao encaixar
@@ -3911,7 +3946,7 @@
             <div class="save-title">${save.title}</div>
             <div class="save-meta">
               <span>🧩 ${save.lockedCount} de ${save.totalPieces} peças</span>
-              <span>${save.hardmode ? '🔥 Desafio' : 'Clássico'}</span>
+              <span>${save.pct}% montado</span>
             </div>
             <div class="progress-track"><div class="progress-fill" style="width:${save.pct}%"></div></div>
             <div class="save-actions">
@@ -3938,23 +3973,16 @@
       const prof = storage.getActiveProfile();
       document.getElementById('stats-owner-label').textContent = `${prof.avatar} ${prof.name}`;
 
-      // Sincroniza formulário de edição da conta ativa
-      const editLabel = document.getElementById('edit-profile-label');
+      // Sincroniza editor compacto da conta ativa
+      const avBtn = document.getElementById('btn-edit-avatar');
       const editInput = document.getElementById('input-edit-name');
-      if (editLabel) editLabel.textContent = prof.name;
+      if (avBtn) avBtn.textContent = prof.avatar;
       if (editInput) editInput.value = prof.name;
-      let anyAvMatch = false;
       document.querySelectorAll('.edit-av-choice').forEach(btn => {
-        const match = btn.textContent === prof.avatar;
-        if (match) anyAvMatch = true;
-        btn.classList.toggle('selected', match);
+        btn.classList.toggle('selected', btn.textContent === prof.avatar);
       });
-      if (!anyAvMatch) {
-        const firstAv = document.querySelector('.edit-av-choice');
-        if (firstAv) firstAv.classList.add('selected');
-      }
 
-      // Contas
+      // Lista leve de contas
       const stack = document.getElementById('profiles-stack');
       stack.innerHTML = '';
       storage.data.profiles.forEach(p => {
@@ -3962,22 +3990,20 @@
         const row = document.createElement('div');
         row.className = `profile-row ${isAct ? 'active' : ''}`;
         row.innerHTML = `
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:20px;">${p.avatar}</span>
+          <div style="display:flex; align-items:center; gap:9px;">
+            <span style="font-size:18px;">${p.avatar}</span>
             <div>
-              <div style="font-weight:700; font-size:14px;">${p.name} ${isAct ? '<span style="color:var(--accent); font-size:11px;">(Ativa)</span>' : ''}</div>
-              <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed} concluídos • ⏳ ${(p.activePuzzles || []).length} abertos</div>
+              <div style="font-weight:700; font-size:13.5px;">${p.name} ${isAct ? '<span style="color:var(--accent); font-size:11px;">(Ativa)</span>' : ''}</div>
+              <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed} • ⏳ ${(p.activePuzzles || []).length}</div>
             </div>
           </div>
           <div style="display:flex; gap:6px;">
-            ${!isAct ? `<button class="btn btn-use" style="padding:5px 10px; font-size:12px;">Usar</button>` : `<button class="btn btn-edit-focus" style="padding:5px 10px; font-size:12px;" title="Editar nome e ícone">✏️</button>`}
-            ${storage.data.profiles.length > 1 ? `<button class="btn btn-ghost btn-danger-text btn-del" style="padding:5px 8px; font-size:12px;">✕</button>` : ''}
+            ${!isAct ? `<button class="btn btn-use" style="padding:4px 10px; font-size:12px;">Usar</button>` : ''}
+            ${storage.data.profiles.length > 1 ? `<button class="btn btn-ghost btn-danger-text btn-del" style="padding:4px 8px; font-size:12px;">✕</button>` : ''}
           </div>
         `;
         const useBtn = row.querySelector('.btn-use');
         if (useBtn) useBtn.addEventListener('click', () => { storage.setActiveProfile(p.id); refreshAllUI(); showToast(`Conta alterada para ${p.name}`); });
-        const editFocusBtn = row.querySelector('.btn-edit-focus');
-        if (editFocusBtn) editFocusBtn.addEventListener('click', () => { const i = document.getElementById('input-edit-name'); i?.focus(); i?.select(); });
         const delBtn = row.querySelector('.btn-del');
         if (delBtn) delBtn.addEventListener('click', () => {
           if (confirm(`Excluir a conta "${p.name}"?`)) { storage.deleteProfile(p.id); refreshAllUI(); }
@@ -4044,7 +4070,7 @@
     function openSavedPuzzle(save) {
       pendingItem = { title: save.title, src: save.imageSrc };
       document.getElementById('platform-shell').classList.add('hidden');
-      engine.startPuzzle(save.imageSrc, save.title, save.totalPieces, save.hardmode, save);
+      engine.startPuzzle(save.imageSrc, save.title, save.totalPieces, false, save);
     }
 
     /* =========================================================
@@ -4122,6 +4148,22 @@
       }, 20000);
       document.addEventListener('visibilitychange', () => { if (document.hidden) flushGame(); });
       window.addEventListener('pagehide', flushGame);
+
+      // Logo -> Link Home (volta para Descobrir -> Novos para Montar -> Todas)
+      document.getElementById('brand-home-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab('discover');
+        currentScope = 'new';
+        currentCat = 'all';
+        currentSearch = '';
+        const sInp = document.getElementById('search-input');
+        if (sInp) sInp.value = '';
+        document.querySelectorAll('.scope-btn').forEach(b => b.classList.toggle('active', b.dataset.scope === 'new'));
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+        updateCategoryCounts();
+        renderGallery(true);
+        document.getElementById('gallery-scroll-area')?.scrollTo({ top: 0, behavior: 'auto' });
+      });
 
       // Navegação em Abas
       document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -4202,40 +4244,41 @@
         reader.readAsDataURL(file);
       }
 
-      // Contas & Backup (Editar ativa + Criar nova)
-      let editedAvatar = storage.getActiveProfile().avatar || '🐱';
+      // Contas & Backup (Editor leve + Popover de ícone)
+      const avPopover = document.getElementById('edit-avatar-strip');
+      document.getElementById('btn-edit-avatar').addEventListener('click', () => {
+        avPopover.classList.toggle('open');
+      });
       document.querySelectorAll('.edit-av-choice').forEach(btn => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('.edit-av-choice').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          editedAvatar = btn.textContent;
+          const prof = storage.getActiveProfile();
+          storage.updateProfile(prof.id, document.getElementById('input-edit-name').value || prof.name, btn.textContent);
+          avPopover.classList.remove('open');
+          refreshAllUI();
+          showToast(`Ícone atualizado para ${btn.textContent}`);
         });
       });
       document.getElementById('btn-save-profile').addEventListener('click', () => {
         const prof = storage.getActiveProfile();
-        const inp = document.getElementById('input-edit-name');
-        const newName = inp.value.trim();
+        const newName = document.getElementById('input-edit-name').value.trim();
         if (!newName) { showToast('Digite um nome válido.'); return; }
-        const selAv = document.querySelector('.edit-av-choice.selected');
-        const av = selAv ? selAv.textContent : (editedAvatar || prof.avatar);
-        storage.updateProfile(prof.id, newName, av);
+        storage.updateProfile(prof.id, newName, prof.avatar);
         refreshAllUI();
-        showToast(`Perfil atualizado para ${av} ${newName}!`);
+        showToast(`Nome salvo: ${prof.avatar} ${newName}!`);
       });
 
-      let chosenAvatar = '🐱';
-      document.querySelectorAll('.new-av-choice').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.new-av-choice').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          chosenAvatar = btn.textContent;
-        });
+      document.getElementById('btn-toggle-new-profile').addEventListener('click', () => {
+        const d = document.getElementById('new-profile-drawer');
+        const show = d.style.display === 'none';
+        d.style.display = show ? 'block' : 'none';
+        if (show) document.getElementById('input-profile-name').focus();
       });
       document.getElementById('btn-add-profile').addEventListener('click', () => {
         const inp = document.getElementById('input-profile-name');
         if (!inp.value.trim()) { showToast('Digite um nome para criar a conta.'); return; }
-        storage.createProfile(inp.value, chosenAvatar);
+        storage.createProfile(inp.value, '🐱');
         inp.value = '';
+        document.getElementById('new-profile-drawer').style.display = 'none';
         refreshAllUI();
         showToast('Nova conta criada!');
       });
@@ -4264,16 +4307,7 @@
       });
 
       // Modal Config
-      document.getElementById('mode-normal').addEventListener('click', () => {
-        pendingHard = false;
-        document.getElementById('mode-normal').classList.add('selected');
-        document.getElementById('mode-challenge').classList.remove('selected');
-      });
-      document.getElementById('mode-challenge').addEventListener('click', () => {
-        pendingHard = true;
-        document.getElementById('mode-challenge').classList.add('selected');
-        document.getElementById('mode-normal').classList.remove('selected');
-      });
+      pendingHard = false;
       document.querySelectorAll('.size-box').forEach(box => {
         box.addEventListener('click', () => {
           document.querySelectorAll('.size-box').forEach(b => b.classList.remove('selected'));

@@ -14,14 +14,16 @@ Oferecer uma plataforma simples, responsiva e **100% offline** de montagem de qu
 
 ## ✨ Funcionalidades Principais
 
-- **🎨 Design Clean Estilo Things 3 + 3 Temas:** Visual minimalista inspirado no Things 3 com alternância instantânea entre **☀️ Claro**, **🌙 Escuro** e **⬛ Black (OLED)**, aproveitando 100% da largura da tela e rolando apenas o bloco de quebra-cabeças.
-- **🔍 Galeria Offline com 1.260 Imagens & Legendas em Português:** Fotografias organizadas em categorias com contagem ao vivo e separação automática entre **✨ Novos para Montar** (padrão) e **📌 Já Criados** (*Natureza*, *Lugares & Cidades*, *Carros & Marcas*, *Café, Vinho & Churrasco*, *Animais*, *Flores*, *Arte & Pinturas*, *Construção, Redes & Casas*, *Aeroportos & Aviação*, *Esportes*, *Planetas & Espaço*, *Onde Está / Música* e *Fotografia*), com busca tolerante a acentos e variações.
+- **🎨 Design Clean Estilo Things 3 + 3 Temas + Logo Home:** Visual minimalista inspirado no Things 3 com alternância instantânea entre **☀️ Claro**, **🌙 Escuro** e **⬛ Black (OLED)**, logotipo clicável para voltar à tela inicial (*Descobrir*), aproveitando 100% da largura da tela e rolando apenas o bloco de quebra-cabeças.
+- **🔍 Galeria Offline com 4.000 Imagens & Legendas em Português:** Fotografias selecionadas (auditadas contra logos e gráficos) organizadas em categorias com contagem ao vivo e separação automática entre **✨ Novos para Montar** (padrão) e **📌 Já Criados** (*Natureza*, *Lugares & Cidades* — incluindo *Vila Camilópolis / Santo André-SP*, *Minas Gerais / Serra da Canastra*, *Pesqueira-PE*, *Foz do Iguaçu*, *Paraguai* e *Argentina* —, *Carros & Marcas* — *Jeep Renegade*, *Ford Bronco*, *BYD*, *Mercedes-Benz*, *BMW* —, *Café, Vinho, Queijos & Churrasco*, *Animais*, *Flores*, *Arte & Pinturas*, *Construção, Redes & Casas*, *Aeroportos & Aviação*, *Esportes*, *Planetas & Espaço NASA*, *Cenas & Música* e *Fotografia*), com busca tolerante a acentos e variações.
 - **📁 Suas Próprias Fotos:** Carregue ou arraste qualquer imagem do computador direto para a janela.
 - **⏳ Múltiplos Jogos em Andamento:** Inicie vários quebra-cabeças e alterne livremente entre eles, acompanhando o progresso em peças (`X de Y`) e porcentagem (`%`).
-- **📊 Contas Locais Editáveis & Analytics:** Crie e edite contas da família (nome e avatar), acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
+- **📊 Perfil Rápido & Analytics:** Edite nome e avatar da conta ativa diretamente em linha (com seletor leve) ou crie novas contas da família, acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
+- **⚡ Motor de Alta Performance (Hardware Modesto / Windows 10 i5 3ª Geração):**
+  - Renderização com **Dirty-Rect** no arraste (copia apenas a região da peça em movimento a partir de um canvas estático cacheado), **loop `requestAnimationFrame` sob demanda** (zero consumo em repouso), escala nativa `dpr = 1`, atlas de peças pré-renderizado, ausência de `backdrop-filter` / `box-shadow` pesados no grid e persistência assíncrona em IndexedDB via `requestIdleCallback`.
 - **🧩 Jogabilidade Fluida e Otimizada:**
-  - Suporte de **12 até 1000 peças**, nos modos **Clássico** e **Desafio** (com rotação via `Q` / `E`).
-  - Peças com encaixe clássico (pescoço fino + cabeça redonda), formato levemente diferente em cada peça, relevo suave e emendas invisíveis no tabuleiro; texturas em alta resolução com nitidez leve.
+  - Suporte de **12 até 1000 peças**, com modal de seleção de peças em **tela cheia**.
+  - Peças com encaixe clássico (pescoço fino + cabeça redonda), formato levemente diferente em cada peça, relevo suave e emendas invisíveis no tabuleiro.
   - **Bolso de Peças (Botão Direito):** Recolha várias peças no cursor e solte onde desejar.
   - **💡 Dica Visual:** Pisca suavemente uma peça solta e seu local exato no tabuleiro.
   - **Animações:** Pulsos de encaixe, onda luminosa ao concluir e confetes comemorativos.
