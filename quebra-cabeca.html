@@ -646,7 +646,7 @@
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
       gap: 16px;
     }
 
@@ -698,20 +698,41 @@
     }
 
     .puzzle-card-body {
-      padding: 11px 13px;
+      padding: 10px 13px 12px;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
       gap: 8px;
+      flex: 1;
     }
 
     .puzzle-card-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-main);
+      line-height: 1.35;
+      min-height: calc(1.35em * 2);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .puzzle-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .puzzle-cat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     .puzzle-play-tag {
@@ -3564,9 +3585,18 @@
         return;
       }
 
+      const CAT_LABELS = {
+        nature: '🌿 Natureza', countries: '🌎 Lugares', vehicles: '🚙 Carros',
+        gastronomy: '☕ Gastronomia', animals: '🦁 Animais', flowers: '🌸 Flores',
+        art: '🎨 Arte', diy: '🛠️ DIY & Redes', aviation: '✈️ Aviação',
+        sports: '⚽ Esportes', planets: '🪐 Espaço', wally: '🔍 Cenas & Música',
+        photography: '📷 Fotografia'
+      };
+
       list.slice(0, galleryLimit).forEach(item => {
         const activeSave = inProgressMap.get(item.src);
         const isDone = completedSet.has(item.src);
+        const catTag = CAT_LABELS[item.cat] || '🧩 Puzzle';
         const card = document.createElement('div');
         card.className = 'puzzle-card';
 
@@ -3581,9 +3611,12 @@
             </div>
             <div class="puzzle-card-body">
               <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
-              <div class="puzzle-card-actions">
-                ${activeSave ? `<div class="puzzle-play-tag btn-act-resume">▶ Retomar</div>` : ''}
-                <button type="button" class="puzzle-alt-btn btn-act-newcfg" title="Criar outro quebra-cabeça com outra configuração desta foto">+ Outra Config</button>
+              <div class="puzzle-card-footer">
+                <span class="puzzle-cat-label">${catTag}</span>
+                <div class="puzzle-card-actions">
+                  ${activeSave ? `<div class="puzzle-play-tag btn-act-resume">▶ Retomar</div>` : ''}
+                  <button type="button" class="puzzle-alt-btn btn-act-newcfg" title="Criar outro quebra-cabeça com outra configuração desta foto">+ Outra Config</button>
+                </div>
               </div>
             </div>
           `;
@@ -3604,7 +3637,10 @@
             </div>
             <div class="puzzle-card-body">
               <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
-              <div class="puzzle-play-tag">Montar</div>
+              <div class="puzzle-card-footer">
+                <span class="puzzle-cat-label">${catTag}</span>
+                <div class="puzzle-play-tag">Montar</div>
+              </div>
             </div>
           `;
           card.addEventListener('click', () => openNewConfig(item));
