@@ -20,11 +20,15 @@ Oferecer uma plataforma simples, responsiva e **100% offline** de montagem de qu
 - **📊 Contas Locais & Estatísticas:** Crie perfis locais para membros da família, acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
 - **🧩 Jogabilidade Fluida e Otimizada:**
   - Suporte de **12 até 1000 peças**, nos modos **Clássico** e **Desafio** (com rotação via `Q` / `E`).
-  - Peças com corte em curvas de Bézier sem bordas grossas, mantendo um fio luminoso ultra-fino (`0.85px`) nas peças soltas para garantir visibilidade de peças escuras.
+  - Peças com encaixe clássico (pescoço fino + cabeça redonda), formato levemente diferente em cada peça, relevo suave e emendas invisíveis no tabuleiro; texturas em alta resolução com nitidez leve.
   - **Bolso de Peças (Botão Direito):** Recolha várias peças no cursor e solte onde desejar.
   - **💡 Dica Visual:** Pisca suavemente uma peça solta e seu local exato no tabuleiro.
   - **Animações:** Pulsos de encaixe, onda luminosa ao concluir e confetes comemorativos.
-  - **Controles Acessíveis:** Botões de zoom `➕` / `➖` para touchpad, suporte a toque, menu superior recolhível (`▲`), modo Tela Cheia (`⛶`) e botão de reset (`🧹 Zerar Aplicação`).
+  - **Controles Acessíveis:** zoom `➕` / `➖`, pinça no trackpad e no toque, rolagem suave sem "disparar", menu de ferramentas recolhido (só `← Voltar` e `☰ Ferramentas` ficam visíveis), Tela Cheia (`⛶`) e reset (`🧹 Zerar Aplicação`).
+  - **Atalhos:** setas / `W A S D` movem a mesa, `+` / `-` zoom, `H` dica, `O` organizar, `K` misturar, `Esc` fecha janelas. Arrastar uma peça até a beirada da tela rola a mesa sozinha.
+  - **Blocos montados fora do tabuleiro:** peças vizinhas se encaixam entre si antes de ir ao lugar; "Organizar" e "Misturar" respeitam os blocos já formados.
+- **💾 Retomar de Onde Parou:** salvamento automático (a cada jogada, a cada 20 s e ao fechar/esconder a janela) em IndexedDB + localStorage. Ao reabrir o HTML aparece **"Bem-vindo de volta"** com botão **Continuar**. O jogo se adapta se a janela mudar de tamanho; cor da mesa e som também são lembrados. Atalho: `quebra-cabeca.html?continuar=1` abre direto o último jogo.
+- **⏱️ Cronômetro Justo:** pausa sozinho quando a aba está escondida ou após 1 minuto sem interação.
 
 ---
 
