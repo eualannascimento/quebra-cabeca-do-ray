@@ -1984,8 +1984,7 @@
       }
 
       resize() {
-        const maxDpr = this.totalPieces > 300 ? 1.5 : 2.0;
-        this.dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+        this.dpr = Math.min(window.devicePixelRatio || 1, 2.0);
         this.width = this.stage.clientWidth;
         this.height = this.stage.clientHeight;
         this.canvas.width = Math.floor(this.width * this.dpr);
@@ -2075,19 +2074,54 @@
         this.pieceWidth = bw / this.cols;
         this.pieceHeight = bh / this.rows;
 
-        if (this.totalPieces <= 150) this.texScale = 2.0;
-        else if (this.totalPieces <= 400) this.texScale = 1.5;
-        else this.texScale = 1.2;
+        // Resolução das texturas: o máximo que cabe num orçamento de memória (~28 Mpx),
+        // para que poucas peças fiquem nítidas e muitas peças continuem leves.
+        const perPiecePx = 28e6 / Math.max(1, this.totalPieces);
+        const budgetTs = Math.sqrt(perPiecePx) / (Math.max(this.pieceWidth, this.pieceHeight) * 1.96);
+        this.texScale = Math.max(1.2, Math.min(3.0, budgetTs));
 
         this.resize();
+        this.buildPieceSource();
 
-        const boardScale = Math.min(this.texScale, 1800 / this.boardWidth);
+        const boardScale = Math.min(this.texScale, 3000 / this.boardWidth);
         this.boardCacheCanvas.width = Math.ceil(this.boardWidth * boardScale);
         this.boardCacheCanvas.height = Math.ceil(this.boardHeight * boardScale);
         this.boardCacheCtx.setTransform(boardScale, 0, 0, boardScale, 0, 0);
         this.boardCacheCtx.imageSmoothingEnabled = true;
         this.boardCacheCtx.imageSmoothingQuality = 'high';
         this.boardCacheCtx.clearRect(0, 0, this.boardWidth, this.boardHeight);
+      }
+
+      // Cria uma "foto mestre" já na resolução final das peças, com nitidez leve.
+      // Evita reamostrar a imagem original várias vezes (que deixa tudo borrado).
+      buildPieceSource() {
+        const targetW = Math.min(Math.ceil(this.boardWidth * this.texScale), 3000);
+        const targetH = Math.round(targetW * this.image.height / this.image.width);
+        const m = document.createElement('canvas');
+        m.width = targetW; m.height = targetH;
+        const mctx = m.getContext('2d');
+        mctx.imageSmoothingEnabled = true;
+        mctx.imageSmoothingQuality = 'high';
+        mctx.drawImage(this.image, 0, 0, targetW, targetH);
+        try {
+          if ('filter' in CanvasRenderingContext2D.prototype) {
+            // "High-pass + overlay": realça detalhes sem ler pixels (funciona abrindo via file://)
+            const hp = document.createElement('canvas');
+            hp.width = targetW; hp.height = targetH;
+            const hctx = hp.getContext('2d');
+            hctx.drawImage(m, 0, 0);
+            hctx.globalAlpha = 0.5;
+            hctx.filter = 'blur(1.4px) invert(1)';
+            hctx.drawImage(m, 0, 0);
+            hctx.filter = 'none';
+            mctx.globalCompositeOperation = 'overlay';
+            mctx.globalAlpha = 0.65;
+            mctx.drawImage(hp, 0, 0);
+            mctx.globalAlpha = 1;
+            mctx.globalCompositeOperation = 'source-over';
+          }
+        } catch (e) { /* sem nitidez, segue com a foto mestre simples */ }
+        this.pieceSource = m;
       }
 
       async generateMeshAsync() {
@@ -2280,24 +2314,33 @@
         ctx.fillStyle = '#000'; ctx.fill();
         ctx.restore();
 
-        // Imagem pura
+        // Imagem pura (da foto mestre em alta resolução)
+        const src = this.pieceSource || this.image;
         ctx.save();
         this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
         ctx.clip();
-        const imgX = (piece.col / this.cols) * this.image.width;
-        const imgY = (piece.row / this.rows) * this.image.height;
-        const imgW = (1 / this.cols) * this.image.width;
-        const imgH = (1 / this.rows) * this.image.height;
-        const sx = this.image.width / this.boardWidth;
-        const sy = this.image.height / this.boardHeight;
-        ctx.drawImage(this.image, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
+        const imgX = (piece.col / this.cols) * src.width;
+        const imgY = (piece.row / this.rows) * src.height;
+        const imgW = (1 / this.cols) * src.width;
+        const imgH = (1 / this.rows) * src.height;
+        const sx = src.width / this.boardWidth;
+        const sy = src.height / this.boardHeight;
+        ctx.drawImage(src, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
+
+        // Contorno interno fino: separa as peças sem "halo" branco borrado
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.lineWidth = 1.6 / ts;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.30)';
+        ctx.stroke();
         ctx.restore();
 
-        // Fio de luz ultra-fino para visibilidade excelente de peças escuras
+        // Brilho sutil de relevo para peças escuras continuarem visíveis
         ctx.save();
         this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
-        ctx.lineWidth = 0.85;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.clip();
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.lineWidth = 2.2 / ts;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.20)';
         ctx.stroke();
         ctx.restore();
 
@@ -2313,13 +2356,14 @@
         ctx.translate(piece.col * pw, piece.row * ph);
         this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
         ctx.clip();
-        const imgX = (piece.col / this.cols) * this.image.width;
-        const imgY = (piece.row / this.rows) * this.image.height;
-        const imgW = (1 / this.cols) * this.image.width;
-        const imgH = (1 / this.rows) * this.image.height;
-        const sx = this.image.width / this.boardWidth;
-        const sy = this.image.height / this.boardHeight;
-        ctx.drawImage(this.image, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
+        const src = this.pieceSource || this.image;
+        const imgX = (piece.col / this.cols) * src.width;
+        const imgY = (piece.row / this.rows) * src.height;
+        const imgW = (1 / this.cols) * src.width;
+        const imgH = (1 / this.rows) * src.height;
+        const sx = src.width / this.boardWidth;
+        const sy = src.height / this.boardHeight;
+        ctx.drawImage(src, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
         ctx.restore();
       }
 
@@ -2434,7 +2478,7 @@
       zoomBy(factor) {
         const cx = this.width / 2, cy = this.height / 2;
         const wb = this.screenToWorld(cx, cy);
-        this.scale = Math.max(0.18, Math.min(4.8, this.scale * factor));
+        this.scale = Math.max(0.18, Math.min(3.2, this.scale * factor));
         this.panX = cx - wb.x * this.scale;
         this.panY = cy - wb.y * this.scale;
         this.requestRender();
@@ -2473,9 +2517,27 @@
 
         this.canvas.addEventListener('wheel', (e) => {
           e.preventDefault();
-          const factor = e.deltaY < 0 ? 1.14 : (1 / 1.14);
+          // Normaliza a unidade (pixels / linhas / páginas)
+          let dy = e.deltaY;
+          if (e.deltaMode === 1) dy *= 33;
+          else if (e.deltaMode === 2) dy *= this.height;
+
+          let factor;
+          const isMouseNotch = !e.ctrlKey && e.deltaMode === 0 && e.deltaX === 0 &&
+                               Math.abs(dy) >= 50 && Number.isInteger(dy);
+          if (e.ctrlKey) {
+            // Pinça no trackpad: zoom proporcional e suave
+            factor = Math.exp(-Math.max(-25, Math.min(25, dy)) * 0.010);
+          } else if (isMouseNotch || e.deltaMode !== 0) {
+            // Roda do mouse: um passo fixo e previsível por "clique"
+            factor = dy < 0 ? 1.12 : 1 / 1.12;
+          } else {
+            // Rolagem com dois dedos no trackpad: bem mais suave
+            factor = Math.exp(-Math.max(-40, Math.min(40, dy)) * 0.0022);
+          }
+
           const wb = this.screenToWorld(e.clientX, e.clientY);
-          this.scale = Math.max(0.18, Math.min(4.8, this.scale * factor));
+          this.scale = Math.max(0.18, Math.min(3.2, this.scale * factor));
           this.panX = e.clientX - wb.x * this.scale;
           this.panY = e.clientY - wb.y * this.scale;
           this.requestRender();
