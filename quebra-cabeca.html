@@ -2307,17 +2307,17 @@
 
         // Sombra suave pré-renderizada
         ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.52)';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.50)';
         ctx.shadowBlur = Math.max(2.5, Math.min(5, pw * 0.08));
-        ctx.shadowOffsetX = 1.5; ctx.shadowOffsetY = 2.5;
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.shadowOffsetX = 1.2; ctx.shadowOffsetY = 2.2;
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
         ctx.fillStyle = '#000'; ctx.fill();
         ctx.restore();
 
         // Imagem pura (da foto mestre em alta resolução)
         const src = this.pieceSource || this.image;
         ctx.save();
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
         ctx.clip();
         const imgX = (piece.col / this.cols) * src.width;
         const imgY = (piece.row / this.rows) * src.height;
@@ -2327,20 +2327,27 @@
         const sy = src.height / this.boardHeight;
         ctx.drawImage(src, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
 
-        // Contorno interno fino: separa as peças sem "halo" branco borrado
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
-        ctx.lineWidth = 1.6 / ts;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.30)';
+        // Acabamento elegante: relevo suave (luz no canto superior esquerdo, sombra no inferior direito)
+        const bev = Math.max(0.9, Math.min(pw, ph) * 0.028);
+        ctx.lineJoin = 'round';
+        ctx.save();
+        ctx.translate(-bev * 0.55, -bev * 0.55);
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
+        ctx.lineWidth = bev * 1.7;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.26)';
         ctx.stroke();
         ctx.restore();
-
-        // Brilho sutil de relevo para peças escuras continuarem visíveis
         ctx.save();
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
-        ctx.clip();
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
-        ctx.lineWidth = 2.2 / ts;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.20)';
+        ctx.translate(bev * 0.55, bev * 0.55);
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
+        ctx.lineWidth = bev * 1.7;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.34)';
+        ctx.stroke();
+        ctx.restore();
+        // Fio escuro fino no contorno, para separar de peças claras
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
+        ctx.lineWidth = Math.max(0.6, bev * 0.8);
+        ctx.strokeStyle = 'rgba(20, 12, 30, 0.38)';
         ctx.stroke();
         ctx.restore();
 
@@ -2352,10 +2359,6 @@
         const ctx = this.boardCacheCtx;
         const pw = this.pieceWidth, ph = this.pieceHeight;
         const pad = Math.max(pw, ph) * 0.45;
-        ctx.save();
-        ctx.translate(piece.col * pw, piece.row * ph);
-        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
-        ctx.clip();
         const src = this.pieceSource || this.image;
         const imgX = (piece.col / this.cols) * src.width;
         const imgY = (piece.row / this.rows) * src.height;
@@ -2363,35 +2366,85 @@
         const imgH = (1 / this.rows) * src.height;
         const sx = src.width / this.boardWidth;
         const sy = src.height / this.boardHeight;
+        ctx.save();
+        ctx.translate(piece.col * pw, piece.row * ph);
+        // Costura invisível: um fio da própria foto cobre a emenda de antialiasing entre peças vizinhas
+        try {
+          const pat = ctx.createPattern(src, 'no-repeat');
+          if (pat && pat.setTransform) {
+            pat.setTransform(new DOMMatrix([1 / sx, 0, 0, 1 / sy, -imgX / sx, -imgY / sy]));
+            this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
+            ctx.lineWidth = 0.8;
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = pat;
+            ctx.stroke();
+          }
+        } catch (e) { /* segue sem a costura */ }
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges, piece.row, piece.col);
+        ctx.clip();
         ctx.drawImage(src, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
         ctx.restore();
       }
 
-      drawPieceShape(ctx, x, y, w, h, edges) {
+      drawPieceShape(ctx, x, y, w, h, edges, row = 0, col = 0) {
         ctx.beginPath();
         ctx.moveTo(x, y);
-        this.drawEdge(ctx, x, y, x + w, y, edges.top);
-        this.drawEdge(ctx, x + w, y, x + w, y + h, edges.right);
-        this.drawEdge(ctx, x + w, y + h, x, y + h, edges.bottom);
-        this.drawEdge(ctx, x, y + h, x, y, edges.left);
+        this.drawEdge(ctx, x, y, x + w, y, edges.top, 'h', row, col, false);
+        this.drawEdge(ctx, x + w, y, x + w, y + h, edges.right, 'v', row, col + 1, false);
+        this.drawEdge(ctx, x + w, y + h, x, y + h, edges.bottom, 'h', row + 1, col, true);
+        this.drawEdge(ctx, x, y + h, x, y, edges.left, 'v', row, col, true);
         ctx.closePath();
       }
 
-      drawEdge(ctx, x1, y1, x2, y2, dir) {
+      // Gerador pseudo-aleatório determinístico (mesma peça = mesmo formato, inclusive ao retomar o jogo)
+      edgeRng(kind, r, c) {
+        let h = (kind === 'h' ? 0x9E3779B1 : 0x85EBCA6B) ^ Math.imul(r + 1, 0x27D4EB2F) ^ Math.imul(c + 1, 0x165667B1);
+        h = Math.imul(h ^ (h >>> 15), 0x2C1B3C6D);
+        h = Math.imul(h ^ (h >>> 12), 0x297A2D39);
+        let s = (h ^ (h >>> 15)) >>> 0;
+        return () => {
+          s = (s + 0x6D2B79F5) >>> 0;
+          let t = s;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      // Encaixe clássico de quebra-cabeça: pescoço fino + cabeça redonda, com leve variação em cada peça.
+      drawEdge(ctx, x1, y1, x2, y2, dir, kind = 'h', er = 0, ec = 0, reversed = false) {
         if (dir === 0) { ctx.lineTo(x2, y2); return; }
-        const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
-        const ux = dx / len, uy = dy / len, nx = -uy * dir, ny = ux * dir;
-        const pt = (u, n) => ({ x: x1 + ux * u * len + nx * n * len, y: y1 + uy * u * len + ny * n * len });
-        ctx.lineTo(pt(0.36, 0).x, pt(0.36, 0).y);
-        ctx.bezierCurveTo(pt(0.38, 0.03).x, pt(0.38, 0.03).y, pt(0.34, 0.16).x, pt(0.34, 0.16).y, pt(0.40, 0.20).x, pt(0.40, 0.20).y);
-        ctx.bezierCurveTo(pt(0.43, 0.32).x, pt(0.43, 0.32).y, pt(0.57, 0.32).x, pt(0.57, 0.32).y, pt(0.60, 0.20).x, pt(0.60, 0.20).y);
-        ctx.bezierCurveTo(pt(0.66, 0.16).x, pt(0.66, 0.16).y, pt(0.62, 0.03).x, pt(0.62, 0.03).y, pt(0.64, 0).x, pt(0.64, 0).y);
-        ctx.lineTo(x2, y2);
+        const sx = reversed ? x2 : x1, sy = reversed ? y2 : y1;
+        const ex = reversed ? x1 : x2, ey = reversed ? y1 : y2;
+        const dx = ex - sx, dy = ey - sy, L = Math.hypot(dx, dy);
+        const ux = dx / L, uy = dy / L;
+        const dc = reversed ? -dir : dir;
+        const nx = -uy * dc, ny = ux * dc;
+        const rnd = this.edgeRng(kind, er, ec);
+        const j = 0.04;
+        const t = 0.1 * (0.9 + rnd() * 0.26);
+        const a = (rnd() * 2 - 1) * j, b = (rnd() * 2 - 1) * j, c = (rnd() * 2 - 1) * j;
+        const d = (rnd() * 2 - 1) * j, e = (rnd() * 2 - 1) * j;
+        const P = (u, v) => [sx + ux * u * L + nx * v * L, sy + uy * u * L + ny * v * L];
+        const p = [
+          P(0, 0), P(0.2, a), P(0.5 + b + d, -t + c), P(0.5 - t + b, t + c),
+          P(0.5 - 2 * t + b - d, 3 * t + c), P(0.5 + 2 * t + b - d, 3 * t + c), P(0.5 + t + b, t + c),
+          P(0.5 + b + d, -t + c), P(0.8, e), P(1, 0)
+        ];
+        if (!reversed) {
+          ctx.bezierCurveTo(p[1][0], p[1][1], p[2][0], p[2][1], p[3][0], p[3][1]);
+          ctx.bezierCurveTo(p[4][0], p[4][1], p[5][0], p[5][1], p[6][0], p[6][1]);
+          ctx.bezierCurveTo(p[7][0], p[7][1], p[8][0], p[8][1], p[9][0], p[9][1]);
+        } else {
+          ctx.bezierCurveTo(p[8][0], p[8][1], p[7][0], p[7][1], p[6][0], p[6][1]);
+          ctx.bezierCurveTo(p[5][0], p[5][1], p[4][0], p[4][1], p[3][0], p[3][1]);
+          ctx.bezierCurveTo(p[2][0], p[2][1], p[1][0], p[1][1], p[0][0], p[0][1]);
+        }
       }
 
       organizeOutsideFrame() {
-        const spacingX = this.pieceWidth * 1.48;
-        const spacingY = this.pieceHeight * 1.48;
+        const spacingX = this.pieceWidth * 1.62;
+        const spacingY = this.pieceHeight * 1.62;
         const margin = Math.max(this.pieceWidth, this.pieceHeight) * 0.7;
         const horizCols = Math.max(4, Math.floor(this.boardWidth / spacingX));
         const vertRows = Math.max(3, Math.floor(this.boardHeight / spacingY));
