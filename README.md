@@ -1,0 +1,42 @@
+# 🧩 Quebra Cabeça do Ray — Plataforma Offline em HTML5 Canvas
+
+> ⚠️ **AVISO LEGAL / USO ACADÊMICO E EXPERIMENTAL**  
+> Este projeto foi desenvolvido **exclusivamente para fins acadêmicos, educacionais e de estudo experimental**, **sem fins lucrativos** e **sem qualquer finalidade comercial**.  
+> Trata-se de uma implementação independente em HTML5 Canvas, JavaScript puro e CSS, criada para estudo de arquitetura frontend offline, otimização de renderização 2D (HiDPI, frustum culling, cache de tabuleiro) e acessibilidade para computadores modestos. Não possui qualquer vínculo, afiliação ou endosso de plataformas comerciais terceiras.
+
+---
+
+## 🎯 Objetivo do Projeto
+
+Oferecer uma plataforma simples, responsiva e **100% offline** de montagem de quebra-cabeças (puzzles), pensada para funcionar diretamente pelo navegador (via arquivo local `quebra-cabeca.html`) mesmo em ambientes sem acesso estável à internet e em computadores Windows 10 modestos.
+
+---
+
+## ✨ Funcionalidades Principais
+
+- **🔍 Galeria Offline com 540 Imagens Reais:** Fotografias organizadas em categorias (*Natureza*, *Países & Monumentos*, *Planetas & Espaço*, *Times & Esportes*, *Animais*, *Arte & Pinturas*, *Veículos*, *Flores* e *Fotografia*), com busca instantânea sem acentos e carregamento paginado leve.
+- **📁 Suas Próprias Fotos:** Carregue ou arraste qualquer imagem do computador direto para a janela.
+- **⏳ Múltiplos Jogos em Andamento:** Inicie vários quebra-cabeças e alterne livremente entre eles, acompanhando o progresso em peças (`X de Y`) e porcentagem (`%`).
+- **📊 Contas Locais & Estatísticas:** Crie perfis locais para membros da família, acompanhe métricas simples (*puzzles concluídos*, *peças encaixadas*, *tempo total*, *maior puzzle* e *ritmo médio*) e exporte/restaure cópias em `.JSON`.
+- **🧩 Jogabilidade Fluida e Otimizada:**
+  - Suporte de **12 até 1000 peças**, nos modos **Clássico** e **Desafio** (com rotação via `Q` / `E`).
+  - Peças com corte em curvas de Bézier sem bordas grossas, mantendo um fio luminoso ultra-fino (`0.85px`) nas peças soltas para garantir visibilidade de peças escuras.
+  - **Bolso de Peças (Botão Direito):** Recolha várias peças no cursor e solte onde desejar.
+  - **💡 Dica Visual:** Pisca suavemente uma peça solta e seu local exato no tabuleiro.
+  - **Animações:** Pulsos de encaixe, onda luminosa ao concluir e confetes comemorativos.
+  - **Controles Acessíveis:** Botões de zoom `➕` / `➖` para touchpad, suporte a toque, menu superior recolhível (`▲`), modo Tela Cheia (`⛶`) e botão de reset (`🧹 Zerar Aplicação`).
+
+---
+
+## 🚀 Como Executar Localmente
+
+1. Baixe ou clone este repositório.
+2. **No Windows:** Dê duplo clique em `Jogar-Quebra-Cabeca.bat` para abrir em modo de janela dedicada (ou abra `quebra-cabeca.html` diretamente no navegador).
+3. **No macOS / Linux:** Abra `quebra-cabeca.html` diretamente no seu navegador padrão.
+
+---
+
+## 📸 Créditos das Imagens & Licença
+
+- **Código-fonte:** Distribuído sob a licença **MIT** (veja [`LICENSE`](LICENSE)), exclusivamente para fins acadêmicos, experimentais e não comerciais.
+- **Acervo Fotográfico (`imagens/`):** Composto por fotografias de domínio público e licenças abertas obtidas via **Wikimedia Commons** (*Quality Images* / *Featured Pictures*) e **Unsplash / Picsum**, utilizadas estritamente para demonstração educacional e não comercial neste projeto experimental.

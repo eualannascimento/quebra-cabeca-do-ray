@@ -1,0 +1,3287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quebra Cabeça do Ray — Plataforma Offline</title>
+  <style>
+    :root {
+      --bg-base: #131019;
+      --bg-surface: #1d1826;
+      --bg-elevated: #272034;
+      --bg-elevated-hover: #322942;
+      --accent: #e85d75;
+      --accent-hover: #f04865;
+      --accent-soft: rgba(232, 93, 117, 0.16);
+      --info: #60a5fa;
+      --success: #34d399;
+      --success-soft: rgba(52, 211, 153, 0.16);
+      --warning: #fbbf24;
+      --text-main: #f5f2f8;
+      --text-muted: #a79eb8;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.45;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--info);
+      outline-offset: 2px;
+    }
+
+    /* =========================================================
+       BOTÕES BASE E COMPONENTES
+       ========================================================= */
+    .btn {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s ease, transform 0.12s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--bg-elevated-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-success {
+      background: #059669;
+      border-color: #10b981;
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #047857;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .btn-danger-text {
+      color: #fb7185;
+    }
+
+    /* =========================================================
+       PLATAFORMA PRINCIPAL (LOBBY EM ABAS)
+       ========================================================= */
+    #platform-shell {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-base);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    #platform-shell.hidden {
+      display: none;
+    }
+
+    .topbar {
+      background: rgba(29, 24, 38, 0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 12px clamp(16px, 3vw, 36px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 14px rgba(232, 93, 117, 0.35);
+    }
+
+    .brand-title {
+      font-size: clamp(17px, 2vw, 21px);
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* Abas de Navegação Central */
+    .nav-tabs {
+      display: flex;
+      background: var(--bg-base);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+
+    .nav-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-tab[aria-selected="true"] {
+      background: var(--bg-elevated);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .account-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 5px 12px 5px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .account-chip:hover {
+      border-color: var(--accent);
+    }
+
+    .account-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #382d4c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .account-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Área Rolável da Plataforma */
+    .platform-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: clamp(18px, 3vw, 32px) clamp(16px, 3vw, 36px) 60px;
+    }
+
+    .platform-container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* =========================================================
+       ABA 1: DESCOBRIR (CATÁLOGO & AÇÕES RÁPIDAS)
+       ========================================================= */
+    .quick-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .quick-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: var(--bg-elevated);
+    }
+
+    .quick-card.upload-drop {
+      border: 2px dashed rgba(232, 93, 117, 0.55);
+      background: linear-gradient(135deg, rgba(232, 93, 117, 0.1), rgba(29, 24, 38, 0.9));
+    }
+
+    .quick-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .quick-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .quick-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Busca e Categorias */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box span {
+      position: absolute;
+      left: 14px;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 11px 16px 11px 42px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    .count-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .categories-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .cat-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .cat-pill:hover {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+    }
+
+    .cat-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .puzzle-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .puzzle-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .puzzle-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #0d0a12;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .puzzle-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .puzzle-badge-corner {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(19, 16, 25, 0.85);
+      backdrop-filter: blur(6px);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .puzzle-card-body {
+      padding: 13px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .puzzle-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .puzzle-play-tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .load-more-box {
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    /* =========================================================
+       ABA 2: EM ANDAMENTO (ALTERNAR ENTRE JOGOS CRIADOS)
+       ========================================================= */
+    .section-heading {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-lead {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .inprogress-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
+    }
+
+    .save-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .save-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0d0a12;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .save-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .save-pct-pill {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(19, 16, 25, 0.9);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+    }
+
+    .save-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .save-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .save-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-base);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--info));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .save-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .empty-state {
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state h4 {
+      font-size: 18px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    /* =========================================================
+       ABA 3: MINHA CONTA, ANALYTICS & TROFÉUS
+       ========================================================= */
+    .account-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .account-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .metric-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .metric-val.green { color: var(--success); }
+    .metric-val.blue { color: var(--info); }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .profiles-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .profile-row.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .avatar-strip {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .avatar-choice {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .avatar-choice.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .text-input {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--accent);
+    }
+
+    .trophy-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .trophy-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .trophy-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .trophy-info {
+      padding: 12px;
+    }
+
+    /* =========================================================
+       MODAIS (CONFIGURAÇÃO DE NOVO JOGO & AJUDA)
+       ========================================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 7, 15, 0.84);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-head h3 {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .modal-preview {
+      width: 100%;
+      height: 170px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 18px;
+      background: #000;
+    }
+
+    .modal-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .field-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .choice-box {
+      background: var(--bg-elevated);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .choice-box:hover {
+      background: var(--bg-elevated-hover);
+    }
+
+    .choice-box.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .sizes-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .sizes-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .size-box {
+      background: var(--bg-elevated);
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .size-box.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .slider-panel {
+      background: var(--bg-base);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .slider-panel input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    /* =========================================================
+       MESA DO QUEBRA-CABEÇA (TELA DE JOGO)
+       ========================================================= */
+    #game-stage {
+      position: absolute;
+      inset: 0;
+      background: #18121d;
+      overflow: hidden;
+    }
+
+    #game-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    /* Barra de Ferramentas Recolhível */
+    .game-toolbar {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      background: rgba(24, 18, 29, 0.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 5px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3px;
+      z-index: 50;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+      max-width: calc(100vw - 195px);
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+
+    .game-toolbar.collapsed {
+      transform: translateY(-150%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #d8d1e5;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .tool-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .tool-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .tool-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border-strong);
+      margin: 0 2px;
+      flex-shrink: 0;
+    }
+
+    #btn-reopen-toolbar {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(24, 18, 29, 0.92);
+      border: 1px solid var(--border-strong);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 48;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    #btn-reopen-toolbar.visible {
+      display: inline-flex;
+    }
+
+    /* HUD de Progresso no Canto Superior Direito */
+    .hud-progress {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(24, 18, 29, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      min-width: 155px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    /* Controles de Zoom Visíveis no Canto Inferior Esquerdo (ótimo para Touchpad!) */
+    .zoom-controls-pill {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(24, 18, 29, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      display: flex;
+      gap: 4px;
+      z-index: 45;
+    }
+
+    /* Paleta de Cores da Mesa */
+    .color-popover {
+      position: absolute;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: none;
+      gap: 10px;
+      z-index: 60;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .color-popover.open {
+      display: flex;
+    }
+
+    .color-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .color-swatch.selected {
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* Miniatura Arrastável */
+    .floating-guide {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      width: 240px;
+      background: rgba(24, 18, 29, 0.94);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 65;
+      box-shadow: var(--shadow-lg);
+      resize: both;
+    }
+
+    .floating-guide.hidden {
+      display: none;
+    }
+
+    .guide-header {
+      padding: 6px 10px;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: grab;
+    }
+
+    .floating-guide img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Badge do Bolso (Pocket) */
+    #pocket-badge {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      transform: translate(14px, 14px);
+      display: none;
+    }
+
+    /* Loading Overlay */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(19, 16, 25, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    #loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-track {
+      width: 300px;
+      height: 10px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .loading-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--info));
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-elevated);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+      box-shadow: var(--shadow-lg);
+      z-index: 600;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 720px) {
+      .topbar { padding: 10px 14px; }
+      .nav-tabs { width: 100%; justify-content: center; }
+      .game-toolbar { max-width: calc(100vw - 24px); top: 62px; }
+      .floating-guide { width: 170px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OVERLAY DE CARREGAMENTO -->
+  <div id="loading-overlay">
+    <div style="font-size: 19px; font-weight: 700;">Preparando peças em Alta Definição...</div>
+    <div class="loading-track"><div class="loading-fill" id="loading-fill"></div></div>
+    <div id="loading-text" style="font-size: 13px; color: var(--text-muted);">0%</div>
+  </div>
+
+  <!-- =========================================================
+       TELA 1: PLATAFORMA DE QUEBRA-CABEÇAS (3 ABAS CLARAS)
+       ========================================================= -->
+  <div id="platform-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-mark">🧩</div>
+        <div>
+          <div class="brand-title">Quebra Cabeça do Ray</div>
+          <div class="brand-sub">100% Offline • Sem Travamentos</div>
+        </div>
+      </div>
+
+      <!-- Navegação em Plataforma -->
+      <nav class="nav-tabs" role="tablist" aria-label="Seções principais">
+        <button class="nav-tab" role="tab" aria-selected="true" data-tab="discover">
+          🔍 Descobrir
+        </button>
+        <button class="nav-tab" role="tab" aria-selected="false" data-tab="inprogress">
+          ⏳ Em Andamento <span class="tab-badge" id="badge-inprogress-count" style="display:none;">0</span>
+        </button>
+        <button class="nav-tab" role="tab" aria-selected="false" data-tab="account">
+          📊 Minha Conta
+        </button>
+      </nav>
+
+      <div class="topbar-right">
+        <button class="btn" id="btn-fullscreen-lobby" title="Deixar em Tela Cheia">⛶ Tela Cheia</button>
+        <button class="account-chip" id="btn-quick-account" title="Ver conta e estatísticas">
+          <div class="account-avatar" id="top-avatar">🐱</div>
+          <span class="account-name" id="top-name">Ray</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="platform-scroll">
+      <div class="platform-container">
+
+        <!-- ABA 1: DESCOBRIR -->
+        <section class="tab-panel active" id="panel-discover" role="tabpanel">
+          <!-- Ações Rápidas -->
+          <div class="quick-banner">
+            <div class="quick-card upload-drop" id="card-upload">
+              <input type="file" id="file-input" accept="image/*" style="display: none;">
+              <div class="quick-icon">📁</div>
+              <div class="quick-info">
+                <h3>Usar Foto do Computador</h3>
+                <p>Clique ou arraste qualquer foto para montar.</p>
+              </div>
+            </div>
+
+            <div class="quick-card" id="card-surprise">
+              <div class="quick-icon">🎲</div>
+              <div class="quick-info">
+                <h3>Escolher Surpresa</h3>
+                <p>Sorteia uma bela imagem da galeria.</p>
+              </div>
+            </div>
+
+            <div class="quick-card" id="card-continue-last" style="display: none; border-color: var(--success);">
+              <div class="quick-icon" style="background: var(--success-soft); color: var(--success);">▶</div>
+              <div class="quick-info">
+                <h3 id="last-game-title">Continuar Último Jogo</h3>
+                <p id="last-game-meta">0% concluído</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Busca -->
+          <div class="filter-bar">
+            <div class="search-box">
+              <span>🔍</span>
+              <input type="text" id="search-input" placeholder="Buscar imagem (ex: Paris, Montanha, Lua, Futebol, Tigre, Flores...)">
+            </div>
+            <div class="count-pill" id="gallery-count-pill">540 imagens</div>
+          </div>
+
+          <!-- Categorias -->
+          <div class="categories-row" id="categories-row">
+            <button class="cat-pill active" data-cat="all">Todas</button>
+            <button class="cat-pill" data-cat="nature">🌿 Natureza</button>
+            <button class="cat-pill" data-cat="countries">🏛️ Países & Monumentos</button>
+            <button class="cat-pill" data-cat="planets">🪐 Planetas & Espaço</button>
+            <button class="cat-pill" data-cat="sports">⚽ Times & Esportes</button>
+            <button class="cat-pill" data-cat="animals">🦁 Animais</button>
+            <button class="cat-pill" data-cat="art">🎨 Arte & Pinturas</button>
+            <button class="cat-pill" data-cat="vehicles">🚂 Veículos</button>
+            <button class="cat-pill" data-cat="flowers">🌸 Flores</button>
+            <button class="cat-pill" data-cat="photography">📷 Fotografia</button>
+          </div>
+
+          <div class="gallery-grid" id="gallery-grid"></div>
+
+          <div class="load-more-box" id="load-more-box" style="display: none;">
+            <button class="btn btn-primary" id="btn-load-more" style="padding: 12px 28px;">
+              + Mostrar Mais Imagens
+            </button>
+          </div>
+        </section>
+
+        <!-- ABA 2: EM ANDAMENTO (ALTERNAR ENTRE JOGOS CRIADOS) -->
+        <section class="tab-panel" id="panel-inprogress" role="tabpanel">
+          <h2 class="section-heading">⏳ Seus Quebra-Cabeças em Andamento</h2>
+          <p class="section-lead">Alterne livremente entre os quebra-cabeças que você já começou. Seu progresso é salvo automaticamente.</p>
+          <div id="inprogress-container"></div>
+        </section>
+
+        <!-- ABA 3: MINHA CONTA & ANALYTICS -->
+        <section class="tab-panel" id="panel-account" role="tabpanel">
+          <div class="account-layout">
+            <!-- Coluna Esquerda: Perfis e Backup -->
+            <div>
+              <div class="panel-box">
+                <div class="panel-title">👤 Contas da Família</div>
+                <div class="profiles-stack" id="profiles-stack"></div>
+
+                <div class="field-label" style="margin-top: 16px;">Criar Nova Conta Local</div>
+                <div class="avatar-strip" id="avatar-strip">
+                  <button type="button" class="avatar-choice selected">🐱</button>
+                  <button type="button" class="avatar-choice">🦊</button>
+                  <button type="button" class="avatar-choice">🐼</button>
+                  <button type="button" class="avatar-choice">🦁</button>
+                  <button type="button" class="avatar-choice">🦉</button>
+                  <button type="button" class="avatar-choice">🚀</button>
+                  <button type="button" class="avatar-choice">⚽</button>
+                  <button type="button" class="avatar-choice">🌸</button>
+                  <button type="button" class="avatar-choice">⭐</button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" class="text-input" id="input-profile-name" placeholder="Nome (ex: Ray, Mãe, Sofia)..." maxlength="20">
+                  <button class="btn btn-primary" id="btn-add-profile">Criar</button>
+                </div>
+              </div>
+
+              <div class="panel-box">
+                <div class="panel-title">📦 Salvar Cópia / GitHub</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                  Baixe seus dados e conquistas em um arquivo <strong>.json</strong> para guardar no GitHub ou transferir para outro computador.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <button class="btn" id="btn-export-json">⬇️ Baixar Cópia (.JSON)</button>
+                  <button class="btn" id="btn-import-json">⬆️ Restaurar Cópia (.JSON)</button>
+                  <input type="file" id="import-json-input" accept=".json" style="display: none;">
+                  <button class="btn btn-danger-text" id="btn-reset-app" style="margin-top: 6px;">🧹 Zerar Aplicação (Limpar Tudo)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coluna Direita: Analytics & Troféus -->
+            <div>
+              <div class="panel-box">
+                <div class="panel-title">📊 Estatísticas de <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
+                <div class="analytics-grid">
+                  <div class="metric-card">
+                    <div class="metric-val green" id="m-completed">0</div>
+                    <div class="metric-label">Puzzles Concluídos</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-pieces">0</div>
+                    <div class="metric-label">Peças Encaixadas</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val blue" id="m-time">0m</div>
+                    <div class="metric-label">Tempo Montando</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-biggest">0</div>
+                    <div class="metric-label">Maior Quebra-Cabeça</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val blue" id="m-speed">0/m</div>
+                    <div class="metric-label">Ritmo Médio</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-active">0</div>
+                    <div class="metric-label">Em Andamento</div>
+                  </div>
+                </div>
+
+                <div class="panel-title" style="margin-top: 8px;">🏆 Quebra-Cabeças Concluídos</div>
+                <div id="trophies-container"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <footer style="max-width: 1320px; margin: 40px auto 0; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
+        Quebra Cabeça do Ray — Projeto experimental para fins estritamente acadêmicos e educacionais, sem fins lucrativos. Uso offline e não comercial.
+      </footer>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       MODAL DE CONFIGURAÇÃO DO NOVO PUZZLE
+       ========================================================= -->
+  <div class="modal-overlay" id="modal-config">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="cfg-title">Preparar Quebra-Cabeça</h3>
+        <button class="btn btn-ghost" id="btn-close-cfg" style="padding: 4px 10px; font-size: 20px;">&times;</button>
+      </div>
+
+      <div class="modal-preview"><img id="cfg-img" src="" alt="Prévia"></div>
+
+      <div class="field-label">Como você prefere jogar?</div>
+      <div class="mode-grid">
+        <div class="choice-box selected" id="mode-normal">
+          <div style="font-weight: 700; font-size: 14px;">Modo Clássico</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Peças já vêm na posição certa</div>
+        </div>
+        <div class="choice-box" id="mode-challenge">
+          <div style="font-weight: 700; font-size: 14px;">Modo Desafio 🔥</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Peças giradas (Girar com Q / E)</div>
+        </div>
+      </div>
+
+      <div class="field-label">Quantas peças? (Até 1000 peças)</div>
+      <div class="sizes-grid">
+        <div class="size-box" data-val="24"><strong>24</strong><div style="font-size:10px; color:var(--text-muted);">Rápido</div></div>
+        <div class="size-box" data-val="50"><strong>50</strong><div style="font-size:10px; color:var(--text-muted);">Fácil</div></div>
+        <div class="size-box selected" data-val="100"><strong>100</strong><div style="font-size:10px; color:var(--text-muted);">Médio</div></div>
+        <div class="size-box" data-val="250"><strong>250</strong><div style="font-size:10px; color:var(--text-muted);">Grande</div></div>
+        <div class="size-box" data-val="500"><strong>500</strong><div style="font-size:10px; color:var(--text-muted);">Difícil</div></div>
+        <div class="size-box" data-val="1000"><strong>1000</strong><div style="font-size:10px; color:var(--text-muted);">Mestre</div></div>
+      </div>
+
+      <div class="slider-panel">
+        <span style="font-size: 13px; color: var(--text-muted);">Ajuste fino:</span>
+        <input type="range" id="cfg-slider" min="12" max="1000" step="12" value="100">
+        <strong id="cfg-slider-label" style="color: var(--accent); min-width: 84px; text-align: right;">100 peças</strong>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn" id="btn-cancel-cfg">Cancelar</button>
+        <button class="btn btn-primary" id="btn-start-puzzle">Começar a Montar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TELA 2: MESA DE MONTAGEM (HIDPI + ANIMAÇÕES + DICA)
+       ========================================================= -->
+  <div id="game-stage">
+    <canvas id="game-canvas"></canvas>
+
+    <button id="btn-reopen-toolbar">☰ Ferramentas</button>
+
+    <div class="game-toolbar" id="game-toolbar">
+      <button class="tool-btn" id="btn-g-exit" title="Salvar e voltar para a plataforma">🌸 Menu</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="btn-g-preview" title="Ver foto completa [F]">🖼️ Ver Foto</button>
+      <button class="tool-btn" id="btn-g-ghost" title="Mostrar marca d'água no centro">👻 Guia Fundo</button>
+      <button class="tool-btn" id="btn-g-edges" title="Mostrar apenas peças da borda">📐 Só Bordas</button>
+      <button class="tool-btn" id="btn-g-highlight" title="Brilhar peças soltas [R]">✨ Destacar</button>
+      <button class="tool-btn" id="btn-g-hint" title="Mostrar onde vai uma peça">💡 Dica</button>
+      <button class="tool-btn" id="btn-g-color" title="Mudar cor da mesa">🎨 Cor</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="btn-g-organize" title="Organizar peças ao redor [O]">Organizar</button>
+      <button class="tool-btn" id="btn-g-shuffle" title="Misturar peças soltas [K]">Misturar</button>
+      <button class="tool-btn" id="btn-g-center" title="Centralizar na tela [X]">Centralizar</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="btn-g-full" title="Tela Cheia">⛶ Tela Cheia</button>
+      <button class="tool-btn" id="btn-g-sound" title="Som">🔊</button>
+      <button class="tool-btn" id="btn-g-help" title="Como Jogar">❓</button>
+      <button class="tool-btn" id="btn-g-collapse" title="Esconder barra superior">▲</button>
+    </div>
+
+    <div class="color-popover" id="color-popover">
+      <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
+      <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
+      <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
+      <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
+      <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
+    </div>
+
+    <!-- HUD de Progresso -->
+    <div class="hud-progress">
+      <div class="hud-row">
+        <span style="font-weight: 700;"><span id="hud-avatar">🐱</span> <span id="hud-name">Ray</span></span>
+        <strong id="hud-pct" style="color: var(--accent);">0%</strong>
+      </div>
+      <div class="progress-track" style="height: 6px; margin-bottom: 5px;">
+        <div class="progress-fill" id="hud-bar"></div>
+      </div>
+      <div class="hud-row" style="margin-bottom: 0; color: var(--text-muted); font-size: 11px;">
+        <span id="hud-pieces">0 / 0</span>
+        <strong id="hud-timer" style="color: #fff;">00:00</strong>
+      </div>
+    </div>
+
+    <!-- Botões de Zoom para Touchpad / Leigos -->
+    <div class="zoom-controls-pill">
+      <button class="tool-btn" id="btn-zoom-out" title="Afastar Zoom">➖</button>
+      <button class="tool-btn" id="btn-zoom-reset" title="Centralizar [X]">🎯</button>
+      <button class="tool-btn" id="btn-zoom-in" title="Aproximar Zoom">➕</button>
+    </div>
+
+    <!-- Miniatura Flutuante -->
+    <div class="floating-guide" id="floating-guide">
+      <div class="guide-header" id="guide-drag-handle">
+        <span>Foto de Referência</span>
+        <button class="btn-ghost" id="btn-close-guide" style="border:none; cursor:pointer; font-size:16px;">&times;</button>
+      </div>
+      <img id="guide-img" src="" alt="Foto guia">
+    </div>
+
+    <div id="pocket-badge">0</div>
+  </div>
+
+  <!-- MODAL DE AJUDA FÁCIL -->
+  <div class="modal-overlay" id="modal-help">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>❓ Como Jogar (Fácil e Rápido)</h3>
+        <button class="btn btn-ghost" id="btn-close-help" style="font-size: 20px;">&times;</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">🖱️ Botão Esquerdo</h4>
+          <p style="font-size: 13px; color: var(--text-muted);">Segure uma peça para arrastar até o lugar certo. Arrastar o espaço vazio move a mesa inteira.</p>
+        </div>
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">👜 Botão Direito (Bolso)</h4>
+          <p style="font-size: 13px; color: var(--text-muted);">Clique com o botão direito em várias peças para guardar no bolso, e clique no vazio para soltar.</p>
+        </div>
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">🔍 Zoom (➕ / ➖)</h4>
+          <p style="font-size: 13px; color: var(--text-muted);">Use a rodinha do mouse ou os botões ➕ / ➖ no canto inferior esquerdo para aproximar.</p>
+        </div>
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">💡 Dicas & Trocar Jogo</h4>
+          <p style="font-size: 13px; color: var(--text-muted);">Use <strong>💡 Dica</strong> se empacar! Você pode sair a qualquer hora sem perder nada e alternar entre jogos salvos.</p>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <button class="btn btn-primary" id="btn-ok-help">Entendi!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE VITÓRIA ANIMADO -->
+  <div class="modal-overlay" id="modal-victory">
+    <div class="modal-card" style="text-align: center; padding: 32px;">
+      <div style="font-size: 54px; margin-bottom: 10px;">🏆</div>
+      <h2 style="font-size: 26px; color: var(--success); margin-bottom: 8px;">Parabéns! Quebra-Cabeça Completo!</h2>
+      <p id="victory-summary" style="color: var(--text-muted); font-size: 15px; margin-bottom: 20px;"></p>
+      <div class="modal-preview" style="height: 180px; margin-bottom: 22px; border: 2px solid var(--success);">
+        <img id="victory-img" src="" alt="Concluído">
+      </div>
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <button class="btn" id="btn-v-replay">Jogar Novamente</button>
+        <button class="btn btn-primary" id="btn-v-platform">Escolher Outro Quebra-Cabeça</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Aviso</div>
+
+  <script src="catalogo.js"></script>
+  <script>
+    /* =========================================================
+       1. CAMADA DE PERSISTÊNCIA (INDEXEDDB SEM LIMITE + FALLBACK)
+       ========================================================= */
+    const DB_NAME = 'QuebraCabecaRayDB';
+    const STORE_NAME = 'appState';
+    const LS_KEY = 'quebra_cabeca_ray_fallback_v3';
+
+    class StorageService {
+      constructor() {
+        this.db = null;
+        this.data = null;
+        this.saveTimer = null;
+      }
+
+      async init() {
+        // Timeout de segurança de 250ms: se o navegador bloquear IndexedDB em file://, cai imediato para localStorage
+        const idbTry = new Promise(async (resolve) => {
+          try {
+            if (!window.indexedDB) return resolve(null);
+            this.db = await new Promise((res, rej) => {
+              const req = indexedDB.open(DB_NAME, 1);
+              req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+              };
+              req.onsuccess = (e) => res(e.target.result);
+              req.onerror = () => rej();
+              req.onblocked = () => rej();
+            });
+            const saved = await this.readFromIDB();
+            resolve(saved);
+          } catch (e) {
+            resolve(null);
+          }
+        });
+
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 250));
+        const savedIDB = await Promise.race([idbTry, timeoutPromise]);
+
+        if (savedIDB) {
+          this.data = savedIDB;
+          return this.data;
+        }
+
+        try {
+          const raw = localStorage.getItem(LS_KEY);
+          if (raw) {
+            this.data = JSON.parse(raw);
+            return this.data;
+          }
+        } catch (e) {}
+
+        const defProf = {
+          id: 'p_' + Date.now(),
+          name: 'Ray',
+          avatar: '🐱',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          trophies: [],
+          activePuzzles: []
+        };
+        this.data = { profiles: [defProf], activeId: defProf.id };
+        this.persistImmediate();
+        return this.data;
+      }
+
+      readFromIDB() {
+        return new Promise((resolve) => {
+          if (!this.db) return resolve(null);
+          const tx = this.db.transaction(STORE_NAME, 'readonly');
+          const req = tx.objectStore(STORE_NAME).get('root');
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        });
+      }
+
+      persistImmediate() {
+        return new Promise((resolve) => {
+          if (this.db) {
+            try {
+              const tx = this.db.transaction(STORE_NAME, 'readwrite');
+              tx.objectStore(STORE_NAME).put(this.data, 'root');
+              tx.oncomplete = () => resolve();
+              tx.onerror = () => resolve();
+              return;
+            } catch (e) {}
+          }
+          try {
+            localStorage.setItem(LS_KEY, JSON.stringify(this.data));
+          } catch (e) {}
+          resolve();
+        });
+      }
+
+      persistDebounced() {
+        clearTimeout(this.saveTimer);
+        this.saveTimer = setTimeout(() => this.persistImmediate(), 800);
+      }
+
+      getActiveProfile() {
+        return this.data.profiles.find(p => p.id === this.data.activeId) || this.data.profiles[0];
+      }
+
+      setActiveProfile(id) {
+        if (this.data.profiles.some(p => p.id === id)) {
+          this.data.activeId = id;
+          this.persistImmediate();
+        }
+      }
+
+      createProfile(name, avatar) {
+        const p = {
+          id: 'p_' + Date.now(),
+          name: name.trim() || 'Jogador',
+          avatar: avatar || '🐱',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          trophies: [],
+          activePuzzles: []
+        };
+        this.data.profiles.push(p);
+        this.data.activeId = p.id;
+        this.persistImmediate();
+        return p;
+      }
+
+      deleteProfile(id) {
+        if (this.data.profiles.length <= 1) return false;
+        this.data.profiles = this.data.profiles.filter(p => p.id !== id);
+        if (this.data.activeId === id) this.data.activeId = this.data.profiles[0].id;
+        this.persistImmediate();
+        return true;
+      }
+
+      upsertActivePuzzle(saveObj) {
+        const prof = this.getActiveProfile();
+        if (!prof.activePuzzles) prof.activePuzzles = [];
+        const idx = prof.activePuzzles.findIndex(x => x.saveId === saveObj.saveId);
+        if (idx >= 0) {
+          prof.activePuzzles[idx] = saveObj;
+        } else {
+          prof.activePuzzles.unshift(saveObj);
+        }
+        // Ordena o mais recente no topo
+        prof.activePuzzles.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+        this.persistDebounced();
+      }
+
+      removeActivePuzzle(saveId) {
+        const prof = this.getActiveProfile();
+        if (!prof.activePuzzles) return;
+        prof.activePuzzles = prof.activePuzzles.filter(x => x.saveId !== saveId);
+        this.persistImmediate();
+      }
+
+      recordVictory(saveId, title, pieces, timeStr, timeSec, src, hardmode) {
+        const prof = this.getActiveProfile();
+        prof.stats.completed = (prof.stats.completed || 0) + 1;
+        prof.stats.piecesPlaced = (prof.stats.piecesPlaced || 0) + pieces;
+        prof.stats.timeSeconds = (prof.stats.timeSeconds || 0) + timeSec;
+        prof.stats.biggest = Math.max(prof.stats.biggest || 0, pieces);
+
+        // Remove da lista de "Em Andamento"
+        if (prof.activePuzzles) {
+          prof.activePuzzles = prof.activePuzzles.filter(x => x.saveId !== saveId);
+        }
+
+        prof.trophies.unshift({
+          title,
+          pieces,
+          time: timeStr,
+          timeSec,
+          hardmode,
+          date: new Date().toLocaleDateString('pt-BR'),
+          src
+        });
+
+        this.persistImmediate();
+      }
+
+      exportJSON() {
+        const blob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `quebra_cabeca_ray_dados_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      importJSON(str) {
+        try {
+          const parsed = JSON.parse(str);
+          if (parsed && Array.isArray(parsed.profiles)) {
+            this.data = parsed;
+            this.persistImmediate();
+            return true;
+          }
+        } catch (e) {}
+        return false;
+      }
+
+      async resetAll() {
+        try {
+          localStorage.removeItem(LS_KEY);
+          localStorage.removeItem('quebra_cabeca_ray_v1');
+          localStorage.removeItem('tanggle_profiles_v2');
+          localStorage.removeItem('tanggle_profiles_v1');
+        } catch (e) {}
+
+        if (this.db) {
+          try {
+            await new Promise((res) => {
+              const tx = this.db.transaction(STORE_NAME, 'readwrite');
+              tx.objectStore(STORE_NAME).clear();
+              tx.oncomplete = () => res();
+              tx.onerror = () => res();
+            });
+          } catch (e) {}
+        }
+
+        const defProf = {
+          id: 'p_' + Date.now(),
+          name: 'Ray',
+          avatar: '🐱',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          trophies: [],
+          activePuzzles: []
+        };
+        this.data = { profiles: [defProf], activeId: defProf.id };
+        await this.persistImmediate();
+      }
+    }
+
+    const storage = new StorageService();
+
+    /* =========================================================
+       2. SERVIÇO DE CATÁLOGO (540+ IMAGENS & BUSCA SEM ACENTOS)
+       ========================================================= */
+    const fallbackGallery = [
+      { id: 'montanhas_alpes', title: 'Montanhas dos Alpes Suíços', cat: 'nature', src: 'imagens/montanhas_alpes.jpg' },
+      { id: 'praia_paradisica', title: 'Praia Tropical Paradisiaca', cat: 'nature', src: 'imagens/praia_paradisica.jpg' },
+      { id: 'paris_torre_eiffel', title: 'Torre Eiffel - Paris, França', cat: 'countries', src: 'imagens/paris_torre_eiffel.jpg' },
+      { id: 'planeta_terra', title: 'Planeta Terra visto do Espaço', cat: 'planets', src: 'imagens/planeta_terra.jpg' },
+      { id: 'estadio_futebol', title: 'Estádio de Futebol Lotado', cat: 'sports', src: 'imagens/estadio_futebol.jpg' },
+      { id: 'tigre_olhar', title: 'Tigre de Bengala', cat: 'animals', src: 'imagens/tigre_olhar.jpg' }
+    ];
+    const gallery = (window.RAY_PUZZLE_CATALOG && window.RAY_PUZZLE_CATALOG.length > 0)
+      ? window.RAY_PUZZLE_CATALOG
+      : fallbackGallery;
+
+    function normalizeText(s) {
+      return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    /* =========================================================
+       3. SERVIÇO DE ÁUDIO WEB AUDIO API
+       ========================================================= */
+    class AudioService {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) this.ctx = new AC();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playSnap() {
+        if (this.muted) return;
+        try {
+          this.init();
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160, t);
+          osc.frequency.exponentialRampToValueAtTime(540, t + 0.03);
+          osc.frequency.exponentialRampToValueAtTime(75, t + 0.09);
+          gain.gain.setValueAtTime(0.45, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.1);
+        } catch (e) {}
+      }
+      playHint() {
+        if (this.muted) return;
+        try {
+          this.init();
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(660, t);
+          osc.frequency.setValueAtTime(880, t + 0.08);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.26);
+        } catch (e) {}
+      }
+      playVictory() {
+        if (this.muted) return;
+        try {
+          this.init();
+          [261.6, 329.6, 392.0, 523.2, 659.2, 783.99].forEach((f, idx) => {
+            const t = this.ctx.currentTime + idx * 0.09;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, t);
+            gain.gain.setValueAtTime(0.2, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.45);
+          });
+        } catch (e) {}
+      }
+    }
+    const audio = new AudioService();
+
+    /* =========================================================
+       4. MOTOR DE QUEBRA-CABEÇA FLUIDO (HIDPI + PULSOS + DICA + VITÓRIA)
+       ========================================================= */
+    class PuzzleEngine {
+      constructor() {
+        this.stage = document.getElementById('game-stage');
+        this.canvas = document.getElementById('game-canvas');
+        this.ctx = this.canvas.getContext('2d', { alpha: false });
+
+        this.dpr = 1;
+        this.saveId = '';
+        this.image = new Image();
+        this.imageLoaded = false;
+        this.puzzleTitle = '';
+        this.imageSrc = '';
+
+        this.cols = 12;
+        this.rows = 8;
+        this.totalPieces = 100;
+        this.hardmode = false;
+        this.boardBgColor = '#18121d';
+        this.texScale = 2.0;
+
+        this.boardCacheCanvas = document.createElement('canvas');
+        this.boardCacheCtx = this.boardCacheCanvas.getContext('2d');
+
+        this.pieces = [];
+        this.groups = [];
+        this.pocket = [];
+        this.pocketBadge = document.getElementById('pocket-badge');
+
+        this.scale = 1;
+        this.panX = 0;
+        this.panY = 0;
+        this.isPanning = false;
+        this.panStartX = 0;
+        this.panStartY = 0;
+
+        this.draggedGroup = null;
+        this.dragStartWorld = { x: 0, y: 0 };
+        this.dragInitialOffsets = [];
+
+        this.highlightUnconnected = false;
+        this.onlyEdges = false;
+        this.showGhost = false;
+
+        // Animações (Pulsos de encaixe, Dica, Onda de Vitória & Confetes)
+        this.snapPulses = [];
+        this.hintAnim = null;
+        this.victoryWaveProgress = -1;
+        this.confetti = [];
+
+        this.startTime = null;
+        this.elapsedSeconds = 0;
+        this.timerInterval = null;
+        this.completedPieces = 0;
+        this.isFinished = false;
+
+        this.dirty = true;
+        this.initRenderLoop();
+        this.initEvents();
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      }
+
+      initRenderLoop() {
+        const tick = () => {
+          const hasAnims = this.snapPulses.length > 0 || this.hintAnim !== null ||
+                           (this.isFinished && (this.confetti.length > 0 || this.victoryWaveProgress >= 0));
+          if (this.dirty || hasAnims) {
+            this.dirty = false;
+            this.renderFrame();
+          }
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      requestRender() {
+        this.dirty = true;
+      }
+
+      resize() {
+        const maxDpr = this.totalPieces > 300 ? 1.5 : 2.0;
+        this.dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+        this.width = this.stage.clientWidth;
+        this.height = this.stage.clientHeight;
+        this.canvas.width = Math.floor(this.width * this.dpr);
+        this.canvas.height = Math.floor(this.height * this.dpr);
+        this.requestRender();
+      }
+
+      screenToWorld(sx, sy) {
+        return { x: (sx - this.panX) / this.scale, y: (sy - this.panY) / this.scale };
+      }
+
+      async startPuzzle(imgSrc, title, targetCount, hardmode, savedState = null, demoCount = 0) {
+        this.puzzleTitle = title;
+        this.imageSrc = imgSrc;
+        this.hardmode = hardmode;
+        this.isFinished = false;
+        this.confetti = [];
+        this.snapPulses = [];
+        this.hintAnim = null;
+        this.victoryWaveProgress = -1;
+        this.pocket = [];
+        this.updatePocketBadge(0, 0);
+
+        this.image = new Image();
+        this.image.onload = async () => {
+          this.imageLoaded = true;
+
+          if (savedState) {
+            this.saveId = savedState.saveId;
+            this.cols = savedState.cols;
+            this.rows = savedState.rows;
+            this.totalPieces = savedState.totalPieces;
+            this.elapsedSeconds = savedState.elapsedSeconds || 0;
+            this.setupBoard();
+            await this.restoreFromSavedStateAsync(savedState);
+          } else {
+            this.saveId = 'save_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const aspect = this.image.width / this.image.height;
+            let r = Math.max(2, Math.round(Math.sqrt(targetCount / aspect)));
+            let c = Math.max(2, Math.round(r * aspect));
+            this.cols = c;
+            this.rows = r;
+            this.totalPieces = c * r;
+            this.elapsedSeconds = demoCount > 0 ? 145 : 0;
+            this.setupBoard();
+            await this.generateMeshAsync();
+            if (demoCount > 0) this.applyDemoMounted(demoCount);
+            this.organizeOutsideFrame();
+            this.saveToAccount();
+          }
+
+          document.getElementById('guide-img').src = imgSrc;
+          this.centerView();
+          this.startTimer();
+          this.updateHUD();
+          this.requestRender();
+          showToast(`${title} • ${this.totalPieces} peças`);
+        };
+        this.image.src = imgSrc;
+      }
+
+      setupBoard() {
+        const maxW = Math.min(this.width * 0.65, 1100);
+        const maxH = Math.min(this.height * 0.65, 750);
+        const aspect = this.image.width / this.image.height;
+        let bw = maxW, bh = bw / aspect;
+        if (bh > maxH) { bh = maxH; bw = bh * aspect; }
+
+        this.boardWidth = bw;
+        this.boardHeight = bh;
+        this.boardX = -bw / 2;
+        this.boardY = -bh / 2;
+        this.pieceWidth = bw / this.cols;
+        this.pieceHeight = bh / this.rows;
+
+        if (this.totalPieces <= 150) this.texScale = 2.0;
+        else if (this.totalPieces <= 400) this.texScale = 1.5;
+        else this.texScale = 1.2;
+
+        this.resize();
+
+        const boardScale = Math.min(this.texScale, 1800 / this.boardWidth);
+        this.boardCacheCanvas.width = Math.ceil(this.boardWidth * boardScale);
+        this.boardCacheCanvas.height = Math.ceil(this.boardHeight * boardScale);
+        this.boardCacheCtx.setTransform(boardScale, 0, 0, boardScale, 0, 0);
+        this.boardCacheCtx.imageSmoothingEnabled = true;
+        this.boardCacheCtx.imageSmoothingQuality = 'high';
+        this.boardCacheCtx.clearRect(0, 0, this.boardWidth, this.boardHeight);
+      }
+
+      async generateMeshAsync() {
+        this.pieces = [];
+        this.groups = [];
+        const loadingEl = document.getElementById('loading-overlay');
+        const loadingFill = document.getElementById('loading-fill');
+        const loadingText = document.getElementById('loading-text');
+        if (this.totalPieces > 150) loadingEl.classList.add('active');
+
+        const hEdges = Array.from({ length: this.rows - 1 }, () =>
+          Array.from({ length: this.cols }, () => Math.random() < 0.5 ? 1 : -1)
+        );
+        const vEdges = Array.from({ length: this.rows }, () =>
+          Array.from({ length: this.cols - 1 }, () => Math.random() < 0.5 ? 1 : -1)
+        );
+
+        let processed = 0;
+        for (let r = 0; r < this.rows; r++) {
+          for (let c = 0; c < this.cols; c++) {
+            const top = r === 0 ? 0 : -hEdges[r - 1][c];
+            const right = c === this.cols - 1 ? 0 : vEdges[r][c];
+            const bottom = r === this.rows - 1 ? 0 : hEdges[r][c];
+            const left = c === 0 ? 0 : -vEdges[r][c - 1];
+
+            const piece = {
+              id: `${r}_${c}`, row: r, col: c,
+              isEdge: (top === 0 || right === 0 || bottom === 0 || left === 0),
+              edges: { top, right, bottom, left },
+              targetX: this.boardX + c * this.pieceWidth,
+              targetY: this.boardY + r * this.pieceHeight,
+              x: 0, y: 0,
+              rotation: this.hardmode ? Math.floor(Math.random() * 4) * 90 : 0,
+              locked: false, group: null, cachedCanvas: null,
+              offsetX: 0, offsetY: 0, drawW: 0, drawH: 0
+            };
+
+            this.createPieceGraphics(piece);
+            this.pieces.push(piece);
+            const grp = { id: piece.id, pieces: [piece], locked: false };
+            piece.group = grp;
+            this.groups.push(grp);
+
+            processed++;
+            if (processed % 55 === 0 && this.totalPieces > 150) {
+              const pct = Math.round((processed / this.totalPieces) * 100);
+              loadingFill.style.width = `${pct}%`;
+              loadingText.textContent = `${pct}% (${processed}/${this.totalPieces} peças)`;
+              await new Promise(res => setTimeout(res, 0));
+            }
+          }
+        }
+        loadingEl.classList.remove('active');
+      }
+
+      async restoreFromSavedStateAsync(state) {
+        this.pieces = [];
+        this.groups = [];
+        const loadingEl = document.getElementById('loading-overlay');
+        const loadingFill = document.getElementById('loading-fill');
+        const loadingText = document.getElementById('loading-text');
+        if (this.totalPieces > 150) loadingEl.classList.add('active');
+
+        let processed = 0;
+        for (const sp of state.pieces) {
+          const piece = {
+            id: sp.id, row: sp.row, col: sp.col, isEdge: sp.isEdge, edges: sp.edges,
+            targetX: this.boardX + sp.col * this.pieceWidth,
+            targetY: this.boardY + sp.row * this.pieceHeight,
+            x: sp.locked ? (this.boardX + sp.col * this.pieceWidth) : sp.x,
+            y: sp.locked ? (this.boardY + sp.row * this.pieceHeight) : sp.y,
+            rotation: sp.rotation || 0, locked: sp.locked, group: null, cachedCanvas: null,
+            offsetX: 0, offsetY: 0, drawW: 0, drawH: 0
+          };
+          if (piece.locked) this.bakePieceToBoardCache(piece);
+          else this.createPieceGraphics(piece);
+          this.pieces.push(piece);
+
+          processed++;
+          if (processed % 60 === 0 && this.totalPieces > 150) {
+            const pct = Math.round((processed / this.totalPieces) * 100);
+            loadingFill.style.width = `${pct}%`;
+            loadingText.textContent = `${pct}% (${processed}/${this.totalPieces} peças)`;
+            await new Promise(res => setTimeout(res, 0));
+          }
+        }
+
+        state.groups.forEach(sg => {
+          const grpPieces = sg.pieceIds.map(id => this.pieces.find(p => p.id === id)).filter(Boolean);
+          if (grpPieces.length) {
+            const grp = { id: sg.id, pieces: grpPieces, locked: sg.locked };
+            grpPieces.forEach(p => p.group = grp);
+            this.groups.push(grp);
+          }
+        });
+        loadingEl.classList.remove('active');
+      }
+
+      applyDemoMounted(count) {
+        const sorted = [...this.pieces].sort((a, b) => {
+          const ea = (a.isEdge ? 0.4 : 1.1) * Math.hypot(a.row, a.col);
+          const eb = (b.isEdge ? 0.4 : 1.1) * Math.hypot(b.row, b.col);
+          return ea - eb;
+        });
+        sorted.slice(0, Math.min(count, this.pieces.length)).forEach(p => {
+          p.x = p.targetX; p.y = p.targetY; p.rotation = 0; p.locked = true; p.group.locked = true;
+          this.bakePieceToBoardCache(p);
+        });
+      }
+
+      createPieceGraphics(piece) {
+        const pw = this.pieceWidth, ph = this.pieceHeight;
+        const pad = Math.max(pw, ph) * 0.48;
+        piece.offsetX = pad; piece.offsetY = pad;
+        piece.drawW = pw + pad * 2; piece.drawH = ph + pad * 2;
+
+        const ts = this.texScale;
+        const c = document.createElement('canvas');
+        c.width = Math.ceil(piece.drawW * ts);
+        c.height = Math.ceil(piece.drawH * ts);
+        const ctx = c.getContext('2d');
+
+        ctx.scale(ts, ts);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.translate(pad, pad);
+
+        // Sombra suave pré-renderizada
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.52)';
+        ctx.shadowBlur = Math.max(2.5, Math.min(5, pw * 0.08));
+        ctx.shadowOffsetX = 1.5; ctx.shadowOffsetY = 2.5;
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.fillStyle = '#000'; ctx.fill();
+        ctx.restore();
+
+        // Imagem pura
+        ctx.save();
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.clip();
+        const imgX = (piece.col / this.cols) * this.image.width;
+        const imgY = (piece.row / this.rows) * this.image.height;
+        const imgW = (1 / this.cols) * this.image.width;
+        const imgH = (1 / this.rows) * this.image.height;
+        const sx = this.image.width / this.boardWidth;
+        const sy = this.image.height / this.boardHeight;
+        ctx.drawImage(this.image, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
+        ctx.restore();
+
+        // Fio de luz ultra-fino para visibilidade excelente de peças escuras
+        ctx.save();
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.lineWidth = 0.85;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.stroke();
+        ctx.restore();
+
+        piece.cachedCanvas = c;
+      }
+
+      bakePieceToBoardCache(piece) {
+        piece.cachedCanvas = null;
+        const ctx = this.boardCacheCtx;
+        const pw = this.pieceWidth, ph = this.pieceHeight;
+        const pad = Math.max(pw, ph) * 0.45;
+        ctx.save();
+        ctx.translate(piece.col * pw, piece.row * ph);
+        this.drawPieceShape(ctx, 0, 0, pw, ph, piece.edges);
+        ctx.clip();
+        const imgX = (piece.col / this.cols) * this.image.width;
+        const imgY = (piece.row / this.rows) * this.image.height;
+        const imgW = (1 / this.cols) * this.image.width;
+        const imgH = (1 / this.rows) * this.image.height;
+        const sx = this.image.width / this.boardWidth;
+        const sy = this.image.height / this.boardHeight;
+        ctx.drawImage(this.image, imgX - pad * sx, imgY - pad * sy, imgW + pad * 2 * sx, imgH + pad * 2 * sy, -pad, -pad, pw + pad * 2, ph + pad * 2);
+        ctx.restore();
+      }
+
+      drawPieceShape(ctx, x, y, w, h, edges) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        this.drawEdge(ctx, x, y, x + w, y, edges.top);
+        this.drawEdge(ctx, x + w, y, x + w, y + h, edges.right);
+        this.drawEdge(ctx, x + w, y + h, x, y + h, edges.bottom);
+        this.drawEdge(ctx, x, y + h, x, y, edges.left);
+        ctx.closePath();
+      }
+
+      drawEdge(ctx, x1, y1, x2, y2, dir) {
+        if (dir === 0) { ctx.lineTo(x2, y2); return; }
+        const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
+        const ux = dx / len, uy = dy / len, nx = -uy * dir, ny = ux * dir;
+        const pt = (u, n) => ({ x: x1 + ux * u * len + nx * n * len, y: y1 + uy * u * len + ny * n * len });
+        ctx.lineTo(pt(0.36, 0).x, pt(0.36, 0).y);
+        ctx.bezierCurveTo(pt(0.38, 0.03).x, pt(0.38, 0.03).y, pt(0.34, 0.16).x, pt(0.34, 0.16).y, pt(0.40, 0.20).x, pt(0.40, 0.20).y);
+        ctx.bezierCurveTo(pt(0.43, 0.32).x, pt(0.43, 0.32).y, pt(0.57, 0.32).x, pt(0.57, 0.32).y, pt(0.60, 0.20).x, pt(0.60, 0.20).y);
+        ctx.bezierCurveTo(pt(0.66, 0.16).x, pt(0.66, 0.16).y, pt(0.62, 0.03).x, pt(0.62, 0.03).y, pt(0.64, 0).x, pt(0.64, 0).y);
+        ctx.lineTo(x2, y2);
+      }
+
+      organizeOutsideFrame() {
+        const spacingX = this.pieceWidth * 1.48;
+        const spacingY = this.pieceHeight * 1.48;
+        const margin = Math.max(this.pieceWidth, this.pieceHeight) * 0.7;
+        const horizCols = Math.max(4, Math.floor(this.boardWidth / spacingX));
+        const vertRows = Math.max(3, Math.floor(this.boardHeight / spacingY));
+        const counts = [0, 0, 0, 0];
+
+        this.pieces.filter(p => !p.locked).forEach((p, idx) => {
+          const side = idx % 4;
+          const pos = counts[side]++;
+          if (side === 0) {
+            p.x = this.boardX - margin - (Math.floor(pos / vertRows) + 1) * spacingX;
+            p.y = this.boardY + (pos % vertRows) * spacingY;
+          } else if (side === 1) {
+            p.x = this.boardX + this.boardWidth + margin + Math.floor(pos / vertRows) * spacingX;
+            p.y = this.boardY + (pos % vertRows) * spacingY;
+          } else if (side === 2) {
+            p.x = this.boardX + (pos % horizCols) * spacingX;
+            p.y = this.boardY - margin - (Math.floor(pos / horizCols) + 1) * spacingY;
+          } else {
+            p.x = this.boardX + (pos % horizCols) * spacingX;
+            p.y = this.boardY + this.boardHeight + margin + Math.floor(pos / horizCols) * spacingY;
+          }
+        });
+        this.requestRender();
+      }
+
+      shuffleOutsideFrame() {
+        const mx = this.boardWidth * 0.9, my = this.boardHeight * 0.8;
+        this.pieces.forEach((p, idx) => {
+          if (p.locked) return;
+          const z = idx % 4;
+          if (z === 0) { p.x = this.boardX - mx + Math.random() * mx * 0.85; p.y = this.boardY + Math.random() * this.boardHeight - this.pieceHeight / 2; }
+          else if (z === 1) { p.x = this.boardX + this.boardWidth + Math.random() * mx * 0.85; p.y = this.boardY + Math.random() * this.boardHeight - this.pieceHeight / 2; }
+          else if (z === 2) { p.x = this.boardX + Math.random() * this.boardWidth - this.pieceWidth / 2; p.y = this.boardY - my + Math.random() * my * 0.85; }
+          else { p.x = this.boardX + Math.random() * this.boardWidth - this.pieceWidth / 2; p.y = this.boardY + this.boardHeight + Math.random() * my * 0.85; }
+        });
+        this.requestRender();
+      }
+
+      centerView() {
+        const availW = this.width * 0.85, availH = this.height * 0.78;
+        this.scale = Math.max(0.28, Math.min(availW / (this.boardWidth * 2.1), availH / (this.boardHeight * 2.1), 1.25));
+        this.panX = this.width / 2;
+        this.panY = (this.height / 2) + 20;
+        this.requestRender();
+      }
+
+      zoomBy(factor) {
+        const cx = this.width / 2, cy = this.height / 2;
+        const wb = this.screenToWorld(cx, cy);
+        this.scale = Math.max(0.18, Math.min(4.8, this.scale * factor));
+        this.panX = cx - wb.x * this.scale;
+        this.panY = cy - wb.y * this.scale;
+        this.requestRender();
+      }
+
+      triggerHint() {
+        const freePieces = this.pieces.filter(p => !p.locked && p.x !== -99999);
+        if (!freePieces.length) return;
+        // Dá preferência a uma peça de borda ou próxima de peças já travadas
+        const pick = freePieces.find(p => p.isEdge) || freePieces[Math.floor(Math.random() * freePieces.length)];
+        audio.playHint();
+        this.hintAnim = { piece: pick, expiresAt: performance.now() + 3500 };
+        showToast('💡 Dica: veja a peça e o espaço piscando em azul!');
+        this.requestRender();
+      }
+
+      initEvents() {
+        this.canvas.addEventListener('mousedown', (e) => this.onPointerDown(e.clientX, e.clientY, e.button));
+        window.addEventListener('mousemove', (e) => this.onPointerMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', () => this.onPointerUp());
+
+        // Touch para tablets / telas sensíveis ao toque
+        this.canvas.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            const t = e.touches[0];
+            this.onPointerDown(t.clientX, t.clientY, 0);
+          }
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 1 && (this.isPanning || this.draggedGroup)) {
+            const t = e.touches[0];
+            this.onPointerMove(t.clientX, t.clientY);
+          }
+        }, { passive: true });
+        window.addEventListener('touchend', () => this.onPointerUp());
+
+        this.canvas.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const factor = e.deltaY < 0 ? 1.14 : (1 / 1.14);
+          const wb = this.screenToWorld(e.clientX, e.clientY);
+          this.scale = Math.max(0.18, Math.min(4.8, this.scale * factor));
+          this.panX = e.clientX - wb.x * this.scale;
+          this.panY = e.clientY - wb.y * this.scale;
+          this.requestRender();
+        }, { passive: false });
+
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        window.addEventListener('keydown', (e) => {
+          if (!document.getElementById('platform-shell').classList.contains('hidden')) return;
+          if (e.code === 'KeyX') { this.centerView(); showToast('Tabuleiro centralizado'); }
+          else if (e.code === 'KeyO') { this.organizeOutsideFrame(); showToast('Peças organizadas'); }
+          else if (e.code === 'KeyK') { this.shuffleOutsideFrame(); showToast('Peças misturadas'); }
+          else if (e.code === 'KeyR') {
+            this.highlightUnconnected = !this.highlightUnconnected;
+            document.getElementById('btn-g-highlight').classList.toggle('active', this.highlightUnconnected);
+            this.requestRender();
+          }
+          else if (e.code === 'KeyF') document.getElementById('floating-guide').classList.toggle('hidden');
+          else if (e.code === 'KeyQ' && this.hardmode && this.draggedGroup) {
+            this.draggedGroup.pieces.forEach(p => p.rotation = (p.rotation + 270) % 360);
+            this.requestRender();
+          }
+          else if (e.code === 'KeyE' && this.hardmode && this.draggedGroup) {
+            this.draggedGroup.pieces.forEach(p => p.rotation = (p.rotation + 90) % 360);
+            this.requestRender();
+          }
+        });
+      }
+
+      onPointerDown(cx, cy, btn) {
+        const pos = this.screenToWorld(cx, cy);
+        const hit = this.getPieceAt(pos.x, pos.y);
+
+        if (btn === 2) {
+          if (hit && !hit.locked) {
+            if (this.pocket.length < 15) {
+              this.pocket.push(hit);
+              hit.x = -99999; hit.y = -99999;
+              this.updatePocketBadge(cx, cy);
+              this.requestRender();
+            }
+          } else if (this.pocket.length > 0) {
+            const p = this.pocket.pop();
+            p.x = pos.x - this.pieceWidth / 2;
+            p.y = pos.y - this.pieceHeight / 2;
+            this.checkSnaps(p.group);
+            this.updatePocketBadge(cx, cy);
+            this.requestRender();
+          }
+          return;
+        }
+
+        if (btn === 0) {
+          if (hit && !hit.locked) {
+            this.draggedGroup = hit.group;
+            this.dragStartWorld = pos;
+            const idx = this.groups.indexOf(hit.group);
+            if (idx > -1) { this.groups.splice(idx, 1); this.groups.push(hit.group); }
+            this.dragInitialOffsets = hit.group.pieces.map(p => ({ piece: p, ix: p.x, iy: p.y }));
+            this.requestRender();
+          } else {
+            this.isPanning = true;
+            this.panStartX = cx - this.panX;
+            this.panStartY = cy - this.panY;
+            this.stage.style.cursor = 'grabbing';
+          }
+        }
+      }
+
+      onPointerMove(cx, cy) {
+        this.updatePocketBadge(cx, cy);
+        if (this.isPanning) {
+          this.panX = cx - this.panStartX;
+          this.panY = cy - this.panStartY;
+          this.requestRender();
+          return;
+        }
+        if (this.draggedGroup) {
+          const pos = this.screenToWorld(cx, cy);
+          const dx = pos.x - this.dragStartWorld.x;
+          const dy = pos.y - this.dragStartWorld.y;
+          this.dragInitialOffsets.forEach(item => { item.piece.x = item.ix + dx; item.piece.y = item.iy + dy; });
+          this.requestRender();
+        }
+      }
+
+      onPointerUp() {
+        if (this.isPanning) { this.isPanning = false; this.stage.style.cursor = 'default'; }
+        if (this.draggedGroup) {
+          this.checkSnaps(this.draggedGroup);
+          this.draggedGroup = null;
+          this.requestRender();
+          this.saveToAccount();
+        }
+      }
+
+      updatePocketBadge(cx, cy) {
+        if (this.pocket.length > 0) {
+          this.pocketBadge.style.display = 'block';
+          this.pocketBadge.style.left = `${cx}px`;
+          this.pocketBadge.style.top = `${cy}px`;
+          this.pocketBadge.textContent = this.pocket.length;
+        } else {
+          this.pocketBadge.style.display = 'none';
+        }
+      }
+
+      getPieceAt(wx, wy) {
+        for (let i = this.groups.length - 1; i >= 0; i--) {
+          const grp = this.groups[i];
+          if (grp.locked) continue;
+          for (const p of grp.pieces) {
+            if (this.onlyEdges && !p.isEdge) continue;
+            if (wx >= p.x && wx <= p.x + this.pieceWidth && wy >= p.y && wy <= p.y + this.pieceHeight) return p;
+          }
+        }
+        return null;
+      }
+
+      addSnapPulse(x, y, w, h) {
+        this.snapPulses.push({ x, y, w, h, start: performance.now(), dur: 380 });
+      }
+
+      checkSnaps(activeGroup) {
+        if (!activeGroup || activeGroup.locked) return;
+        const isCorrectRot = activeGroup.pieces.every(p => p.rotation === 0);
+        const snapDist = Math.min(this.pieceWidth, this.pieceHeight) * 0.36;
+
+        if (isCorrectRot) {
+          for (const p of activeGroup.pieces) {
+            if (Math.hypot(p.x - p.targetX, p.y - p.targetY) <= snapDist) {
+              const dx = p.targetX - p.x, dy = p.targetY - p.y;
+              activeGroup.pieces.forEach(piece => {
+                piece.x += dx; piece.y += dy; piece.locked = true;
+                this.bakePieceToBoardCache(piece);
+                this.addSnapPulse(piece.targetX, piece.targetY, this.pieceWidth, this.pieceHeight);
+              });
+              activeGroup.locked = true;
+              audio.playSnap();
+              this.updateHUD();
+              this.checkVictory();
+              return;
+            }
+          }
+        }
+
+        for (const other of [...this.groups]) {
+          if (other === activeGroup) continue;
+          if (this.hardmode && activeGroup.pieces[0].rotation !== other.pieces[0].rotation) continue;
+
+          let connected = false, adx = 0, ady = 0;
+          for (const pA of activeGroup.pieces) {
+            for (const pB of other.pieces) {
+              const neigh = (Math.abs(pA.row - pB.row) === 1 && pA.col === pB.col) || (Math.abs(pA.col - pB.col) === 1 && pA.row === pB.row);
+              if (neigh) {
+                const idx = pA.targetX - pB.targetX, idy = pA.targetY - pB.targetY;
+                if (Math.hypot((pA.x - pB.x) - idx, (pA.y - pB.y) - idy) <= snapDist) {
+                  adx = (pB.x + idx) - pA.x; ady = (pB.y + idy) - pA.y;
+                  connected = true; break;
+                }
+              }
+            }
+            if (connected) break;
+          }
+
+          if (connected) {
+            activeGroup.pieces.forEach(p => {
+              p.x += adx; p.y += ady; p.group = other; other.pieces.push(p);
+              this.addSnapPulse(p.x, p.y, this.pieceWidth, this.pieceHeight);
+              if (other.locked) { p.locked = true; this.bakePieceToBoardCache(p); }
+            });
+            const i = this.groups.indexOf(activeGroup);
+            if (i > -1) this.groups.splice(i, 1);
+            audio.playSnap();
+            this.checkSnaps(other);
+            break;
+          }
+        }
+
+        this.updateHUD();
+        this.checkVictory();
+      }
+
+      updateHUD() {
+        this.completedPieces = this.pieces.filter(p => p.locked).length;
+        const pct = Math.round((this.completedPieces / this.totalPieces) * 100);
+        document.getElementById('hud-pieces').textContent = `${this.completedPieces} / ${this.totalPieces}`;
+        document.getElementById('hud-pct').textContent = `${pct}%`;
+        document.getElementById('hud-bar').style.width = `${pct}%`;
+      }
+
+      saveToAccount() {
+        if (this.isFinished || !this.saveId) return;
+        const lockedCount = this.pieces.filter(p => p.locked).length;
+        const saveObj = {
+          saveId: this.saveId,
+          title: this.puzzleTitle,
+          imageSrc: this.imageSrc,
+          cols: this.cols,
+          rows: this.rows,
+          totalPieces: this.totalPieces,
+          lockedCount,
+          pct: Math.round((lockedCount / this.totalPieces) * 100),
+          hardmode: this.hardmode,
+          elapsedSeconds: this.elapsedSeconds,
+          updatedAt: Date.now(),
+          pieces: this.pieces.map(p => ({
+            id: p.id, row: p.row, col: p.col, isEdge: p.isEdge, edges: p.edges,
+            x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10,
+            rotation: p.rotation, locked: p.locked
+          })),
+          groups: this.groups.map(g => ({ id: g.id, locked: g.locked, pieceIds: g.pieces.map(p => p.id) }))
+        };
+        storage.upsertActivePuzzle(saveObj);
+      }
+
+      checkVictory() {
+        if (this.completedPieces === this.totalPieces && !this.isFinished) {
+          this.isFinished = true;
+          this.stopTimer();
+          audio.playVictory();
+          this.victoryWaveProgress = 0;
+          this.initConfetti();
+
+          const elapsedStr = document.getElementById('hud-timer').textContent;
+          storage.recordVictory(this.saveId, this.puzzleTitle, this.totalPieces, elapsedStr, this.elapsedSeconds, this.imageSrc, this.hardmode);
+
+          document.getElementById('victory-summary').textContent =
+            `Você completou "${this.puzzleTitle}" (${this.totalPieces} peças) em ${elapsedStr}!`;
+          document.getElementById('victory-img').src = this.imageSrc;
+
+          setTimeout(() => document.getElementById('modal-victory').classList.add('open'), 1300);
+        }
+      }
+
+      initConfetti() {
+        const colors = ['#e85d75', '#60a5fa', '#34d399', '#fbbf24', '#a855f7'];
+        this.confetti = Array.from({ length: 160 }, () => ({
+          x: Math.random() * this.width, y: Math.random() * -this.height * 0.5,
+          w: Math.random() * 8 + 4, h: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 4, vy: Math.random() * 4 + 2.5,
+          rot: Math.random() * 360, vRot: (Math.random() - 0.5) * 8
+        }));
+      }
+
+      startTimer() {
+        this.stopTimer();
+        this.startTime = Date.now() - this.elapsedSeconds * 1000;
+        const el = document.getElementById('hud-timer');
+        const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        el.textContent = fmt(this.elapsedSeconds);
+        this.timerInterval = setInterval(() => {
+          this.elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+          el.textContent = fmt(this.elapsedSeconds);
+        }, 1000);
+      }
+
+      stopTimer() {
+        if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+      }
+
+      renderFrame() {
+        const ctx = this.ctx;
+        const now = performance.now();
+        ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+        ctx.fillStyle = this.boardBgColor;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        ctx.save();
+        ctx.translate(this.panX, this.panY);
+        ctx.scale(this.scale, this.scale);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // 1. Tabuleiro Base
+        ctx.fillStyle = '#21192a';
+        ctx.fillRect(this.boardX, this.boardY, this.boardWidth, this.boardHeight);
+        ctx.strokeStyle = this.isFinished ? '#34d399' : 'rgba(232, 93, 117, 0.35)';
+        ctx.lineWidth = (this.isFinished ? 4 : 2) / this.scale;
+        ctx.strokeRect(this.boardX, this.boardY, this.boardWidth, this.boardHeight);
+
+        if (!this.isFinished && this.pieceWidth * this.scale > 8) {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.lineWidth = 1 / this.scale;
+          ctx.beginPath();
+          for (let c = 1; c < this.cols; c++) { const gx = this.boardX + c * this.pieceWidth; ctx.moveTo(gx, this.boardY); ctx.lineTo(gx, this.boardY + this.boardHeight); }
+          for (let r = 1; r < this.rows; r++) { const gy = this.boardY + r * this.pieceHeight; ctx.moveTo(this.boardX, gy); ctx.lineTo(this.boardX + this.boardWidth, gy); }
+          ctx.stroke();
+        }
+
+        if (this.showGhost && this.imageLoaded && !this.isFinished) {
+          ctx.save(); ctx.globalAlpha = 0.22;
+          ctx.drawImage(this.image, this.boardX, this.boardY, this.boardWidth, this.boardHeight);
+          ctx.restore();
+        }
+
+        if (this.boardCacheCanvas.width > 0) {
+          ctx.drawImage(this.boardCacheCanvas, this.boardX, this.boardY, this.boardWidth, this.boardHeight);
+        }
+
+        // Onda luminosa de conclusão sobre o quadro montado
+        if (this.victoryWaveProgress >= 0) {
+          this.victoryWaveProgress += 0.025;
+          const wx = this.boardX + this.victoryWaveProgress * this.boardWidth;
+          const grad = ctx.createLinearGradient(wx - 120, 0, wx + 120, 0);
+          grad.addColorStop(0, 'rgba(255,255,255,0)');
+          grad.addColorStop(0.5, 'rgba(255,255,255,0.45)');
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(this.boardX, this.boardY, this.boardWidth, this.boardHeight);
+          if (this.victoryWaveProgress > 1.3) this.victoryWaveProgress = -1;
+        }
+
+        // 2. Peças soltas com Viewport Culling
+        const vx1 = -this.panX / this.scale - this.pieceWidth * 2;
+        const vx2 = (this.width - this.panX) / this.scale + this.pieceWidth * 2;
+        const vy1 = -this.panY / this.scale - this.pieceHeight * 2;
+        const vy2 = (this.height - this.panY) / this.scale + this.pieceHeight * 2;
+
+        for (const grp of this.groups) {
+          if (grp.locked) continue;
+          const isDrag = this.draggedGroup === grp;
+          for (const p of grp.pieces) {
+            if (p.x === -99999 || p.x < vx1 || p.x > vx2 || p.y < vy1 || p.y > vy2) continue;
+            if (!p.cachedCanvas) continue;
+
+            ctx.globalAlpha = (this.onlyEdges && !p.isEdge) ? 0.16 : 1.0;
+
+            const drawP = () => {
+              if (p.rotation === 0) {
+                ctx.drawImage(p.cachedCanvas, p.x - p.offsetX, p.y - p.offsetY, p.drawW, p.drawH);
+              } else {
+                const cx = p.x + this.pieceWidth / 2, cy = p.y + this.pieceHeight / 2;
+                ctx.save(); ctx.translate(cx, cy); ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.drawImage(p.cachedCanvas, -this.pieceWidth / 2 - p.offsetX, -this.pieceHeight / 2 - p.offsetY, p.drawW, p.drawH);
+                ctx.restore();
+              }
+            };
+
+            if (isDrag) {
+              ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 14; ctx.shadowOffsetX = 5; ctx.shadowOffsetY = 8;
+              drawP(); ctx.restore();
+            } else {
+              drawP();
+            }
+
+            if (this.highlightUnconnected) {
+              ctx.save(); ctx.strokeStyle = '#e85d75'; ctx.lineWidth = 2.2 / this.scale;
+              ctx.strokeRect(p.x, p.y, this.pieceWidth, this.pieceHeight); ctx.restore();
+            }
+          }
+        }
+        ctx.globalAlpha = 1.0;
+
+        // 3. Pulsos de brilho ao encaixar
+        this.snapPulses = this.snapPulses.filter(sp => (now - sp.start) < sp.dur);
+        this.snapPulses.forEach(sp => {
+          const prog = (now - sp.start) / sp.dur;
+          ctx.save();
+          ctx.strokeStyle = `rgba(52, 211, 153, ${1 - prog})`;
+          ctx.lineWidth = (3 + prog * 4) / this.scale;
+          ctx.strokeRect(sp.x, sp.y, sp.w, sp.h);
+          ctx.restore();
+        });
+
+        // 4. Animação de Dica (💡)
+        if (this.hintAnim) {
+          if (now > this.hintAnim.expiresAt || this.hintAnim.piece.locked) {
+            this.hintAnim = null;
+          } else {
+            const alpha = 0.5 + 0.5 * Math.sin(now * 0.012);
+            const hp = this.hintAnim.piece;
+            ctx.save();
+            ctx.strokeStyle = `rgba(96, 165, 250, ${alpha})`;
+            ctx.lineWidth = 4 / this.scale;
+            ctx.strokeRect(hp.x - 4, hp.y - 4, this.pieceWidth + 8, this.pieceHeight + 8);
+            ctx.fillStyle = `rgba(96, 165, 250, ${alpha * 0.35})`;
+            ctx.fillRect(hp.targetX, hp.targetY, this.pieceWidth, this.pieceHeight);
+            ctx.strokeRect(hp.targetX, hp.targetY, this.pieceWidth, this.pieceHeight);
+            ctx.restore();
+          }
+        }
+
+        ctx.restore();
+
+        // 5. Confetes de Vitória
+        if (this.isFinished && this.confetti.length > 0) {
+          this.confetti.forEach(c => {
+            c.x += c.vx; c.y += c.vy; c.rot += c.vRot;
+            ctx.save(); ctx.translate(c.x, c.y); ctx.rotate((c.rot * Math.PI) / 180);
+            ctx.fillStyle = c.color; ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h); ctx.restore();
+            if (c.y > this.height) { c.y = -10; c.x = Math.random() * this.width; }
+          });
+        }
+      }
+    }
+
+    /* =========================================================
+       5. CONTROLADOR DA PLATAFORMA (UI)
+       ========================================================= */
+    let engine;
+    let currentCat = 'all';
+    let currentSearch = '';
+    let galleryLimit = 24;
+    let pendingItem = null;
+    let pendingPieces = 100;
+    let pendingHard = false;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tabName)));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tabName}`));
+      if (tabName === 'inprogress') renderInProgressTab();
+      if (tabName === 'account') renderAccountTab();
+    }
+
+    function refreshAllUI() {
+      const prof = storage.getActiveProfile();
+      document.getElementById('top-avatar').textContent = prof.avatar;
+      document.getElementById('top-name').textContent = prof.name;
+      document.getElementById('hud-avatar').textContent = prof.avatar;
+      document.getElementById('hud-name').textContent = prof.name;
+
+      const activeList = prof.activePuzzles || [];
+      const badge = document.getElementById('badge-inprogress-count');
+      if (activeList.length > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = activeList.length;
+
+        const latest = activeList[0];
+        const card = document.getElementById('card-continue-last');
+        card.style.display = 'flex';
+        document.getElementById('last-game-title').textContent = `Continuar: ${latest.title}`;
+        document.getElementById('last-game-meta').textContent = `${latest.lockedCount}/${latest.totalPieces} peças (${latest.pct}%)`;
+      } else {
+        badge.style.display = 'none';
+        document.getElementById('card-continue-last').style.display = 'none';
+      }
+
+      renderGallery(false);
+      renderInProgressTab();
+      renderAccountTab();
+    }
+
+    function renderGallery(resetLimit = true) {
+      if (resetLimit) galleryLimit = 24;
+      const grid = document.getElementById('gallery-grid');
+      const loadMoreBox = document.getElementById('load-more-box');
+      const countPill = document.getElementById('gallery-count-pill');
+      grid.innerHTML = '';
+
+      const prof = storage.getActiveProfile();
+      const inProgressMap = new Map((prof.activePuzzles || []).map(x => [x.imageSrc, x]));
+
+      let list = currentCat === 'all' ? gallery : gallery.filter(i => i.cat === currentCat);
+      if (currentSearch) {
+        const q = normalizeText(currentSearch);
+        list = list.filter(i => normalizeText(i.title).includes(q));
+      }
+
+      countPill.textContent = `${list.length} imagens`;
+      if (list.length === 0) {
+        loadMoreBox.style.display = 'none';
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria.</p></div>`;
+        return;
+      }
+
+      list.slice(0, galleryLimit).forEach(item => {
+        const activeSave = inProgressMap.get(item.src);
+        const card = document.createElement('div');
+        card.className = 'puzzle-card';
+        card.innerHTML = `
+          <div class="puzzle-thumb">
+            <img src="${item.src}" alt="${item.title}" loading="lazy">
+            ${activeSave ? `<div class="puzzle-badge-corner">${activeSave.pct}% montado</div>` : ''}
+          </div>
+          <div class="puzzle-card-body">
+            <div class="puzzle-card-title" title="${item.title}">${item.title}</div>
+            <div class="puzzle-play-tag">${activeSave ? 'Retomar' : 'Montar'}</div>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          if (activeSave) openSavedPuzzle(activeSave);
+          else openNewConfig(item);
+        });
+        grid.appendChild(card);
+      });
+
+      if (list.length > galleryLimit) {
+        loadMoreBox.style.display = 'block';
+        document.getElementById('btn-load-more').textContent = `+ Mostrar Mais (${list.length - galleryLimit} restantes)`;
+      } else {
+        loadMoreBox.style.display = 'none';
+      }
+    }
+
+    function renderInProgressTab() {
+      const container = document.getElementById('inprogress-container');
+      const prof = storage.getActiveProfile();
+      const list = prof.activePuzzles || [];
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h4>Nenhum quebra-cabeça em andamento ainda</h4>
+            <p>Escolha uma das 540 imagens na aba Descobrir para começar sua primeira montagem.</p>
+            <button class="btn btn-primary" onclick="switchTab('discover')">Explorar Galeria</button>
+          </div>`;
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'inprogress-grid';
+
+      list.forEach(save => {
+        const card = document.createElement('div');
+        card.className = 'save-card';
+        card.innerHTML = `
+          <div class="save-thumb">
+            <img src="${save.imageSrc}" alt="${save.title}">
+            <div class="save-pct-pill">${save.pct}%</div>
+          </div>
+          <div class="save-body">
+            <div class="save-title">${save.title}</div>
+            <div class="save-meta">
+              <span>🧩 ${save.lockedCount} de ${save.totalPieces} peças</span>
+              <span>${save.hardmode ? '🔥 Desafio' : 'Clássico'}</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:${save.pct}%"></div></div>
+            <div class="save-actions">
+              <button class="btn btn-primary btn-resume" style="flex:1;">▶ Continuar</button>
+              <button class="btn btn-danger-text btn-del-save" title="Excluir jogo salvo">🗑️</button>
+            </div>
+          </div>
+        `;
+        card.querySelector('.btn-resume').addEventListener('click', () => openSavedPuzzle(save));
+        card.querySelector('.btn-del-save').addEventListener('click', () => {
+          if (confirm(`Deseja excluir o progresso de "${save.title}"?`)) {
+            storage.removeActivePuzzle(save.saveId);
+            refreshAllUI();
+          }
+        });
+        grid.appendChild(card);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(grid);
+    }
+
+    function renderAccountTab() {
+      const prof = storage.getActiveProfile();
+      document.getElementById('stats-owner-label').textContent = `${prof.avatar} ${prof.name}`;
+
+      // Contas
+      const stack = document.getElementById('profiles-stack');
+      stack.innerHTML = '';
+      storage.data.profiles.forEach(p => {
+        const isAct = p.id === storage.data.activeId;
+        const row = document.createElement('div');
+        row.className = `profile-row ${isAct ? 'active' : ''}`;
+        row.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">${p.avatar}</span>
+            <div>
+              <div style="font-weight:700; font-size:14px;">${p.name} ${isAct ? '<span style="color:var(--accent); font-size:11px;">(Ativa)</span>' : ''}</div>
+              <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed} concluídos • ⏳ ${(p.activePuzzles || []).length} abertos</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            ${!isAct ? `<button class="btn btn-use" style="padding:5px 10px; font-size:12px;">Usar</button>` : ''}
+            ${storage.data.profiles.length > 1 ? `<button class="btn btn-ghost btn-danger-text btn-del" style="padding:5px 8px; font-size:12px;">✕</button>` : ''}
+          </div>
+        `;
+        const useBtn = row.querySelector('.btn-use');
+        if (useBtn) useBtn.addEventListener('click', () => { storage.setActiveProfile(p.id); refreshAllUI(); showToast(`Conta alterada para ${p.name}`); });
+        const delBtn = row.querySelector('.btn-del');
+        if (delBtn) delBtn.addEventListener('click', () => {
+          if (confirm(`Excluir a conta "${p.name}"?`)) { storage.deleteProfile(p.id); refreshAllUI(); }
+        });
+        stack.appendChild(row);
+      });
+
+      // Métricas
+      const inProgList = prof.activePuzzles || [];
+      const inProgPieces = inProgList.reduce((acc, s) => acc + (s.lockedCount || 0), 0);
+      const inProgTime = inProgList.reduce((acc, s) => acc + (s.elapsedSeconds || 0), 0);
+
+      const totalPieces = (prof.stats.piecesPlaced || 0) + inProgPieces;
+      const totalSec = (prof.stats.timeSeconds || 0) + inProgTime;
+      const mins = Math.floor(totalSec / 60);
+      const hrs = Math.floor(mins / 60);
+      const timeStr = hrs > 0 ? `${hrs}h ${mins % 60}m` : `${mins}m`;
+      const speed = totalSec > 20 ? Math.round((totalPieces / totalSec) * 60) : 0;
+
+      document.getElementById('m-completed').textContent = prof.stats.completed || 0;
+      document.getElementById('m-pieces').textContent = totalPieces.toLocaleString('pt-BR');
+      document.getElementById('m-time').textContent = timeStr;
+      document.getElementById('m-biggest').textContent = `${prof.stats.biggest || 0} pcs`;
+      document.getElementById('m-speed').textContent = `${speed}/m`;
+      document.getElementById('m-active').textContent = inProgList.length;
+
+      // Troféus
+      const tCont = document.getElementById('trophies-container');
+      if (!prof.trophies || prof.trophies.length === 0) {
+        tCont.innerHTML = `<div class="empty-state" style="padding: 28px;"><p style="margin-bottom:0;">Nenhum puzzle concluído ainda com esta conta.</p></div>`;
+      } else {
+        const listEl = document.createElement('div');
+        listEl.className = 'trophy-list';
+        prof.trophies.forEach(tr => {
+          const tc = document.createElement('div');
+          tc.className = 'trophy-card';
+          tc.innerHTML = `
+            <img src="${tr.src}" alt="${tr.title}" loading="lazy">
+            <div class="trophy-info">
+              <div style="font-weight:700; font-size:13px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tr.title}</div>
+              <div style="font-size:12px; color:var(--text-muted);">🧩 ${tr.pieces} peças • ⏱️ ${tr.time}</div>
+              <div style="font-size:11px; color:var(--success); margin-top:4px;">Concluído em ${tr.date}</div>
+            </div>
+          `;
+          listEl.appendChild(tc);
+        });
+        tCont.innerHTML = '';
+        tCont.appendChild(listEl);
+      }
+    }
+
+    function openNewConfig(item) {
+      pendingItem = item;
+      document.getElementById('cfg-title').textContent = item.title;
+      document.getElementById('cfg-img').src = item.src;
+      document.getElementById('modal-config').classList.add('open');
+    }
+
+    function openSavedPuzzle(save) {
+      pendingItem = { title: save.title, src: save.imageSrc };
+      document.getElementById('platform-shell').classList.add('hidden');
+      engine.startPuzzle(save.imageSrc, save.title, save.totalPieces, save.hardmode, save);
+    }
+
+    /* =========================================================
+       6. INICIALIZAÇÃO
+       ========================================================= */
+    window.addEventListener('DOMContentLoaded', async () => {
+      await storage.init();
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('reset') === '1') {
+        await storage.resetAll();
+        try { window.history.replaceState({}, '', window.location.pathname); } catch (e) {}
+      }
+
+      engine = new PuzzleEngine();
+
+      const allCatBtn = document.querySelector('.cat-pill[data-cat="all"]');
+      if (allCatBtn) allCatBtn.textContent = `Todas (${gallery.length})`;
+      document.getElementById('gallery-count-pill').textContent = `${gallery.length} imagens`;
+
+      refreshAllUI();
+      if (params.get('reset') === '1') {
+        showToast('Aplicação zerada com sucesso!');
+      }
+
+      // Suporte à demonstração direta (?demo=50)
+      const demoN = parseInt(params.get('demo'));
+      if (demoN > 0) {
+        pendingItem = gallery[0];
+        document.getElementById('platform-shell').classList.add('hidden');
+        engine.startPuzzle(gallery[0].src, gallery[0].title, 100, false, null, demoN);
+      }
+
+      // Navegação em Abas
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+      });
+      document.getElementById('btn-quick-account').addEventListener('click', () => switchTab('account'));
+
+      // Busca & Categorias
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim();
+        renderGallery(true);
+      });
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCat = btn.dataset.cat;
+          renderGallery(true);
+        });
+      });
+      document.getElementById('btn-load-more').addEventListener('click', () => {
+        galleryLimit += 24;
+        renderGallery(false);
+      });
+
+      // Ações rápidas
+      document.getElementById('card-surprise').addEventListener('click', () => {
+        openNewConfig(gallery[Math.floor(Math.random() * gallery.length)]);
+      });
+      document.getElementById('card-continue-last').addEventListener('click', () => {
+        const list = storage.getActiveProfile().activePuzzles || [];
+        if (list[0]) openSavedPuzzle(list[0]);
+      });
+
+      // Upload do PC
+      const fileInp = document.getElementById('file-input');
+      document.getElementById('card-upload').addEventListener('click', () => fileInp.click());
+      fileInp.addEventListener('change', (e) => { if (e.target.files[0]) loadCustomImage(e.target.files[0]); });
+      window.addEventListener('dragover', (e) => e.preventDefault());
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files[0]) loadCustomImage(e.dataTransfer.files[0]);
+      });
+
+      function loadCustomImage(file) {
+        if (!file.type.startsWith('image/')) { showToast('Selecione um arquivo de imagem válido.'); return; }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxDim = 2000;
+            let w = img.width, h = img.height;
+            if (w > maxDim || h > maxDim) {
+              const r = Math.min(maxDim / w, maxDim / h);
+              w = Math.round(w * r); h = Math.round(h * r);
+            }
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            const ctx = c.getContext('2d');
+            ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, w, h);
+            openNewConfig({ id: 'custom', title: file.name.replace(/\.[^/.]+$/, ''), src: c.toDataURL('image/jpeg', 0.88) });
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Contas & Backup
+      let chosenAvatar = '🐱';
+      document.querySelectorAll('.avatar-choice').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.avatar-choice').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          chosenAvatar = btn.textContent;
+        });
+      });
+      document.getElementById('btn-add-profile').addEventListener('click', () => {
+        const inp = document.getElementById('input-profile-name');
+        if (!inp.value.trim()) { showToast('Digite um nome para criar a conta.'); return; }
+        storage.createProfile(inp.value, chosenAvatar);
+        inp.value = '';
+        refreshAllUI();
+        showToast('Nova conta criada!');
+      });
+      document.getElementById('btn-export-json').addEventListener('click', () => {
+        storage.exportJSON();
+        showToast('Cópia baixada com sucesso!');
+      });
+      document.getElementById('btn-reset-app').addEventListener('click', async () => {
+        if (confirm('Tem certeza que deseja zerar toda a aplicação? Todas as contas, estatísticas e jogos salvos locais serão apagados.')) {
+          await storage.resetAll();
+          refreshAllUI();
+          showToast('Aplicação zerada com sucesso!');
+        }
+      });
+      const impInp = document.getElementById('import-json-input');
+      document.getElementById('btn-import-json').addEventListener('click', () => impInp.click());
+      impInp.addEventListener('change', (e) => {
+        if (e.target.files[0]) {
+          const r = new FileReader();
+          r.onload = (ev) => {
+            if (storage.importJSON(ev.target.result)) { refreshAllUI(); showToast('Dados restaurados!'); }
+            else showToast('Arquivo inválido.');
+          };
+          r.readAsText(e.target.files[0]);
+        }
+      });
+
+      // Modal Config
+      document.getElementById('mode-normal').addEventListener('click', () => {
+        pendingHard = false;
+        document.getElementById('mode-normal').classList.add('selected');
+        document.getElementById('mode-challenge').classList.remove('selected');
+      });
+      document.getElementById('mode-challenge').addEventListener('click', () => {
+        pendingHard = true;
+        document.getElementById('mode-challenge').classList.add('selected');
+        document.getElementById('mode-normal').classList.remove('selected');
+      });
+      document.querySelectorAll('.size-box').forEach(box => {
+        box.addEventListener('click', () => {
+          document.querySelectorAll('.size-box').forEach(b => b.classList.remove('selected'));
+          box.classList.add('selected');
+          pendingPieces = parseInt(box.dataset.val);
+          document.getElementById('cfg-slider').value = pendingPieces;
+          document.getElementById('cfg-slider-label').textContent = `${pendingPieces} peças`;
+        });
+      });
+      document.getElementById('cfg-slider').addEventListener('input', (e) => {
+        pendingPieces = parseInt(e.target.value);
+        document.getElementById('cfg-slider-label').textContent = `${pendingPieces} peças`;
+        document.querySelectorAll('.size-box').forEach(b => b.classList.remove('selected'));
+      });
+      document.getElementById('btn-close-cfg').addEventListener('click', () => document.getElementById('modal-config').classList.remove('open'));
+      document.getElementById('btn-cancel-cfg').addEventListener('click', () => document.getElementById('modal-config').classList.remove('open'));
+      document.getElementById('btn-start-puzzle').addEventListener('click', () => {
+        if (!pendingItem) return;
+        document.getElementById('modal-config').classList.remove('open');
+        document.getElementById('platform-shell').classList.add('hidden');
+        engine.startPuzzle(pendingItem.src, pendingItem.title, pendingPieces, pendingHard);
+      });
+
+      // Tela Cheia
+      document.getElementById('btn-fullscreen-lobby').addEventListener('click', toggleFullScreen);
+      document.getElementById('btn-g-full').addEventListener('click', toggleFullScreen);
+
+      // Barra de Ferramentas da Mesa
+      document.getElementById('btn-g-exit').addEventListener('click', async () => {
+        engine.saveToAccount();
+        await storage.persistImmediate();
+        engine.stopTimer();
+        document.getElementById('platform-shell').classList.remove('hidden');
+        refreshAllUI();
+      });
+
+      document.getElementById('btn-g-preview').addEventListener('click', () => document.getElementById('floating-guide').classList.toggle('hidden'));
+      document.getElementById('btn-close-guide').addEventListener('click', () => document.getElementById('floating-guide').classList.add('hidden'));
+
+      document.getElementById('btn-g-ghost').addEventListener('click', (e) => {
+        engine.showGhost = !engine.showGhost;
+        e.currentTarget.classList.toggle('active', engine.showGhost);
+        engine.requestRender();
+      });
+      document.getElementById('btn-g-edges').addEventListener('click', (e) => {
+        engine.onlyEdges = !engine.onlyEdges;
+        e.currentTarget.classList.toggle('active', engine.onlyEdges);
+        engine.requestRender();
+      });
+      document.getElementById('btn-g-highlight').addEventListener('click', (e) => {
+        engine.highlightUnconnected = !engine.highlightUnconnected;
+        e.currentTarget.classList.toggle('active', engine.highlightUnconnected);
+        engine.requestRender();
+      });
+      document.getElementById('btn-g-hint').addEventListener('click', () => engine.triggerHint());
+
+      const colorPop = document.getElementById('color-popover');
+      document.getElementById('btn-g-color').addEventListener('click', () => colorPop.classList.toggle('open'));
+      document.querySelectorAll('.color-swatch').forEach(sw => {
+        sw.addEventListener('click', () => {
+          document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+          sw.classList.add('selected');
+          engine.boardBgColor = sw.dataset.color;
+          document.getElementById('game-stage').style.backgroundColor = sw.dataset.color;
+          colorPop.classList.remove('open');
+          engine.requestRender();
+        });
+      });
+
+      document.getElementById('btn-g-organize').addEventListener('click', () => { engine.organizeOutsideFrame(); showToast('Peças organizadas'); });
+      document.getElementById('btn-g-shuffle').addEventListener('click', () => { engine.shuffleOutsideFrame(); showToast('Peças misturadas'); });
+      document.getElementById('btn-g-center').addEventListener('click', () => engine.centerView());
+      document.getElementById('btn-g-sound').addEventListener('click', (e) => {
+        audio.muted = !audio.muted;
+        e.currentTarget.textContent = audio.muted ? '🔇' : '🔊';
+      });
+
+      // Esconder / Mostrar barra superior
+      const gToolbar = document.getElementById('game-toolbar');
+      const btnReopen = document.getElementById('btn-reopen-toolbar');
+      document.getElementById('btn-g-collapse').addEventListener('click', () => {
+        gToolbar.classList.add('collapsed');
+        btnReopen.classList.add('visible');
+      });
+      btnReopen.addEventListener('click', () => {
+        gToolbar.classList.remove('collapsed');
+        btnReopen.classList.remove('visible');
+      });
+
+      // Zoom Touchpad
+      document.getElementById('btn-zoom-in').addEventListener('click', () => engine.zoomBy(1.22));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => engine.zoomBy(1 / 1.22));
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => engine.centerView());
+
+      // Ajuda
+      document.getElementById('btn-g-help').addEventListener('click', () => document.getElementById('modal-help').classList.add('open'));
+      document.getElementById('btn-close-help').addEventListener('click', () => document.getElementById('modal-help').classList.remove('open'));
+      document.getElementById('btn-ok-help').addEventListener('click', () => document.getElementById('modal-help').classList.remove('open'));
+
+      // Vitória
+      document.getElementById('btn-v-replay').addEventListener('click', () => {
+        document.getElementById('modal-victory').classList.remove('open');
+        engine.startPuzzle(pendingItem.src, pendingItem.title, pendingPieces, engine.hardmode);
+      });
+      document.getElementById('btn-v-platform').addEventListener('click', () => {
+        document.getElementById('modal-victory').classList.remove('open');
+        document.getElementById('platform-shell').classList.remove('hidden');
+        refreshAllUI();
+      });
+
+      // Arrastar miniatura
+      const guide = document.getElementById('floating-guide');
+      const handle = document.getElementById('guide-drag-handle');
+      let px = 0, py = 0, mx = 0, my = 0;
+      handle.onmousedown = (e) => {
+        e.preventDefault(); mx = e.clientX; my = e.clientY;
+        document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+        document.onmousemove = (ev) => {
+          px = mx - ev.clientX; py = my - ev.clientY; mx = ev.clientX; my = ev.clientY;
+          guide.style.top = (guide.offsetTop - py) + 'px';
+          guide.style.left = (guide.offsetLeft - px) + 'px';
+          guide.style.bottom = 'auto'; guide.style.right = 'auto';
+        };
+      };
+    });
+  </script>
+</body>
+</html>
