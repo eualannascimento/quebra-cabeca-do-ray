@@ -2,8 +2,9 @@
 <html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quebra Cabeça do Ray — Plataforma Offline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Quebra Cabeça — Plataforma</title>
   <script>
     try {
       var qp = new URLSearchParams(window.location.search).get('theme');
@@ -209,11 +210,13 @@
       position: absolute;
       inset: 0;
       height: 100vh;
+      height: 100dvh;
       background: var(--bg-base);
       display: flex;
       flex-direction: column;
       z-index: 100;
       overflow: hidden;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     #platform-shell.hidden {
@@ -223,55 +226,21 @@
     .topbar {
       background: var(--topbar-bg);
       border-bottom: 1px solid var(--border);
-      padding: 10px clamp(16px, 2.2vw, 28px);
+      padding: calc(8px + env(safe-area-inset-top, 0px)) clamp(12px, 2vw, 24px) 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       flex-shrink: 0;
       z-index: 20;
     }
 
-    .brand-group {
+    .topbar-left {
       display: flex;
       align-items: center;
-      gap: 11px;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      border-radius: 10px;
-      padding: 2px 6px 2px 2px;
-    }
-
-    .brand-group:hover {
-      background: var(--bg-elevated);
-    }
-
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      background: var(--accent);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 3px 10px var(--accent-soft);
-    }
-
-    .brand-title {
-      font-size: clamp(16px, 1.8vw, 19px);
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text-main);
-    }
-
-    .brand-sub {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-weight: 500;
+      gap: 8px;
+      min-width: 0;
     }
 
     /* Abas de Navegação Central */
@@ -282,7 +251,11 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       gap: 3px;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+    .nav-tabs::-webkit-scrollbar { display: none; }
 
     .nav-tab {
       background: transparent;
@@ -296,6 +269,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-tab:hover {
@@ -317,59 +292,40 @@
       border-radius: 999px;
     }
 
+    .tab-badge.green {
+      background: var(--success);
+    }
+
     .topbar-right {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      margin-left: auto;
     }
 
-    /* Seletor de Temas (Light / Dark / Black) */
-    .theme-switcher {
-      display: inline-flex;
-      background: var(--bg-elevated);
-      padding: 3px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      gap: 2px;
-    }
-
-    .theme-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 5px 9px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 10px;
+      font-size: 17px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition: all 0.14s ease;
-    }
-
-    .theme-btn:hover {
-      color: var(--text-main);
-    }
-
-    .theme-btn.active {
-      background: var(--bg-surface);
-      color: var(--text-main);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      justify-content: center;
     }
 
     .account-chip {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       background: var(--bg-elevated);
       color: var(--text-main);
       border: 1px solid var(--border);
-      padding: 4px 12px 4px 5px;
+      padding: 4px 14px 4px 5px;
       border-radius: 999px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
+      max-width: 210px;
     }
 
     .account-chip:hover {
@@ -378,22 +334,35 @@
     }
 
     .account-avatar {
-      width: 28px;
-      height: 28px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: var(--accent-soft);
-      color: var(--text-main);
-      border: 1px solid var(--border);
+      color: var(--accent);
+      border: 1.5px solid var(--border-strong);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .account-avatar img, .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .account-name {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13.5px;
+      font-weight: 700;
       color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Área Principal sem scroll externo (Largura total 100%) */
@@ -597,56 +566,105 @@
       color: var(--text-main);
     }
 
-    .categories-row {
+    /* Layout de 2 níveis dentro de Descobrir (Sidebar Fixa + Cards Roláveis) */
+    .discover-body {
+      flex: 1;
+      min-height: 0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: 16px;
+      overflow: hidden;
     }
 
-    .cat-pill {
+    .discover-sidebar {
+      width: 248px;
+      flex-shrink: 0;
       background: var(--bg-surface);
       border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      display: inline-flex;
+      padding: 0 8px 6px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+      display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
     }
 
-    .cat-pill:hover {
-      background: var(--bg-elevated);
+    .sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-item {
+      width: 100%;
+      background: transparent;
+      border: none;
       color: var(--text-main);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      text-align: left;
+      transition: background 0.12s ease;
     }
 
-    .cat-pill.active {
+    .sidebar-item:hover {
+      background: var(--bg-elevated);
+    }
+
+    .sidebar-item.active {
       background: var(--accent);
-      border-color: var(--accent);
       color: #ffffff;
+      font-weight: 700;
+    }
+
+    .sidebar-item-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .cat-count {
       font-size: 11px;
       font-weight: 700;
-      padding: 1px 6px;
+      padding: 1px 7px;
       border-radius: 999px;
       background: var(--bg-elevated);
       color: var(--text-muted);
+      flex-shrink: 0;
     }
 
-    .cat-pill.active .cat-count {
+    .sidebar-item.active .cat-count {
       background: rgba(255, 255, 255, 0.24);
       color: #ffffff;
+    }
+
+    .btn-mobile-sidebar {
+      display: none;
     }
 
     /* Único bloco com scroll na aba Descobrir */
     .gallery-scroll-area {
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow-y: auto;
       padding: 2px 4px 18px 2px;
@@ -654,8 +672,8 @@
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
     }
 
     .puzzle-card {
@@ -841,6 +859,154 @@
       color: var(--text-muted);
       display: flex;
       justify-content: space-between;
+    }
+
+    .save-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+    }
+
+    .save-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .save-stat-item strong {
+      color: var(--text-main);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .save-thumb-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15, 18, 24, 0.85);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .save-thumb-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+    .account-header-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .account-avatar-lg {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 2px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .backup-details {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    .backup-details summary {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .backup-details[open] summary {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Fullscreen Preview (Em Andamento & Concluídos) */
+    #modal-preview-full {
+      padding: 0;
+      background: #080a0f;
+      z-index: 360;
+    }
+
+    .full-prev-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #0b0d13;
+    }
+
+    .full-prev-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px;
+      background: rgba(12, 15, 22, 0.94);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      z-index: 2;
+    }
+
+    .full-prev-stage {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .full-prev-stage img, .full-prev-stage canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 18px 46px rgba(0,0,0,0.65);
+    }
+
+    .full-prev-footer {
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(12, 15, 22, 0.94);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      color: #d1d5db;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      font-size: 13px;
     }
 
     .progress-track {
@@ -1346,22 +1512,61 @@
       touch-action: none;
     }
 
-    /* Controles Fixos Visíveis no Canto Superior Esquerdo (Voltar + Expandir Ferramentas) */
+    /* Controles Fixos no Canto Superior Esquerdo (Avatar + Voltar) */
     .game-top-dock {
       position: absolute;
-      top: 12px;
-      left: 14px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      left: calc(12px + env(safe-area-inset-left, 0px));
       display: inline-flex;
       align-items: center;
       gap: 8px;
       z-index: 52;
     }
 
-    .game-dock-btn {
+    .game-avatar-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: var(--hud-surface);
       border: 1px solid rgba(255, 255, 255, 0.16);
       color: var(--hud-text);
-      padding: 7px 14px;
+      padding: 3px 12px 3px 4px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      max-width: 170px;
+    }
+
+    .game-avatar-chip .account-avatar {
+      width: 34px;
+      height: 34px;
+      font-size: 14px;
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .game-avatar-chip .game-player-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Canto Superior Direito: HUD Destacado + Botão Ferramentas */
+    .game-right-dock {
+      position: absolute;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      right: calc(12px + env(safe-area-inset-right, 0px));
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      z-index: 55;
+    }
+
+    .game-dock-btn {
+      background: var(--hud-surface);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--hud-text);
+      padding: 8px 14px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
@@ -1384,28 +1589,29 @@
       color: #ffffff;
     }
 
-    /* Barra de Ferramentas Expansível (inicia oculta) */
+    /* Dropdown Autoexplicativo de Ferramentas no Lado Direito */
     .game-toolbar {
       position: absolute;
-      top: 56px;
-      left: 14px;
+      top: calc(100% + 8px);
+      right: 0;
+      width: min(330px, calc(100vw - 24px));
+      max-height: calc(100dvh - 140px);
+      overflow-y: auto;
       background: var(--hud-surface);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 12px;
-      padding: 5px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 6px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 3px;
-      z-index: 50;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-      max-width: calc(100vw - 28px);
-      transform-origin: top left;
-      transition: transform 0.2s ease, opacity 0.16s ease;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 60;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+      transform-origin: top right;
+      transition: transform 0.18s ease, opacity 0.14s ease;
     }
 
     .game-toolbar.collapsed {
-      transform: translateY(-10px) scale(0.98);
+      transform: translateY(-8px) scale(0.97);
       opacity: 0;
       pointer-events: none;
     }
@@ -1425,6 +1631,47 @@
       white-space: nowrap;
     }
 
+    .game-toolbar .tool-btn {
+      width: 100%;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 8px;
+      white-space: normal;
+      text-align: left;
+      padding: 5px 8px;
+    }
+
+    .tool-icon {
+      font-size: 17px;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .tool-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .tool-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .tool-desc {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--hud-muted);
+      line-height: 1.25;
+    }
+
+    .game-toolbar .tool-btn.active .tool-desc {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
     .tool-btn:hover {
       background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
@@ -1437,41 +1684,69 @@
     }
 
     .tool-sep {
-      width: 1px;
-      height: 20px;
-      background: rgba(255, 255, 255, 0.16);
-      margin: 0 2px;
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 2px 0;
       flex-shrink: 0;
     }
 
-    /* HUD de Progresso no Canto Superior Direito */
+    /* HUD de Progresso & Timer com Maior Destaque */
     .hud-progress {
-      position: absolute;
-      top: 12px;
-      right: 14px;
       background: var(--hud-surface);
       color: var(--hud-text);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
       padding: 8px 14px;
-      min-width: 155px;
-      z-index: 50;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      min-width: 215px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
     }
 
-    .hud-row {
+    .hud-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .hud-timer-pill {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      font-variant-numeric: tabular-nums;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hud-timer-pill.paused {
+      color: var(--warning);
+    }
+
+    .hud-pct-big {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hud-sub-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      margin-bottom: 5px;
+      font-size: 11.5px;
+      color: var(--hud-muted);
+      margin-top: 5px;
+      gap: 8px;
     }
 
-    /* Controles de Zoom Visíveis no Canto Inferior Esquerdo (ótimo para Touchpad!) */
+    /* Controles de Zoom Visíveis no Canto Inferior Esquerdo */
     .zoom-controls-pill {
       position: absolute;
-      bottom: 16px;
-      left: 16px;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      left: calc(14px + env(safe-area-inset-left, 0px));
       background: var(--hud-surface);
       color: var(--hud-text);
       border: 1px solid rgba(255, 255, 255, 0.16);
@@ -1482,44 +1757,54 @@
       z-index: 45;
     }
 
-    /* Paleta de Cores da Mesa */
-    .color-popover {
+    /* Cores de Fundo Abertas no Canto Inferior Direito */
+    .color-dock-bottom-right {
       position: absolute;
-      top: 108px;
-      left: 14px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-strong);
-      border-radius: 12px;
-      padding: 10px 14px;
-      display: none;
-      gap: 10px;
-      z-index: 60;
-      box-shadow: var(--shadow-lg);
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      right: calc(14px + env(safe-area-inset-right, 0px));
+      background: var(--hud-surface);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 45;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
-    .color-popover.open {
-      display: flex;
+    .color-dock-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--hud-muted);
+      padding-right: 2px;
     }
 
     .color-swatch {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       cursor: pointer;
-      border: 2px solid transparent;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      transition: transform 0.12s ease, border-color 0.12s ease;
     }
 
-    .color-swatch.selected {
-      border-color: #fff;
+    .color-swatch:hover {
       transform: scale(1.1);
     }
 
-    /* Miniatura Arrastável */
+    .color-swatch.selected {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--accent);
+      transform: scale(1.12);
+    }
+
+    /* Miniatura Arrastável (posicionada acima das cores no canto inferior direito) */
     .floating-guide {
       position: absolute;
-      bottom: 16px;
-      right: 16px;
-      width: 240px;
+      bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+      right: calc(14px + env(safe-area-inset-right, 0px));
+      width: min(240px, 44vw);
       background: var(--hud-surface);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
@@ -1623,11 +1908,46 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 720px) {
-      .topbar { padding: 10px 14px; }
-      .nav-tabs { width: 100%; justify-content: center; }
-      .game-toolbar { max-width: calc(100vw - 24px); top: 62px; }
-      .floating-guide { width: 170px; }
+    @media (max-width: 900px) {
+      .discover-sidebar {
+        width: 210px;
+      }
+      .quick-banner {
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 8px; gap: 8px; }
+      .nav-tabs { order: 3; width: 100%; justify-content: space-between; }
+      .nav-tab { flex: 1; justify-content: center; padding: 7px 6px; font-size: 11.5px; gap: 4px; }
+      .tab-badge { font-size: 10px; padding: 1px 5px; }
+      #toast.show { transform: translateX(-50%) translateY(-48px); }
+      .platform-scroll { padding: 10px 12px 8px; }
+      .quick-banner { grid-template-columns: 1fr; gap: 8px; margin-bottom: 10px; }
+      .quick-card { padding: 10px 12px; }
+      .btn-mobile-sidebar { display: inline-flex; }
+      .discover-body { position: relative; }
+      .discover-sidebar {
+        display: none;
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: min(280px, 84vw);
+        z-index: 40;
+        box-shadow: var(--shadow-lg);
+      }
+      .discover-sidebar.mobile-open { display: flex; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 10px; }
+      .game-top-dock { gap: 6px; }
+      .game-avatar-chip .game-player-name { display: none; }
+      .game-avatar-chip { padding: 2px; }
+      .game-right-dock { flex-direction: column; align-items: flex-end; gap: 6px; }
+      .hud-progress { min-width: 165px; padding: 6px 10px; order: 2; }
+      .hud-timer-pill, .hud-pct-big { font-size: 14px; }
+      .color-dock-label { display: none; }
+      .color-dock-bottom-right { padding: 5px 8px; gap: 6px; }
+      .color-swatch { width: 20px; height: 20px; }
+      .floating-guide { width: 168px; bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
     }
   </style>
 </head>
@@ -1645,13 +1965,12 @@
        ========================================================= -->
   <div id="platform-shell">
     <header class="topbar">
-      <a href="#inicio" class="brand-group" id="brand-home-link" title="Ir para a página inicial (Descobrir)">
-        <div class="brand-mark">🧩</div>
-        <div>
-          <div class="brand-title">Quebra Cabeça do Ray</div>
-          <div class="brand-sub">100% Offline • Sem Travamentos</div>
-        </div>
-      </a>
+      <div class="topbar-left">
+        <button class="account-chip" id="btn-quick-account" title="Ver perfil, estatísticas e backup">
+          <div class="account-avatar" id="top-avatar">R</div>
+          <span class="account-name" id="top-name">Ray</span>
+        </button>
+      </div>
 
       <!-- Navegação em Plataforma -->
       <nav class="nav-tabs" role="tablist" aria-label="Seções principais">
@@ -1659,25 +1978,16 @@
           🔍 Descobrir
         </button>
         <button class="nav-tab" role="tab" aria-selected="false" data-tab="inprogress">
-          ⏳ Em Andamento <span class="tab-badge" id="badge-inprogress-count" style="display:none;">0</span>
+          ⏳ Em Andamento <span class="tab-badge" id="badge-inprogress-count">0</span>
         </button>
-        <button class="nav-tab" role="tab" aria-selected="false" data-tab="account">
-          📊 Minha Conta
+        <button class="nav-tab" role="tab" aria-selected="false" data-tab="completed">
+          🏆 Concluídos <span class="tab-badge green" id="badge-completed-count">0</span>
         </button>
       </nav>
 
       <div class="topbar-right">
-        <div class="theme-switcher" role="group" aria-label="Tema visual">
-          <button type="button" class="theme-btn active" data-theme-set="light" title="Tema Claro (Things 3)">☀️ Claro</button>
-          <button type="button" class="theme-btn" data-theme-set="dark" title="Tema Escuro">🌙 Escuro</button>
-          <button type="button" class="theme-btn" data-theme-set="black" title="Tema Preto OLED">⬛ Black</button>
-        </div>
-        <button class="btn" id="btn-lobby-help" title="Como jogar">❓ Ajuda</button>
-        <button class="btn" id="btn-fullscreen-lobby" title="Deixar em Tela Cheia">⛶ Tela Cheia</button>
-        <button class="account-chip" id="btn-quick-account" title="Ver ou editar conta e estatísticas">
-          <div class="account-avatar" id="top-avatar">🐱</div>
-          <span class="account-name" id="top-name">Ray</span>
-        </button>
+        <button type="button" class="btn icon-btn" id="btn-cycle-theme" title="Alternar tema (Claro / Escuro / Black)">☀️</button>
+        <button type="button" class="btn" id="btn-fullscreen-lobby" title="Deixar em Tela Cheia">⛶ Tela Cheia</button>
       </div>
     </header>
 
@@ -1717,148 +2027,219 @@
 
             <!-- Busca & Filtro Novos vs Já Criados -->
             <div class="filter-bar">
+              <button type="button" class="btn btn-mobile-sidebar" id="btn-toggle-sidebar">☰ Categorias</button>
               <div class="scope-switcher" role="group" aria-label="Separar novos e já criados">
                 <button type="button" class="scope-btn active" data-scope="new">✨ Novos para Montar <span class="cat-count" id="scope-new-count">0</span></button>
                 <button type="button" class="scope-btn" data-scope="created">📌 Já Criados <span class="cat-count" id="scope-created-count">0</span></button>
               </div>
               <div class="search-box">
                 <span>🔍</span>
-                <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Mercedes, BMW, Pesqueira, Canastra, Foz, Café, Vinho, Churrasco, Rede...)">
+                <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Renegade, Bronco, BYD, Pesqueira, Camilópolis, Canastra...)">
               </div>
               <div class="count-pill" id="gallery-count-pill">0 imagens</div>
             </div>
-
-            <!-- Categorias com Contagem Real -->
-            <div class="categories-row" id="categories-row">
-              <button class="cat-pill active" data-cat="all">Todas <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="nature">🌿 Natureza <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="countries">🌎 Lugares & Cidades <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="vehicles">🚙 Carros & Marcas <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="gastronomy">☕ Café, Vinho & Churrasco <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="animals">🦁 Animais <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="flowers">🌸 Flores <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="art">🎨 Arte & Pinturas <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="diy">🛠️ Construção, Redes & Casas <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="aviation">✈️ Aeroportos & Aviação <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="sports">⚽ Esportes <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="planets">🪐 Planetas & Espaço <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="wally">🔍 Onde Está / Música <span class="cat-count">0</span></button>
-              <button class="cat-pill" data-cat="photography">📷 Fotografia <span class="cat-count">0</span></button>
-            </div>
           </div>
 
-          <div class="gallery-scroll-area" id="gallery-scroll-area">
-            <div class="gallery-grid" id="gallery-grid"></div>
+          <div class="discover-body">
+            <!-- Menu Fixo Lateral com 2 Níveis (somente na aba Descobrir) -->
+            <aside class="discover-sidebar" id="discover-sidebar" aria-label="Menu de temas e categorias">
+              <div>
+                <div class="sidebar-group-title"><span>⭐ Seus Gostos</span></div>
+                <div class="sidebar-list" id="sidebar-tastes-list">
+                  <button type="button" class="sidebar-item" data-taste="renegade"><span class="sidebar-item-label">🚗 Jeep Renegade</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="bronco"><span class="sidebar-item-label">🐎 Ford Bronco</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="byd"><span class="sidebar-item-label">⚡ BYD</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="jeep"><span class="sidebar-item-label">🚙 Jeep</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="mercedes"><span class="sidebar-item-label">🚘 Mercedes-Benz</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="bmw"><span class="sidebar-item-label">🏁 BMW</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="camilopolis"><span class="sidebar-item-label">🏘️ Vila Camilópolis / ABC</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="pesqueira"><span class="sidebar-item-label">🏰 Pesqueira - PE</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="minas"><span class="sidebar-item-label">⛰️ Minas & Canastra</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="queijo"><span class="sidebar-item-label">🧀 Queijos</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="foz"><span class="sidebar-item-label">🌊 Foz do Iguaçu</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="paraguai"><span class="sidebar-item-label">🇵🇾 Paraguai</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="argentina"><span class="sidebar-item-label">🇦🇷 Argentina</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="cafe"><span class="sidebar-item-label">☕ Café & Expresso</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="vinho"><span class="sidebar-item-label">🍷 Vinhos</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="churrasco"><span class="sidebar-item-label">🥩 Churrasco & Parrilha</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="mercados"><span class="sidebar-item-label">🛒 Mercados & Farmácias</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="diy"><span class="sidebar-item-label">🛠️ Construção (DIY)</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="redes"><span class="sidebar-item-label">🌐 Cabeamento & Redes</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="apartamentos"><span class="sidebar-item-label">🏢 Apartamentos</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="aeroporto"><span class="sidebar-item-label">✈️ Aeroportos</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="wally"><span class="sidebar-item-label">🔍 Onde Está / Cenas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="musica"><span class="sidebar-item-label">🎵 Música & Shows</span><span class="cat-count">0</span></button>
+                </div>
+              </div>
 
-            <div class="load-more-box" id="load-more-box" style="display: none;">
-              <button class="btn btn-primary" id="btn-load-more" style="padding: 11px 26px;">
-                + Mostrar Mais Imagens
-              </button>
+              <div>
+                <div class="sidebar-group-title"><span>🗂️ Categorias Gerais</span></div>
+                <div class="sidebar-list" id="sidebar-general-list">
+                  <button type="button" class="sidebar-item active" data-cat="all"><span class="sidebar-item-label">🧩 Todas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="nature"><span class="sidebar-item-label">🌿 Natureza</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="countries"><span class="sidebar-item-label">🌎 Lugares & Cidades</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="vehicles"><span class="sidebar-item-label">🚙 Carros & Marcas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="gastronomy"><span class="sidebar-item-label">☕ Café, Vinho & Churrasco</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="animals"><span class="sidebar-item-label">🦁 Animais</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="flowers"><span class="sidebar-item-label">🌸 Flores</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="art"><span class="sidebar-item-label">🎨 Arte & Pinturas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="diy"><span class="sidebar-item-label">🛠️ Construção, Redes & Casas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="aviation"><span class="sidebar-item-label">✈️ Aeroportos & Aviação</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="sports"><span class="sidebar-item-label">⚽ Esportes</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="planets"><span class="sidebar-item-label">🪐 Planetas & Espaço</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="wally"><span class="sidebar-item-label">🔍 Onde Está / Música</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="photography"><span class="sidebar-item-label">📷 Fotografia</span><span class="cat-count">0</span></button>
+                </div>
+              </div>
+            </aside>
+
+            <div class="gallery-scroll-area" id="gallery-scroll-area">
+              <div class="gallery-grid" id="gallery-grid"></div>
+
+              <div class="load-more-box" id="load-more-box" style="display: none;">
+                <button class="btn btn-primary" id="btn-load-more" style="padding: 11px 26px;">
+                  + Mostrar Mais Imagens
+                </button>
+              </div>
+
+              <footer style="margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
+                Uso acadêmico, experimental e offline — Sem fins lucrativos.
+              </footer>
             </div>
-
-            <footer style="margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
-              Quebra Cabeça do Ray — Projeto experimental para fins estritamente acadêmicos e educacionais, sem fins lucrativos. Uso offline e não comercial.
-            </footer>
           </div>
         </section>
 
-        <!-- ABA 2: EM ANDAMENTO (ALTERNAR ENTRE JOGOS CRIADOS) -->
+        <!-- ABA 2: EM ANDAMENTO -->
         <section class="tab-panel" id="panel-inprogress" role="tabpanel">
           <div class="tab-fixed-head">
-            <h2 class="section-heading">⏳ Seus Quebra-Cabeças em Andamento</h2>
-            <p class="section-lead">Alterne livremente entre os quebra-cabeças que você já começou. Seu progresso é salvo automaticamente.</p>
+            <h2 class="section-heading">⏳ Quebra-Cabeças em Andamento</h2>
+            <p class="section-lead">Veja os tempos, cliques, ritmo e visualize como o tabuleiro está montado em tela cheia.</p>
           </div>
           <div class="tab-scroll-area" id="inprogress-container"></div>
         </section>
 
-        <!-- ABA 3: MINHA CONTA & ANALYTICS -->
+        <!-- ABA 3: CONCLUÍDOS -->
+        <section class="tab-panel" id="panel-completed" role="tabpanel">
+          <div class="tab-fixed-head">
+            <h2 class="section-heading">🏆 Quebra-Cabeças Concluídos</h2>
+            <p class="section-lead">Histórico completo das montagens finalizadas com tempo ativo, parado, total, cliques e ritmo.</p>
+          </div>
+          <div class="tab-scroll-area" id="completed-container"></div>
+        </section>
+
+        <!-- ABA OCULTA (ACESSADA PELO AVATAR): MINHA CONTA & ANALYTICS -->
         <section class="tab-panel" id="panel-account" role="tabpanel">
           <div class="account-layout">
-            <!-- Coluna Esquerda: Perfis, Edição e Backup -->
+            <!-- Coluna Esquerda: Perfil (Editar só via lápis) e Backup Discreto -->
             <div class="account-col">
               <div class="panel-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <div class="panel-title" style="margin-bottom: 0;">👤 Conta & Perfis</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                  <div class="panel-title" style="margin-bottom: 0;">👤 Perfil Ativo</div>
                   <button type="button" class="btn" id="btn-toggle-new-profile" style="padding: 5px 10px; font-size: 12px;">+ Nova Conta</button>
                 </div>
 
-                <!-- Editor rápido e limpo da conta ativa -->
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                  <button type="button" class="avatar-picker-btn" id="btn-edit-avatar" title="Trocar ícone do perfil">🐱</button>
-                  <input type="text" class="text-input" id="input-edit-name" placeholder="Seu nome..." maxlength="20" style="flex: 1;">
-                  <button type="button" class="btn btn-primary" id="btn-save-profile" style="padding: 8px 12px;">Salvar</button>
-                </div>
-                <div class="avatar-popover" id="edit-avatar-strip">
-                  <button type="button" class="avatar-choice edit-av-choice">🐱</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🦊</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🐼</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🦁</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🦉</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🚀</button>
-                  <button type="button" class="avatar-choice edit-av-choice">⚽</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🌸</button>
-                  <button type="button" class="avatar-choice edit-av-choice">⭐</button>
-                  <button type="button" class="avatar-choice edit-av-choice">🏎️</button>
-                  <button type="button" class="avatar-choice edit-av-choice">☕</button>
+                <!-- Exibição limpa do perfil; edição só ao clicar no lápis -->
+                <div class="account-header-card">
+                  <div class="account-avatar-lg" id="acc-avatar-preview">R</div>
+                  <div style="flex: 1; min-width: 0;">
+                    <div id="acc-name-display" style="font-size: 18px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ray</div>
+                    <div style="font-size: 12px; color: var(--text-muted);" id="acc-summary-sub">0 concluídos • 0 em andamento</div>
+                  </div>
+                  <button type="button" class="btn" id="btn-toggle-edit-profile" title="Editar nome e foto do perfil" style="padding: 7px 11px;">✏️ Editar</button>
                 </div>
 
-                <!-- Criar nova conta (recolhido até clicar em + Nova Conta) -->
-                <div id="new-profile-drawer" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+                <!-- Formulário de Edição (oculto até clicar no lápis) -->
+                <div id="profile-edit-box" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+                  <div class="field-label">Foto do perfil (imagem de pessoa)</div>
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
+                    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
+                    <button type="button" class="btn btn-primary" id="btn-upload-avatar" style="padding: 7px 12px; font-size: 12.5px;">📷 Enviar Foto</button>
+                    <button type="button" class="btn" id="btn-clear-avatar-photo" style="padding: 7px 10px; font-size: 12px;">Usar Inicial</button>
+                  </div>
+                  <div class="field-label">Nome</div>
                   <div style="display: flex; gap: 8px;">
-                    <input type="text" class="text-input" id="input-profile-name" placeholder="Nome da nova conta..." maxlength="20" style="flex: 1;">
+                    <input type="text" class="text-input" id="input-edit-name" placeholder="Seu nome..." maxlength="24" style="flex: 1;">
+                    <button type="button" class="btn btn-primary" id="btn-save-profile" style="padding: 8px 14px;">Salvar</button>
+                  </div>
+                </div>
+
+                <!-- Criar nova conta -->
+                <div id="new-profile-drawer" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" class="text-input" id="input-profile-name" placeholder="Nome da nova conta..." maxlength="24" style="flex: 1;">
                     <button type="button" class="btn btn-primary" id="btn-add-profile">Criar</button>
                   </div>
                 </div>
 
-                <div class="profiles-stack" id="profiles-stack" style="margin-top: 12px; margin-bottom: 0;"></div>
+                <div class="profiles-stack" id="profiles-stack" style="margin-top: 14px; margin-bottom: 0;"></div>
               </div>
 
-              <div class="panel-box">
-                <div class="panel-title">📦 Salvar Cópia / GitHub</div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-                  Baixe seus dados e conquistas em um arquivo <strong>.json</strong> para guardar no GitHub ou transferir para outro computador.
+              <!-- Backup e Reset bem discretos (recolhidos) -->
+              <details class="backup-details">
+                <summary>
+                  <span>⚙️ Opções avançadas e cópia (.json)</span>
+                  <span style="font-size: 11px;">Abrir ▾</span>
+                </summary>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                  Exporte seus progressos e conquistas para guardar ou transferir de computador.
                 </p>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <button class="btn" id="btn-export-json">⬇️ Baixar Cópia (.JSON)</button>
-                  <button class="btn" id="btn-import-json">⬆️ Restaurar Cópia (.JSON)</button>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <button class="btn" id="btn-export-json" style="font-size: 12.5px; padding: 7px 12px;">⬇️ Baixar Cópia (.JSON)</button>
+                  <button class="btn" id="btn-import-json" style="font-size: 12.5px; padding: 7px 12px;">⬆️ Restaurar Cópia (.JSON)</button>
                   <input type="file" id="import-json-input" accept=".json" style="display: none;">
-                  <button class="btn btn-danger-text" id="btn-reset-app" style="margin-top: 6px;">🧹 Zerar Aplicação (Limpar Tudo)</button>
+                  <button class="btn btn-ghost btn-danger-text" id="btn-reset-app" style="margin-top: 8px; font-size: 11.5px; justify-content: flex-start; opacity: 0.75;">🧹 Zerar aplicação (limpar todos os dados locais)</button>
                 </div>
-              </div>
+              </details>
             </div>
 
-            <!-- Coluna Direita: Analytics & Troféus -->
+            <!-- Coluna Direita: Analytics Expandido -->
             <div class="account-col">
               <div class="panel-box">
-                <div class="panel-title">📊 Estatísticas de <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
+                <div class="panel-title">📊 Analytics Geral — <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
                 <div class="analytics-grid">
                   <div class="metric-card">
                     <div class="metric-val green" id="m-completed">0</div>
                     <div class="metric-label">Puzzles Concluídos</div>
                   </div>
                   <div class="metric-card">
+                    <div class="metric-val" id="m-active">0</div>
+                    <div class="metric-label">Em Andamento</div>
+                  </div>
+                  <div class="metric-card">
                     <div class="metric-val" id="m-pieces">0</div>
                     <div class="metric-label">Peças Encaixadas</div>
                   </div>
                   <div class="metric-card">
-                    <div class="metric-val blue" id="m-time">0m</div>
-                    <div class="metric-label">Tempo Montando</div>
+                    <div class="metric-val" id="m-biggest">0 pcs</div>
+                    <div class="metric-label">Maior Quebra-Cabeça</div>
                   </div>
                   <div class="metric-card">
-                    <div class="metric-val" id="m-biggest">0</div>
-                    <div class="metric-label">Maior Quebra-Cabeça</div>
+                    <div class="metric-val blue" id="m-time-active">0s</div>
+                    <div class="metric-label">Tempo Atuando</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-time-idle" style="color: var(--warning);">0s</div>
+                    <div class="metric-label">Tempo Parado</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-time-total">0s</div>
+                    <div class="metric-label">Tempo Total na Mesa</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-clicks">0</div>
+                    <div class="metric-label">Total de Cliques</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val blue" id="m-speed">0/m</div>
                     <div class="metric-label">Ritmo Médio</div>
                   </div>
                   <div class="metric-card">
-                    <div class="metric-val" id="m-active">0</div>
-                    <div class="metric-label">Em Andamento</div>
+                    <div class="metric-val green" id="m-focus-pct">100%</div>
+                    <div class="metric-label">Taxa de Foco Ativo</div>
                   </div>
                 </div>
 
-                <div class="panel-title" style="margin-top: 8px;">🏆 Quebra-Cabeças Concluídos</div>
+                <div class="panel-title" style="margin-top: 8px;">🏆 Concluídos Recentes</div>
                 <div id="trophies-container"></div>
               </div>
             </div>
@@ -1919,30 +2300,83 @@
   <div id="game-stage">
     <canvas id="game-canvas"></canvas>
 
+    <!-- Avatar (esquerda) + Voltar logo ao lado -->
     <div class="game-top-dock">
-      <button class="game-dock-btn" id="btn-g-exit" title="Salvar e voltar para a plataforma">← Voltar</button>
-      <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Expandir ou ocultar ferramentas">☰ Ferramentas</button>
+      <div class="game-avatar-chip" title="Jogador ativo">
+        <div class="account-avatar" id="hud-avatar">R</div>
+        <span class="game-player-name" id="hud-name">Ray</span>
+      </div>
+      <button class="game-dock-btn" id="btn-g-exit" title="Salvar e voltar para a tela inicial">← Voltar</button>
     </div>
 
-    <div class="game-toolbar collapsed" id="game-toolbar">
-      <button class="tool-btn" id="btn-g-preview" title="Ver foto completa [F]">🖼️ Ver Foto</button>
-      <button class="tool-btn" id="btn-g-ghost" title="Mostrar marca d'água no centro">👻 Guia Fundo</button>
-      <button class="tool-btn" id="btn-g-edges" title="Mostrar apenas peças da borda">📐 Só Bordas</button>
-      <button class="tool-btn" id="btn-g-highlight" title="Brilhar peças soltas [R]">✨ Destacar</button>
-      <button class="tool-btn" id="btn-g-hint" title="Mostrar onde vai uma peça">💡 Dica</button>
-      <button class="tool-btn" id="btn-g-color" title="Mudar cor da mesa">🎨 Cor</button>
-      <div class="tool-sep"></div>
-      <button class="tool-btn" id="btn-g-organize" title="Organizar peças ao redor [O]">Organizar</button>
-      <button class="tool-btn" id="btn-g-shuffle" title="Misturar peças soltas [K]">Misturar</button>
-      <button class="tool-btn" id="btn-g-center" title="Centralizar na tela [X]">Centralizar</button>
-      <div class="tool-sep"></div>
-      <button class="tool-btn" id="btn-g-full" title="Tela Cheia">⛶ Tela Cheia</button>
-      <button class="tool-btn" id="btn-g-sound" title="Som">🔊</button>
-      <button class="tool-btn" id="btn-g-help" title="Como Jogar">❓</button>
-      <button class="tool-btn" id="btn-g-collapse" title="Esconder barra superior">▲</button>
+    <!-- Lado direito: HUD Timer/Progresso destacado + Dropdown de Ferramentas autoexplicativo -->
+    <div class="game-right-dock">
+      <div class="hud-progress">
+        <div class="hud-row-top">
+          <div class="hud-timer-pill" id="hud-timer">⏱️ 00:00</div>
+          <div class="hud-pct-big" id="hud-pct">0%</div>
+        </div>
+        <div class="progress-track" style="height: 8px;">
+          <div class="progress-fill" id="hud-bar"></div>
+        </div>
+        <div class="hud-sub-row">
+          <span id="hud-pieces">0 / 0 peças</span>
+          <span id="hud-idle-badge" style="color: var(--warning); font-weight: 700; display: none;">⏸️ Parado</span>
+        </div>
+      </div>
+
+      <div class="tools-dropdown-wrap" style="position: relative; order: 1;">
+        <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Abrir menu de ferramentas">☰ Ferramentas</button>
+        <div class="game-toolbar collapsed" id="game-toolbar">
+          <button class="tool-btn" id="btn-g-preview">
+            <span class="tool-icon">🖼️</span>
+            <span class="tool-copy"><span class="tool-title">Ver Foto de Referência</span><span class="tool-desc">Abre ou fecha a miniatura com a imagem completa [F]</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-ghost">
+            <span class="tool-icon">👻</span>
+            <span class="tool-copy"><span class="tool-title">Guia no Fundo</span><span class="tool-desc">Mostra a imagem bem clarinha no centro do tabuleiro</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-edges">
+            <span class="tool-icon">📐</span>
+            <span class="tool-copy"><span class="tool-title">Mostrar Só Bordas</span><span class="tool-desc">Deixa apenas as peças retas dos cantos visíveis</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-highlight">
+            <span class="tool-icon">✨</span>
+            <span class="tool-copy"><span class="tool-title">Destacar Peças Soltas</span><span class="tool-desc">Contorna as peças que ainda faltam encaixar [R]</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-hint">
+            <span class="tool-icon">💡</span>
+            <span class="tool-copy"><span class="tool-title">Dica de Encaixe</span><span class="tool-desc">Pisca uma peça solta e o lugar exato onde ela vai [H]</span></span>
+          </button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" id="btn-g-organize">
+            <span class="tool-icon">🗂️</span>
+            <span class="tool-copy"><span class="tool-title">Organizar ao Redor</span><span class="tool-desc">Alinha todas as peças livres em volta da mesa [O]</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-shuffle">
+            <span class="tool-icon">🔀</span>
+            <span class="tool-copy"><span class="tool-title">Misturar Peças</span><span class="tool-desc">Espalha novamente as peças livres mantendo blocos montados [K]</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-center">
+            <span class="tool-icon">🎯</span>
+            <span class="tool-copy"><span class="tool-title">Centralizar Mesa</span><span class="tool-desc">Enquadra todo o tabuleiro no meio da tela [X]</span></span>
+          </button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" id="btn-g-full">
+            <span class="tool-icon">⛶</span>
+            <span class="tool-copy"><span class="tool-title">Tela Cheia</span><span class="tool-desc">Expande o jogo para ocupar 100% do monitor ou tablet</span></span>
+          </button>
+          <button class="tool-btn" id="btn-g-sound">
+            <span class="tool-icon" id="btn-g-sound-icon">🔊</span>
+            <span class="tool-copy"><span class="tool-title" id="btn-g-sound-label">Som dos Encaixes</span><span class="tool-desc">Liga ou desliga os efeitos sonoros das peças</span></span>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="color-popover" id="color-popover">
+    <!-- Cores de Fundo Sempre Abertas no Canto Inferior Direito -->
+    <div class="color-dock-bottom-right" id="color-dock" title="Trocar cor de fundo da mesa">
+      <span class="color-dock-label">Fundo:</span>
       <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
       <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
       <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
@@ -1951,22 +2385,7 @@
       <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
     </div>
 
-    <!-- HUD de Progresso -->
-    <div class="hud-progress">
-      <div class="hud-row">
-        <span style="font-weight: 700;"><span id="hud-avatar">🐱</span> <span id="hud-name">Ray</span></span>
-        <strong id="hud-pct" style="color: var(--accent);">0%</strong>
-      </div>
-      <div class="progress-track" style="height: 6px; margin-bottom: 5px;">
-        <div class="progress-fill" id="hud-bar"></div>
-      </div>
-      <div class="hud-row" style="margin-bottom: 0; color: var(--hud-muted); font-size: 11px;">
-        <span id="hud-pieces">0 / 0</span>
-        <strong id="hud-timer" style="color: var(--hud-text);">00:00</strong>
-      </div>
-    </div>
-
-    <!-- Botões de Zoom para Touchpad / Leigos -->
+    <!-- Botões de Zoom para Touchpad / Toque -->
     <div class="zoom-controls-pill">
       <button class="tool-btn" id="btn-zoom-out" title="Afastar Zoom">➖</button>
       <button class="tool-btn" id="btn-zoom-reset" title="Centralizar [X]">🎯</button>
@@ -1985,42 +2404,22 @@
     <div id="pocket-badge">0</div>
   </div>
 
-  <!-- MODAL DE AJUDA FÁCIL -->
-  <div class="modal-overlay" id="modal-help">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>❓ Como Jogar (Fácil e Rápido)</h3>
-        <button class="btn btn-ghost" id="btn-close-help" style="font-size: 20px;">&times;</button>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">🖱️ Botão Esquerdo</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Segure uma peça para arrastar até o lugar certo. Arrastar o espaço vazio move a mesa inteira.</p>
-        </div>
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">👜 Botão Direito (Bolso)</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Clique com o botão direito em várias peças para guardar no bolso, e clique no vazio para soltar.</p>
-        </div>
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">🔍 Zoom (➕ / ➖)</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Rodinha do mouse, pinça no trackpad ou no toque, ou os botões ➕ / ➖ no canto inferior esquerdo.</p>
-        </div>
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">💡 Dicas & Trocar Jogo</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Use <strong>💡 Dica</strong> se empacar! Você pode sair a qualquer hora sem perder nada e alternar entre jogos salvos.</p>
-        </div>
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">⌨️ Teclado</h4>
-          <p style="font-size: 13px; color: var(--text-muted);"><strong>Setas</strong> ou <strong>W A S D</strong> movem a mesa • <strong>+ / −</strong> zoom • <strong>H</strong> dica • <strong>O</strong> organizar • <strong>Esc</strong> fecha janelas.</p>
-        </div>
-        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
-          <h4 style="margin-bottom: 6px;">💾 Salva sozinho</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Seu progresso é guardado automaticamente. Ao abrir o jogo de novo, é só clicar em <strong>Continuar</strong>. Peças soltas arrastadas até a beirada da tela rolam a mesa sozinhas.</p>
+  <!-- MODAL FULLSCREEN DE VISUALIZAÇÃO (IMAGEM COMPLETA & ESTADO DO TABULEIRO) -->
+  <div class="modal-overlay" id="modal-preview-full">
+    <div class="full-prev-shell">
+      <div class="full-prev-bar">
+        <strong id="full-prev-title" style="font-size: 16px;">Prévia</strong>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button type="button" class="game-dock-btn active" id="btn-prev-mode-board" style="display:none;">🧩 Como Está o Tabuleiro</button>
+          <button type="button" class="game-dock-btn" id="btn-prev-mode-photo" style="display:none;">🖼️ Foto Completa</button>
+          <button type="button" class="game-dock-btn" id="btn-close-full-prev">✕ Fechar</button>
         </div>
       </div>
-      <div style="text-align: right;">
-        <button class="btn btn-primary" id="btn-ok-help">Entendi!</button>
+      <div class="full-prev-stage">
+        <canvas id="full-prev-canvas" style="display:none;"></canvas>
+        <img id="full-prev-img" src="" alt="Imagem completa">
       </div>
+      <div class="full-prev-footer" id="full-prev-footer"></div>
     </div>
   </div>
 
@@ -2118,8 +2517,8 @@
         const defProf = {
           id: 'p_' + Date.now(),
           name: 'Ray',
-          avatar: '🐱',
-          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          avatar: '',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, idleSeconds: 0, clicks: 0, biggest: 0 },
           trophies: [],
           activePuzzles: []
         };
@@ -2184,8 +2583,8 @@
         const p = {
           id: 'p_' + Date.now(),
           name: name.trim() || 'Jogador',
-          avatar: avatar || '🐱',
-          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          avatar: avatar || '',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, idleSeconds: 0, clicks: 0, biggest: 0 },
           trophies: [],
           activePuzzles: []
         };
@@ -2200,7 +2599,7 @@
         if (!prof) return false;
         const trimmed = (name || '').trim();
         if (trimmed) prof.name = trimmed;
-        if (avatar) prof.avatar = avatar;
+        if (avatar !== undefined) prof.avatar = avatar;
         this.persistImmediate();
         return true;
       }
@@ -2234,11 +2633,13 @@
         this.persistImmediate();
       }
 
-      recordVictory(saveId, title, pieces, timeStr, timeSec, src, hardmode) {
+      recordVictory(saveId, title, pieces, timeStr, timeSec, idleSec, clicks, src, hardmode) {
         const prof = this.getActiveProfile();
         prof.stats.completed = (prof.stats.completed || 0) + 1;
         prof.stats.piecesPlaced = (prof.stats.piecesPlaced || 0) + pieces;
         prof.stats.timeSeconds = (prof.stats.timeSeconds || 0) + timeSec;
+        prof.stats.idleSeconds = (prof.stats.idleSeconds || 0) + (idleSec || 0);
+        prof.stats.clicks = (prof.stats.clicks || 0) + (clicks || 0);
         prof.stats.biggest = Math.max(prof.stats.biggest || 0, pieces);
 
         // Remove da lista de "Em Andamento"
@@ -2246,11 +2647,15 @@
           prof.activePuzzles = prof.activePuzzles.filter(x => x.saveId !== saveId);
         }
 
+        const pace = timeSec > 10 ? Math.round((pieces / timeSec) * 60) : pieces;
         prof.trophies.unshift({
           title,
           pieces,
           time: timeStr,
           timeSec,
+          idleSec: idleSec || 0,
+          clicks: clicks || 0,
+          pace,
           hardmode,
           date: new Date().toLocaleDateString('pt-BR'),
           src
@@ -2303,8 +2708,8 @@
         const defProf = {
           id: 'p_' + Date.now(),
           name: 'Ray',
-          avatar: '🐱',
-          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, biggest: 0 },
+          avatar: '',
+          stats: { completed: 0, piecesPlaced: 0, timeSeconds: 0, idleSeconds: 0, clicks: 0, biggest: 0 },
           trophies: [],
           activePuzzles: []
         };
@@ -2471,6 +2876,8 @@
 
         this.startTime = null;
         this.elapsedSeconds = 0;
+        this.idleSeconds = 0;
+        this.clicks = 0;
         this.timerInterval = null;
         this.completedPieces = 0;
         this.isFinished = false;
@@ -2577,6 +2984,8 @@
             this.rows = savedState.rows;
             this.totalPieces = savedState.totalPieces;
             this.elapsedSeconds = savedState.elapsedSeconds || 0;
+            this.idleSeconds = savedState.idleSeconds || 0;
+            this.clicks = savedState.clicks || 0;
             this.setupBoard();
             await this.restoreFromSavedStateAsync(savedState);
           } else {
@@ -2588,6 +2997,8 @@
             this.rows = r;
             this.totalPieces = c * r;
             this.elapsedSeconds = (demoMounted > 0 || demoOutside > 0) ? 145 : 0;
+            this.idleSeconds = 0;
+            this.clicks = 0;
             this.setupBoard();
             await this.generateMeshAsync();
             if (demoMounted > 0) this.applyDemoMounted(demoMounted);
@@ -2607,7 +3018,6 @@
             tbBtn.setAttribute('aria-expanded', 'false');
             tbBtn.textContent = '☰ Ferramentas';
           }
-          document.getElementById('color-popover')?.classList.remove('open');
           this.centerView();
           this.startTimer();
           this.updateHUD();
@@ -3187,9 +3597,9 @@
         });
         window.addEventListener('touchcancel', () => { pinch = null; this.pendingMove = null; this.onPointerUp(); });
 
-        // Interações de teclado/clique reiniciam o contador de inatividade
+        // Movimentar mouse, teclado, toque ou clique reinicia os 30s de inatividade
         const markActive = () => { this.lastActive = Date.now(); };
-        ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(ev =>
+        ['pointerdown', 'keydown', 'wheel', 'touchstart', 'touchmove', 'pointermove'].forEach(ev =>
           window.addEventListener(ev, markActive, { passive: true }));
 
         this.canvas.addEventListener('wheel', (e) => {
@@ -3226,7 +3636,6 @@
           if (e.ctrlKey || e.metaKey || e.altKey) return;
           const step = 70;
           if (e.code === 'Escape') {
-            document.getElementById('color-popover').classList.remove('open');
             if (!document.getElementById('game-toolbar').classList.contains('collapsed')) {
               document.getElementById('btn-reopen-toolbar').click();
             }
@@ -3256,6 +3665,8 @@
       }
 
       onPointerDown(cx, cy, btn) {
+        this.clicks = (this.clicks || 0) + 1;
+        this.lastActive = Date.now();
         const pos = this.screenToWorld(cx, cy);
         const hit = this.getPieceAt(pos.x, pos.y);
 
@@ -3413,7 +3824,7 @@
       updateHUD() {
         this.completedPieces = this.pieces.filter(p => p.locked).length;
         const pct = Math.round((this.completedPieces / this.totalPieces) * 100);
-        document.getElementById('hud-pieces').textContent = `${this.completedPieces} / ${this.totalPieces}`;
+        document.getElementById('hud-pieces').textContent = `${this.completedPieces} / ${this.totalPieces} peças`;
         document.getElementById('hud-pct').textContent = `${pct}%`;
         document.getElementById('hud-bar').style.width = `${pct}%`;
       }
@@ -3432,6 +3843,8 @@
           pct: Math.round((lockedCount / this.totalPieces) * 100),
           hardmode: this.hardmode,
           elapsedSeconds: this.elapsedSeconds,
+          idleSeconds: this.idleSeconds || 0,
+          clicks: this.clicks || 0,
           updatedAt: Date.now(),
           boardWidth: this.boardWidth,
           boardHeight: this.boardHeight,
@@ -3454,8 +3867,12 @@
           this.victoryWaveProgress = 0;
           this.initConfetti();
 
-          const elapsedStr = document.getElementById('hud-timer').textContent;
-          storage.recordVictory(this.saveId, this.puzzleTitle, this.totalPieces, elapsedStr, this.elapsedSeconds, this.imageSrc, this.hardmode);
+          const elapsedStr = formatDuration(this.elapsedSeconds);
+          storage.recordVictory(
+            this.saveId, this.puzzleTitle, this.totalPieces,
+            elapsedStr, this.elapsedSeconds, this.idleSeconds || 0, this.clicks || 0,
+            this.imageSrc, this.hardmode
+          );
 
           document.getElementById('victory-summary').textContent =
             `Você completou "${this.puzzleTitle}" (${this.totalPieces} peças) em ${elapsedStr}!`;
@@ -3480,13 +3897,25 @@
         this.stopTimer();
         this.lastActive = Date.now();
         const el = document.getElementById('hud-timer');
+        const idleBadge = document.getElementById('hud-idle-badge');
         const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-        el.textContent = fmt(this.elapsedSeconds);
+        const renderTimer = (paused) => {
+          el.textContent = `${paused ? '⏸️' : '⏱️'} ${fmt(this.elapsedSeconds)}`;
+          el.classList.toggle('paused', paused);
+          if (idleBadge) idleBadge.style.display = paused ? 'inline' : 'none';
+        };
+        renderTimer(false);
         this.timerInterval = setInterval(() => {
-          // Pausa sozinho quando a aba está escondida ou a pessoa ficou 1 min sem mexer
-          if (document.hidden || this.isFinished || Date.now() - this.lastActive > 60000) return;
+          if (this.isFinished) return;
+          // Pausa o timer se a aba estiver oculta ou se ficar 30s sem mexer o mouse/interagir
+          const paused = document.hidden || (Date.now() - this.lastActive >= 30000);
+          if (paused) {
+            this.idleSeconds = (this.idleSeconds || 0) + 1;
+            renderTimer(true);
+            return;
+          }
           this.elapsedSeconds++;
-          el.textContent = fmt(this.elapsedSeconds);
+          renderTimer(false);
         }, 1000);
       }
 
@@ -3687,25 +4116,102 @@
     let engine;
     let currentScope = 'new'; // 'new' = Novos para Montar (padrão), 'created' = Já Criados
     let currentCat = 'all';
+    let currentTaste = ''; // Filtro por gosto no menu lateral (nível 1)
     let currentSearch = '';
     let galleryLimit = 36;
     let pendingItem = null;
     let pendingPieces = 100;
     let pendingHard = false;
 
+    const TASTE_QUERIES = {
+      renegade: ['renegade'],
+      bronco: ['bronco'],
+      byd: ['byd'],
+      jeep: ['jeep'],
+      mercedes: ['mercedes'],
+      bmw: ['bmw'],
+      camilopolis: ['camilopolis', 'santo andre', 'paranapiacaba'],
+      pesqueira: ['pesqueira'],
+      minas: ['minas', 'canastra', 'ouro preto', 'tiradentes', 'araxa'],
+      queijo: ['queijo'],
+      foz: ['foz', 'iguacu'],
+      paraguai: ['paraguai'],
+      argentina: ['argentina'],
+      cafe: ['cafe', 'expresso', 'espresso'],
+      vinho: ['vinho'],
+      churrasco: ['churrasco', 'churrascaria'],
+      mercados: ['supermercado', 'mercado', 'nagumo', 'drogasil', 'farmacia'],
+      diy: ['diy', 'construcao', 'marcenaria'],
+      redes: ['rede', 'cabeamento', 'fibra', 'servidor', 'cabo'],
+      apartamentos: ['apartamento', 'edificio'],
+      aeroporto: ['aeroporto', 'aviao'],
+      wally: ['wally', 'whaly', 'cena detalhada', 'multidao'],
+      musica: ['musica', 'amado batista', 'sidney magal', 'violao', 'show', 'palco']
+    };
+
     const PREFS_KEY = 'quebra_cabeca_ray_prefs_v1';
     function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } }
     function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
     let prefs = loadPrefs();
 
+    const THEME_ORDER = ['light', 'dark', 'black'];
+    const THEME_META = {
+      light: { icon: '☀️', label: 'Claro' },
+      dark: { icon: '🌙', label: 'Escuro' },
+      black: { icon: '⬛', label: 'Black OLED' }
+    };
+
     function applyTheme(theme) {
-      const valid = ['light', 'dark', 'black'].includes(theme) ? theme : 'light';
+      const valid = THEME_ORDER.includes(theme) ? theme : 'light';
       document.documentElement.setAttribute('data-theme', valid);
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.themeSet === valid);
-      });
+      const btn = document.getElementById('btn-cycle-theme');
+      if (btn) {
+        const meta = THEME_META[valid];
+        const next = THEME_META[THEME_ORDER[(THEME_ORDER.indexOf(valid) + 1) % THEME_ORDER.length]].label;
+        btn.textContent = meta.icon;
+        btn.title = `Tema: ${meta.label} (clique para mudar para ${next})`;
+      }
       prefs.theme = valid;
       savePrefs(prefs);
+    }
+
+    function cycleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = THEME_ORDER[(THEME_ORDER.indexOf(cur) + 1) % THEME_ORDER.length];
+      applyTheme(next);
+      showToast(`Tema: ${THEME_META[next].label}`);
+    }
+
+    function isImageAvatar(av) {
+      return typeof av === 'string' && (av.startsWith('data:image') || av.startsWith('http') || av.startsWith('imagens/'));
+    }
+
+    function renderAvatarEl(el, prof) {
+      if (!el) return;
+      const av = prof?.avatar || '';
+      if (isImageAvatar(av)) {
+        el.innerHTML = `<img src="${av}" alt="${prof.name || 'Perfil'}" class="avatar-img">`;
+      } else {
+        const initial = ((prof?.name || 'J').trim()[0] || 'J').toUpperCase();
+        el.textContent = initial;
+      }
+    }
+
+    function formatDuration(totalSec) {
+      const s = Math.max(0, Math.round(totalSec || 0));
+      if (s < 60) return `${s}s`;
+      const m = Math.floor(s / 60);
+      const remS = s % 60;
+      if (m < 60) return remS > 0 ? `${m}m ${String(remS).padStart(2, '0')}s` : `${m}m`;
+      const h = Math.floor(m / 60);
+      return `${h}h ${String(m % 60).padStart(2, '0')}m`;
+    }
+
+    function itemMatchesTaste(item, tasteKey) {
+      const kws = TASTE_QUERIES[tasteKey];
+      if (!kws) return true;
+      const hay = normalizeText(`${item.title} ${item.tags || ''}`);
+      return kws.some(k => hay.includes(k));
     }
 
     function getCreatedSrcSet(prof) {
@@ -3730,10 +4236,16 @@
       scoped.forEach(item => {
         counts[item.cat] = (counts[item.cat] || 0) + 1;
       });
-      document.querySelectorAll('.cat-pill').forEach(pill => {
-        const cat = pill.dataset.cat;
-        const badge = pill.querySelector('.cat-count');
+      document.querySelectorAll('#sidebar-general-list .sidebar-item').forEach(btn => {
+        const cat = btn.dataset.cat;
+        const badge = btn.querySelector('.cat-count');
         const val = cat === 'all' ? scoped.length : (counts[cat] || 0);
+        if (badge) badge.textContent = val.toLocaleString('pt-BR');
+      });
+      document.querySelectorAll('#sidebar-tastes-list .sidebar-item').forEach(btn => {
+        const taste = btn.dataset.taste;
+        const badge = btn.querySelector('.cat-count');
+        const val = scoped.filter(i => itemMatchesTaste(i, taste)).length;
         if (badge) badge.textContent = val.toLocaleString('pt-BR');
       });
     }
@@ -3764,10 +4276,15 @@
     }
 
     function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else if (document.exitFullscreen) {
-        document.exitFullscreen();
+      const docEl = document.documentElement;
+      const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      const cur = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!cur) {
+        if (req) req.call(docEl).catch(() => showToast('Tela cheia não permitida neste navegador.'));
+        else showToast('No iPhone/iPad, use Compartilhar → Tela de Início para tela cheia.');
+      } else if (exit) {
+        exit.call(document);
       }
     }
 
@@ -3775,35 +4292,40 @@
       document.querySelectorAll('.nav-tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tabName)));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tabName}`));
       if (tabName === 'inprogress') renderInProgressTab();
+      if (tabName === 'completed') renderCompletedTab();
       if (tabName === 'account') renderAccountTab();
     }
 
     function refreshAllUI() {
       const prof = storage.getActiveProfile();
-      document.getElementById('top-avatar').textContent = prof.avatar;
+      renderAvatarEl(document.getElementById('top-avatar'), prof);
       document.getElementById('top-name').textContent = prof.name;
-      document.getElementById('hud-avatar').textContent = prof.avatar;
+      renderAvatarEl(document.getElementById('hud-avatar'), prof);
       document.getElementById('hud-name').textContent = prof.name;
 
       const activeList = prof.activePuzzles || [];
-      const badge = document.getElementById('badge-inprogress-count');
-      if (activeList.length > 0) {
-        badge.style.display = 'inline-block';
-        badge.textContent = activeList.length;
+      const doneList = prof.trophies || [];
 
+      const badgeIn = document.getElementById('badge-inprogress-count');
+      if (badgeIn) badgeIn.textContent = activeList.length;
+
+      const badgeDone = document.getElementById('badge-completed-count');
+      if (badgeDone) badgeDone.textContent = doneList.length;
+
+      if (activeList.length > 0) {
         const latest = activeList[0];
         const card = document.getElementById('card-continue-last');
         card.style.display = 'flex';
         document.getElementById('last-game-title').textContent = `Continuar: ${latest.title}`;
         document.getElementById('last-game-meta').textContent = `${latest.lockedCount}/${latest.totalPieces} peças (${latest.pct}%)`;
       } else {
-        badge.style.display = 'none';
         document.getElementById('card-continue-last').style.display = 'none';
       }
 
       updateCategoryCounts();
       renderGallery(false);
       renderInProgressTab();
+      renderCompletedTab();
       renderAccountTab();
     }
 
@@ -3820,7 +4342,9 @@
       const createdSet = getCreatedSrcSet(prof);
 
       let list = gallery.filter(i => currentScope === 'created' ? createdSet.has(i.src) : !createdSet.has(i.src));
-      if (currentCat !== 'all') {
+      if (currentTaste) {
+        list = list.filter(i => itemMatchesTaste(i, currentTaste));
+      } else if (currentCat !== 'all') {
         list = list.filter(i => i.cat === currentCat);
       }
       if (currentSearch) {
@@ -3840,7 +4364,7 @@
         loadMoreBox.style.display = 'none';
         const emptyMsg = currentScope === 'created' && !currentSearch
           ? `<h4>Nenhum quebra-cabeça criado ainda nesta seleção</h4><p>Escolha qualquer imagem em "✨ Novos para Montar" para começar!</p>`
-          : `<h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria.</p>`;
+          : `<h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria no menu lateral.</p>`;
         grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${emptyMsg}</div>`;
         return;
       }
@@ -3916,6 +4440,103 @@
       }
     }
 
+    function openFullPreview(mode, entry) {
+      const modal = document.getElementById('modal-preview-full');
+      const imgEl = document.getElementById('full-prev-img');
+      const canvasEl = document.getElementById('full-prev-canvas');
+      const btnBoard = document.getElementById('btn-prev-mode-board');
+      const btnPhoto = document.getElementById('btn-prev-mode-photo');
+      const footer = document.getElementById('full-prev-footer');
+
+      const src = entry.imageSrc || entry.src;
+      document.getElementById('full-prev-title').textContent = entry.title || 'Prévia';
+      imgEl.src = src;
+
+      const activeSec = entry.elapsedSeconds !== undefined ? entry.elapsedSeconds : (entry.timeSec || 0);
+      const idleSec = entry.idleSeconds !== undefined ? entry.idleSeconds : (entry.idleSec || 0);
+      const totalSec = activeSec + idleSec;
+      const clicks = entry.clicks || 0;
+      const pcsCount = mode === 'inprogress' ? (entry.lockedCount || 0) : (entry.pieces || 0);
+      const pace = activeSec > 10 ? Math.round((pcsCount / activeSec) * 60) : pcsCount;
+
+      footer.innerHTML = mode === 'inprogress'
+        ? `<span>🧩 <strong>${entry.lockedCount}/${entry.totalPieces}</strong> (${entry.pct}%)</span>
+           <span>⏱️ Atuando: <strong>${formatDuration(activeSec)}</strong></span>
+           <span>⏸️ Parado: <strong>${formatDuration(idleSec)}</strong></span>
+           <span>🕒 Até o momento: <strong>${formatDuration(totalSec)}</strong></span>
+           <span>🖱️ Cliques: <strong>${clicks}</strong></span>
+           <span>⚡ Ritmo: <strong>${pace} pç/min</strong></span>`
+        : `<span>🧩 <strong>${entry.pieces} peças</strong></span>
+           <span>⏱️ Atuando: <strong>${formatDuration(activeSec)}</strong></span>
+           <span>⏸️ Parado: <strong>${formatDuration(idleSec)}</strong></span>
+           <span>🕒 Tempo Total: <strong>${formatDuration(totalSec)}</strong></span>
+           <span>🖱️ Cliques: <strong>${clicks}</strong></span>
+           <span>⚡ Ritmo: <strong>${pace} pç/min</strong></span>
+           <span>✅ Concluído em <strong>${entry.date || '-'}</strong></span>`;
+
+      const renderBoardState = () => {
+        imgEl.style.display = 'none';
+        canvasEl.style.display = 'block';
+        btnBoard.classList.add('active');
+        btnPhoto.classList.remove('active');
+
+        const im = new Image();
+        im.onload = () => {
+          const maxW = Math.min(1280, im.naturalWidth || 1024);
+          const ratio = (im.naturalHeight || 768) / Math.max(1, im.naturalWidth || 1024);
+          const cw = maxW, ch = Math.round(cw * ratio);
+          canvasEl.width = cw; canvasEl.height = ch;
+          const ctx = canvasEl.getContext('2d');
+          ctx.fillStyle = '#181320';
+          ctx.fillRect(0, 0, cw, ch);
+
+          const cols = entry.cols || 10, rows = entry.rows || 8;
+          const pw = cw / cols, ph = ch / rows;
+          const sw = im.naturalWidth / cols, sh = im.naturalHeight / rows;
+
+          // Fundo guia muito suave das peças que ainda faltam
+          ctx.save();
+          ctx.globalAlpha = 0.14;
+          ctx.drawImage(im, 0, 0, cw, ch);
+          ctx.restore();
+
+          // Desenha nitidamente cada peça já encaixada no tabuleiro
+          (entry.pieces || []).forEach(p => {
+            if (!p.locked) return;
+            ctx.drawImage(im, p.col * sw, p.row * sh, sw, sh, p.col * pw, p.row * ph, pw + 0.5, ph + 0.5);
+          });
+
+          // Grade sutil
+          ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+          ctx.lineWidth = 1;
+          for (let c = 1; c < cols; c++) { ctx.beginPath(); ctx.moveTo(c * pw, 0); ctx.lineTo(c * pw, ch); ctx.stroke(); }
+          for (let r = 1; r < rows; r++) { ctx.beginPath(); ctx.moveTo(0, r * ph); ctx.lineTo(cw, r * ph); ctx.stroke(); }
+        };
+        im.src = src;
+      };
+
+      const renderPhotoOnly = () => {
+        canvasEl.style.display = 'none';
+        imgEl.style.display = 'block';
+        btnBoard.classList.remove('active');
+        btnPhoto.classList.add('active');
+      };
+
+      if (mode === 'inprogress') {
+        btnBoard.style.display = 'inline-flex';
+        btnPhoto.style.display = 'inline-flex';
+        btnBoard.onclick = renderBoardState;
+        btnPhoto.onclick = renderPhotoOnly;
+        renderBoardState();
+      } else {
+        btnBoard.style.display = 'none';
+        btnPhoto.style.display = 'none';
+        renderPhotoOnly();
+      }
+
+      modal.classList.add('open');
+    }
+
     function renderInProgressTab() {
       const container = document.getElementById('inprogress-container');
       const prof = storage.getActiveProfile();
@@ -3935,11 +4556,18 @@
       grid.className = 'inprogress-grid';
 
       list.forEach(save => {
+        const activeSec = save.elapsedSeconds || 0;
+        const idleSec = save.idleSeconds || 0;
+        const totalSec = activeSec + idleSec;
+        const clicks = save.clicks || 0;
+        const pace = activeSec > 10 ? Math.round(((save.lockedCount || 0) / activeSec) * 60) : (save.lockedCount || 0);
+
         const card = document.createElement('div');
         card.className = 'save-card';
         card.innerHTML = `
           <div class="save-thumb">
             <img src="${save.imageSrc}" alt="${save.title}">
+            <button type="button" class="save-thumb-btn" title="Ver tabuleiro e foto completa em tela cheia">👁️ Tela Cheia</button>
             <div class="save-pct-pill">${save.pct}%</div>
           </div>
           <div class="save-body">
@@ -3949,12 +4577,22 @@
               <span>${save.pct}% montado</span>
             </div>
             <div class="progress-track"><div class="progress-fill" style="width:${save.pct}%"></div></div>
+            <div class="save-stats-grid">
+              <div class="save-stat-item"><span>⏱️ Atuando</span><strong>${formatDuration(activeSec)}</strong></div>
+              <div class="save-stat-item"><span>⏸️ Parado</span><strong>${formatDuration(idleSec)}</strong></div>
+              <div class="save-stat-item"><span>🕒 Até agora</span><strong>${formatDuration(totalSec)}</strong></div>
+              <div class="save-stat-item"><span>🖱️ Cliques</span><strong>${clicks}</strong></div>
+              <div class="save-stat-item" style="grid-column: 1 / -1;"><span>⚡ Ritmo de montagem</span><strong>${pace} peças/min</strong></div>
+            </div>
             <div class="save-actions">
               <button class="btn btn-primary btn-resume" style="flex:1;">▶ Continuar</button>
+              <button class="btn btn-fullview" title="Ver como está em tela cheia">👁️</button>
               <button class="btn btn-danger-text btn-del-save" title="Excluir jogo salvo">🗑️</button>
             </div>
           </div>
         `;
+        card.querySelector('.save-thumb-btn').addEventListener('click', () => openFullPreview('inprogress', save));
+        card.querySelector('.btn-fullview').addEventListener('click', () => openFullPreview('inprogress', save));
         card.querySelector('.btn-resume').addEventListener('click', () => openSavedPuzzle(save));
         card.querySelector('.btn-del-save').addEventListener('click', () => {
           if (confirm(`Deseja excluir o progresso de "${save.title}"?`)) {
@@ -3969,18 +4607,81 @@
       container.appendChild(grid);
     }
 
+    function renderCompletedTab() {
+      const container = document.getElementById('completed-container');
+      if (!container) return;
+      const prof = storage.getActiveProfile();
+      const list = prof.trophies || [];
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h4>Nenhum quebra-cabeça concluído ainda</h4>
+            <p>Quando você terminar uma montagem, ela aparecerá aqui com todos os tempos, cliques e ritmo.</p>
+            <button class="btn btn-primary" onclick="switchTab('discover')">Escolher um Quebra-Cabeça</button>
+          </div>`;
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'inprogress-grid';
+
+      list.forEach(tr => {
+        const activeSec = tr.timeSec || 0;
+        const idleSec = tr.idleSec || 0;
+        const totalSec = activeSec + idleSec;
+        const clicks = tr.clicks || 0;
+        const pace = tr.pace !== undefined ? tr.pace : (activeSec > 10 ? Math.round((tr.pieces / activeSec) * 60) : tr.pieces);
+
+        const card = document.createElement('div');
+        card.className = 'save-card';
+        card.innerHTML = `
+          <div class="save-thumb">
+            <img src="${tr.src}" alt="${tr.title}" loading="lazy">
+            <button type="button" class="save-thumb-btn" title="Ver imagem completa em tela cheia">👁️ Tela Cheia</button>
+            <div class="save-pct-pill" style="color:#34D399;">🏆 100%</div>
+          </div>
+          <div class="save-body">
+            <div class="save-title">${tr.title}</div>
+            <div class="save-meta">
+              <span>🧩 ${tr.pieces} peças</span>
+              <span style="color:var(--success); font-weight:700;">Concluído em ${tr.date}</span>
+            </div>
+            <div class="save-stats-grid">
+              <div class="save-stat-item"><span>⏱️ Atuando</span><strong>${formatDuration(activeSec)}</strong></div>
+              <div class="save-stat-item"><span>⏸️ Parado</span><strong>${formatDuration(idleSec)}</strong></div>
+              <div class="save-stat-item"><span>🕒 Total</span><strong>${formatDuration(totalSec)}</strong></div>
+              <div class="save-stat-item"><span>🖱️ Cliques</span><strong>${clicks}</strong></div>
+              <div class="save-stat-item" style="grid-column: 1 / -1;"><span>⚡ Ritmo de montagem</span><strong>${pace} peças/min</strong></div>
+            </div>
+            <div class="save-actions">
+              <button class="btn btn-primary btn-fullview" style="flex:1;">👁️ Ver Imagem Completa</button>
+              <button class="btn btn-replay-done" title="Montar novamente">🔄</button>
+            </div>
+          </div>
+        `;
+        card.querySelector('.save-thumb-btn').addEventListener('click', () => openFullPreview('completed', tr));
+        card.querySelector('.btn-fullview').addEventListener('click', () => openFullPreview('completed', tr));
+        card.querySelector('.btn-replay-done').addEventListener('click', () => openNewConfig({ title: tr.title, src: tr.src }));
+        grid.appendChild(card);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(grid);
+    }
+
     function renderAccountTab() {
       const prof = storage.getActiveProfile();
-      document.getElementById('stats-owner-label').textContent = `${prof.avatar} ${prof.name}`;
+      const activeList = prof.activePuzzles || [];
+      const doneList = prof.trophies || [];
 
-      // Sincroniza editor compacto da conta ativa
-      const avBtn = document.getElementById('btn-edit-avatar');
+      renderAvatarEl(document.getElementById('acc-avatar-preview'), prof);
+      document.getElementById('acc-name-display').textContent = prof.name;
+      document.getElementById('acc-summary-sub').textContent = `${doneList.length} concluídos • ${activeList.length} em andamento`;
+      document.getElementById('stats-owner-label').textContent = prof.name;
+
       const editInput = document.getElementById('input-edit-name');
-      if (avBtn) avBtn.textContent = prof.avatar;
       if (editInput) editInput.value = prof.name;
-      document.querySelectorAll('.edit-av-choice').forEach(btn => {
-        btn.classList.toggle('selected', btn.textContent === prof.avatar);
-      });
 
       // Lista leve de contas
       const stack = document.getElementById('profiles-stack');
@@ -3990,11 +4691,11 @@
         const row = document.createElement('div');
         row.className = `profile-row ${isAct ? 'active' : ''}`;
         row.innerHTML = `
-          <div style="display:flex; align-items:center; gap:9px;">
-            <span style="font-size:18px;">${p.avatar}</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="account-avatar" style="width:32px; height:32px; font-size:13px;"></div>
             <div>
               <div style="font-weight:700; font-size:13.5px;">${p.name} ${isAct ? '<span style="color:var(--accent); font-size:11px;">(Ativa)</span>' : ''}</div>
-              <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed} • ⏳ ${(p.activePuzzles || []).length}</div>
+              <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed || 0} • ⏳ ${(p.activePuzzles || []).length}</div>
             </div>
           </div>
           <div style="display:flex; gap:6px;">
@@ -4002,6 +4703,7 @@
             ${storage.data.profiles.length > 1 ? `<button class="btn btn-ghost btn-danger-text btn-del" style="padding:4px 8px; font-size:12px;">✕</button>` : ''}
           </div>
         `;
+        renderAvatarEl(row.querySelector('.account-avatar'), p);
         const useBtn = row.querySelector('.btn-use');
         if (useBtn) useBtn.addEventListener('click', () => { storage.setActiveProfile(p.id); refreshAllUI(); showToast(`Conta alterada para ${p.name}`); });
         const delBtn = row.querySelector('.btn-del');
@@ -4011,43 +4713,51 @@
         stack.appendChild(row);
       });
 
-      // Métricas
-      const inProgList = prof.activePuzzles || [];
-      const inProgPieces = inProgList.reduce((acc, s) => acc + (s.lockedCount || 0), 0);
-      const inProgTime = inProgList.reduce((acc, s) => acc + (s.elapsedSeconds || 0), 0);
+      // Métricas detalhadas (concluídos + em andamento)
+      const inProgPieces = activeList.reduce((acc, s) => acc + (s.lockedCount || 0), 0);
+      const inProgActiveSec = activeList.reduce((acc, s) => acc + (s.elapsedSeconds || 0), 0);
+      const inProgIdleSec = activeList.reduce((acc, s) => acc + (s.idleSeconds || 0), 0);
+      const inProgClicks = activeList.reduce((acc, s) => acc + (s.clicks || 0), 0);
 
       const totalPieces = (prof.stats.piecesPlaced || 0) + inProgPieces;
-      const totalSec = (prof.stats.timeSeconds || 0) + inProgTime;
-      const mins = Math.floor(totalSec / 60);
-      const hrs = Math.floor(mins / 60);
-      const timeStr = hrs > 0 ? `${hrs}h ${mins % 60}m` : `${mins}m`;
-      const speed = totalSec > 20 ? Math.round((totalPieces / totalSec) * 60) : 0;
+      const totalActiveSec = (prof.stats.timeSeconds || 0) + inProgActiveSec;
+      const totalIdleSec = (prof.stats.idleSeconds || 0) + inProgIdleSec;
+      const totalAllSec = totalActiveSec + totalIdleSec;
+      const totalClicks = (prof.stats.clicks || 0) + inProgClicks;
+      const speed = totalActiveSec > 20 ? Math.round((totalPieces / totalActiveSec) * 60) : 0;
+      const focusPct = totalAllSec > 0 ? Math.round((totalActiveSec / totalAllSec) * 100) : 100;
 
-      document.getElementById('m-completed').textContent = prof.stats.completed || 0;
+      document.getElementById('m-completed').textContent = doneList.length;
+      document.getElementById('m-active').textContent = activeList.length;
       document.getElementById('m-pieces').textContent = totalPieces.toLocaleString('pt-BR');
-      document.getElementById('m-time').textContent = timeStr;
       document.getElementById('m-biggest').textContent = `${prof.stats.biggest || 0} pcs`;
+      document.getElementById('m-time-active').textContent = formatDuration(totalActiveSec);
+      document.getElementById('m-time-idle').textContent = formatDuration(totalIdleSec);
+      document.getElementById('m-time-total').textContent = formatDuration(totalAllSec);
+      document.getElementById('m-clicks').textContent = totalClicks.toLocaleString('pt-BR');
       document.getElementById('m-speed').textContent = `${speed}/m`;
-      document.getElementById('m-active').textContent = inProgList.length;
+      document.getElementById('m-focus-pct').textContent = `${focusPct}%`;
 
-      // Troféus
+      // Troféus recentes na conta
       const tCont = document.getElementById('trophies-container');
-      if (!prof.trophies || prof.trophies.length === 0) {
+      if (doneList.length === 0) {
         tCont.innerHTML = `<div class="empty-state" style="padding: 28px;"><p style="margin-bottom:0;">Nenhum puzzle concluído ainda com esta conta.</p></div>`;
       } else {
         const listEl = document.createElement('div');
         listEl.className = 'trophy-list';
-        prof.trophies.forEach(tr => {
+        doneList.slice(0, 6).forEach(tr => {
           const tc = document.createElement('div');
           tc.className = 'trophy-card';
+          tc.style.cursor = 'pointer';
           tc.innerHTML = `
             <img src="${tr.src}" alt="${tr.title}" loading="lazy">
             <div class="trophy-info">
               <div style="font-weight:700; font-size:13px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tr.title}</div>
-              <div style="font-size:12px; color:var(--text-muted);">🧩 ${tr.pieces} peças • ⏱️ ${tr.time}</div>
-              <div style="font-size:11px; color:var(--success); margin-top:4px;">Concluído em ${tr.date}</div>
+              <div style="font-size:12px; color:var(--text-muted);">🧩 ${tr.pieces} pç • ⏱️ ${formatDuration(tr.timeSec || 0)} • 🖱️ ${tr.clicks || 0} cliques</div>
+              <div style="font-size:11px; color:var(--success); margin-top:4px;">Concluído em ${tr.date} • Clique para ampliar</div>
             </div>
           `;
+          tc.addEventListener('click', () => openFullPreview('completed', tr));
           listEl.appendChild(tc);
         });
         tCont.innerHTML = '';
@@ -4086,15 +4796,11 @@
       }
 
       applyTheme(params.get('theme') || prefs.theme || 'light');
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', () => applyTheme(btn.dataset.themeSet));
-      });
-      if (['discover', 'inprogress', 'account'].includes(params.get('tab'))) {
+      document.getElementById('btn-cycle-theme').addEventListener('click', cycleTheme);
+
+      if (['discover', 'inprogress', 'completed', 'account'].includes(params.get('tab'))) {
         setTimeout(() => switchTab(params.get('tab')), 20);
       }
-      document.getElementById('btn-lobby-help').addEventListener('click', () => {
-        document.getElementById('modal-help').classList.add('open');
-      });
 
       engine = new PuzzleEngine();
 
@@ -4115,7 +4821,8 @@
       }
       if (prefs.muted) {
         audio.muted = true;
-        document.getElementById('btn-g-sound').textContent = '🔇';
+        document.getElementById('btn-g-sound-icon').textContent = '🔇';
+        document.getElementById('btn-g-sound-label').textContent = 'Som Desligado';
       }
 
       // Suporte à demonstração direta (?demo=50 ou ?pieces=500&demoOutside=10)
@@ -4149,29 +4856,13 @@
       document.addEventListener('visibilitychange', () => { if (document.hidden) flushGame(); });
       window.addEventListener('pagehide', flushGame);
 
-      // Logo -> Link Home (volta para Descobrir -> Novos para Montar -> Todas)
-      document.getElementById('brand-home-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        switchTab('discover');
-        currentScope = 'new';
-        currentCat = 'all';
-        currentSearch = '';
-        const sInp = document.getElementById('search-input');
-        if (sInp) sInp.value = '';
-        document.querySelectorAll('.scope-btn').forEach(b => b.classList.toggle('active', b.dataset.scope === 'new'));
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
-        updateCategoryCounts();
-        renderGallery(true);
-        document.getElementById('gallery-scroll-area')?.scrollTo({ top: 0, behavior: 'auto' });
-      });
-
-      // Navegação em Abas
+      // Navegação em Abas & Acesso à conta pelo Avatar
       document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
       });
       document.getElementById('btn-quick-account').addEventListener('click', () => switchTab('account'));
 
-      // Escopo (Novos para Montar vs Já Criados), Busca & Categorias
+      // Escopo (Novos para Montar vs Já Criados), Busca & Menu Lateral Fixo (2 Níveis)
       document.querySelectorAll('.scope-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
@@ -4185,14 +4876,34 @@
         currentSearch = e.target.value.trim();
         renderGallery(true);
       });
-      document.querySelectorAll('.cat-pill').forEach(btn => {
+
+      const discoverSidebar = document.getElementById('discover-sidebar');
+      document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
+        discoverSidebar.classList.toggle('mobile-open');
+      });
+
+      document.querySelectorAll('#sidebar-tastes-list .sidebar-item').forEach(btn => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          currentCat = btn.dataset.cat;
+          currentTaste = btn.dataset.taste;
+          currentCat = 'all';
+          discoverSidebar.classList.remove('mobile-open');
           renderGallery(true);
         });
       });
+
+      document.querySelectorAll('#sidebar-general-list .sidebar-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentTaste = '';
+          currentCat = btn.dataset.cat;
+          discoverSidebar.classList.remove('mobile-open');
+          renderGallery(true);
+        });
+      });
+
       document.getElementById('btn-load-more').addEventListener('click', () => {
         galleryLimit += 36;
         renderGallery(false);
@@ -4244,27 +4955,56 @@
         reader.readAsDataURL(file);
       }
 
-      // Contas & Backup (Editor leve + Popover de ícone)
-      const avPopover = document.getElementById('edit-avatar-strip');
-      document.getElementById('btn-edit-avatar').addEventListener('click', () => {
-        avPopover.classList.toggle('open');
+      // Contas: Edição somente após clicar no lápis + Upload de Foto de Pessoa
+      const editBox = document.getElementById('profile-edit-box');
+      document.getElementById('btn-toggle-edit-profile').addEventListener('click', () => {
+        const open = editBox.style.display === 'none';
+        editBox.style.display = open ? 'block' : 'none';
+        if (open) document.getElementById('input-edit-name').focus();
       });
-      document.querySelectorAll('.edit-av-choice').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const prof = storage.getActiveProfile();
-          storage.updateProfile(prof.id, document.getElementById('input-edit-name').value || prof.name, btn.textContent);
-          avPopover.classList.remove('open');
-          refreshAllUI();
-          showToast(`Ícone atualizado para ${btn.textContent}`);
-        });
+
+      const avatarFileInp = document.getElementById('avatar-file-input');
+      document.getElementById('btn-upload-avatar').addEventListener('click', () => avatarFileInp.click());
+      avatarFileInp.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+          const im = new Image();
+          im.onload = () => {
+            const size = 160;
+            const c = document.createElement('canvas');
+            c.width = size; c.height = size;
+            const ctx = c.getContext('2d');
+            const minSide = Math.min(im.width, im.height);
+            const sx = (im.width - minSide) / 2, sy = (im.height - minSide) / 2;
+            ctx.drawImage(im, sx, sy, minSide, minSide, 0, 0, size, size);
+            const dataUrl = c.toDataURL('image/jpeg', 0.82);
+            const prof = storage.getActiveProfile();
+            storage.updateProfile(prof.id, document.getElementById('input-edit-name').value || prof.name, dataUrl);
+            refreshAllUI();
+            showToast('Foto do perfil atualizada!');
+          };
+          im.src = ev.target.result;
+        };
+        r.readAsDataURL(file);
       });
+
+      document.getElementById('btn-clear-avatar-photo').addEventListener('click', () => {
+        const prof = storage.getActiveProfile();
+        storage.updateProfile(prof.id, document.getElementById('input-edit-name').value || prof.name, '');
+        refreshAllUI();
+        showToast('Avatar alterado para inicial do nome.');
+      });
+
       document.getElementById('btn-save-profile').addEventListener('click', () => {
         const prof = storage.getActiveProfile();
         const newName = document.getElementById('input-edit-name').value.trim();
         if (!newName) { showToast('Digite um nome válido.'); return; }
         storage.updateProfile(prof.id, newName, prof.avatar);
+        editBox.style.display = 'none';
         refreshAllUI();
-        showToast(`Nome salvo: ${prof.avatar} ${newName}!`);
+        showToast(`Perfil salvo: ${newName}!`);
       });
 
       document.getElementById('btn-toggle-new-profile').addEventListener('click', () => {
@@ -4276,21 +5016,24 @@
       document.getElementById('btn-add-profile').addEventListener('click', () => {
         const inp = document.getElementById('input-profile-name');
         if (!inp.value.trim()) { showToast('Digite um nome para criar a conta.'); return; }
-        storage.createProfile(inp.value, '🐱');
+        storage.createProfile(inp.value, '');
         inp.value = '';
         document.getElementById('new-profile-drawer').style.display = 'none';
         refreshAllUI();
         showToast('Nova conta criada!');
       });
+
       document.getElementById('btn-export-json').addEventListener('click', () => {
         storage.exportJSON();
         showToast('Cópia baixada com sucesso!');
       });
       document.getElementById('btn-reset-app').addEventListener('click', async () => {
         if (confirm('Tem certeza que deseja zerar toda a aplicação? Todas as contas, estatísticas e jogos salvos locais serão apagados.')) {
-          await storage.resetAll();
-          refreshAllUI();
-          showToast('Aplicação zerada com sucesso!');
+          if (confirm('Última confirmação: esta ação apaga tudo deste navegador. Deseja realmente continuar?')) {
+            await storage.resetAll();
+            refreshAllUI();
+            showToast('Aplicação zerada com sucesso!');
+          }
         }
       });
       const impInp = document.getElementById('import-json-input');
@@ -4304,6 +5047,11 @@
           };
           r.readAsText(e.target.files[0]);
         }
+      });
+
+      // Modal Preview Fullscreen (Em Andamento & Concluídos)
+      document.getElementById('btn-close-full-prev').addEventListener('click', () => {
+        document.getElementById('modal-preview-full').classList.remove('open');
       });
 
       // Modal Config
@@ -4340,7 +5088,7 @@
       document.getElementById('btn-fullscreen-lobby').addEventListener('click', toggleFullScreen);
       document.getElementById('btn-g-full').addEventListener('click', toggleFullScreen);
 
-      // Barra de Ferramentas da Mesa
+      // Barra de Ferramentas da Mesa (Dropdown na direita) & Voltar na esquerda
       document.getElementById('btn-g-exit').addEventListener('click', async () => {
         engine.saveToAccount();
         await storage.persistImmediate();
@@ -4376,8 +5124,7 @@
       });
       document.getElementById('btn-g-hint').addEventListener('click', () => engine.triggerHint());
 
-      const colorPop = document.getElementById('color-popover');
-      document.getElementById('btn-g-color').addEventListener('click', () => colorPop.classList.toggle('open'));
+      // Cores de fundo sempre abertas no canto direito inferior
       document.querySelectorAll('.color-swatch').forEach(sw => {
         sw.addEventListener('click', () => {
           document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
@@ -4385,7 +5132,6 @@
           engine.boardBgColor = sw.dataset.color;
           prefs.bg = sw.dataset.color; savePrefs(prefs);
           document.getElementById('game-stage').style.backgroundColor = sw.dataset.color;
-          colorPop.classList.remove('open');
           engine.invalidateStatic();
         });
       });
@@ -4393,13 +5139,14 @@
       document.getElementById('btn-g-organize').addEventListener('click', () => { engine.organizeOutsideFrame(); showToast('Peças organizadas'); });
       document.getElementById('btn-g-shuffle').addEventListener('click', () => { engine.shuffleOutsideFrame(); showToast('Peças misturadas'); });
       document.getElementById('btn-g-center').addEventListener('click', () => engine.centerView());
-      document.getElementById('btn-g-sound').addEventListener('click', (e) => {
+      document.getElementById('btn-g-sound').addEventListener('click', () => {
         audio.muted = !audio.muted;
         prefs.muted = audio.muted; savePrefs(prefs);
-        e.currentTarget.textContent = audio.muted ? '🔇' : '🔊';
+        document.getElementById('btn-g-sound-icon').textContent = audio.muted ? '🔇' : '🔊';
+        document.getElementById('btn-g-sound-label').textContent = audio.muted ? 'Som Desligado' : 'Som dos Encaixes';
       });
 
-      // Esconder / Expandir menu de ferramentas dentro do quebra-cabeça
+      // Dropdown de Ferramentas no lado direito dentro do quebra-cabeça
       const gToolbar = document.getElementById('game-toolbar');
       const btnReopen = document.getElementById('btn-reopen-toolbar');
       const setToolbarExpanded = (expanded) => {
@@ -4407,20 +5154,21 @@
         btnReopen.classList.toggle('active', expanded);
         btnReopen.setAttribute('aria-expanded', expanded ? 'true' : 'false');
         btnReopen.textContent = expanded ? '▲ Ferramentas' : '☰ Ferramentas';
-        if (!expanded) colorPop.classList.remove('open');
       };
-      document.getElementById('btn-g-collapse').addEventListener('click', () => setToolbarExpanded(false));
-      btnReopen.addEventListener('click', () => setToolbarExpanded(gToolbar.classList.contains('collapsed')));
+      btnReopen.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setToolbarExpanded(gToolbar.classList.contains('collapsed'));
+      });
+      document.addEventListener('click', (e) => {
+        if (!gToolbar.classList.contains('collapsed') && !gToolbar.contains(e.target) && e.target !== btnReopen) {
+          setToolbarExpanded(false);
+        }
+      });
 
       // Zoom Touchpad
       document.getElementById('btn-zoom-in').addEventListener('click', () => engine.zoomBy(1.22));
       document.getElementById('btn-zoom-out').addEventListener('click', () => engine.zoomBy(1 / 1.22));
       document.getElementById('btn-zoom-reset').addEventListener('click', () => engine.centerView());
-
-      // Ajuda
-      document.getElementById('btn-g-help').addEventListener('click', () => document.getElementById('modal-help').classList.add('open'));
-      document.getElementById('btn-close-help').addEventListener('click', () => document.getElementById('modal-help').classList.remove('open'));
-      document.getElementById('btn-ok-help').addEventListener('click', () => document.getElementById('modal-help').classList.remove('open'));
 
       // Vitória
       document.getElementById('btn-v-replay').addEventListener('click', () => {
@@ -4433,19 +5181,24 @@
         refreshAllUI();
       });
 
-      // Arrastar miniatura
+      // Arrastar miniatura (mouse + toque)
       const guide = document.getElementById('floating-guide');
       const handle = document.getElementById('guide-drag-handle');
       let px = 0, py = 0, mx = 0, my = 0;
-      handle.onmousedown = (e) => {
+      handle.onpointerdown = (e) => {
         e.preventDefault(); mx = e.clientX; my = e.clientY;
-        document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
-        document.onmousemove = (ev) => {
+        const onMove = (ev) => {
           px = mx - ev.clientX; py = my - ev.clientY; mx = ev.clientX; my = ev.clientY;
           guide.style.top = (guide.offsetTop - py) + 'px';
           guide.style.left = (guide.offsetLeft - px) + 'px';
           guide.style.bottom = 'auto'; guide.style.right = 'auto';
         };
+        const onUp = () => {
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
       };
     });
   </script>
