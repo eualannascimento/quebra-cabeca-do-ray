@@ -1541,11 +1541,19 @@
         </div>
         <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
           <h4 style="margin-bottom: 6px;">🔍 Zoom (➕ / ➖)</h4>
-          <p style="font-size: 13px; color: var(--text-muted);">Use a rodinha do mouse ou os botões ➕ / ➖ no canto inferior esquerdo para aproximar.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">Rodinha do mouse, pinça no trackpad ou no toque, ou os botões ➕ / ➖ no canto inferior esquerdo.</p>
         </div>
         <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
           <h4 style="margin-bottom: 6px;">💡 Dicas & Trocar Jogo</h4>
           <p style="font-size: 13px; color: var(--text-muted);">Use <strong>💡 Dica</strong> se empacar! Você pode sair a qualquer hora sem perder nada e alternar entre jogos salvos.</p>
+        </div>
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">⌨️ Teclado</h4>
+          <p style="font-size: 13px; color: var(--text-muted);"><strong>Setas</strong> ou <strong>W A S D</strong> movem a mesa • <strong>+ / −</strong> zoom • <strong>H</strong> dica • <strong>O</strong> organizar • <strong>Esc</strong> fecha janelas.</p>
+        </div>
+        <div style="background: var(--bg-elevated); padding: 14px; border-radius: 10px;">
+          <h4 style="margin-bottom: 6px;">💾 Salva sozinho</h4>
+          <p style="font-size: 13px; color: var(--text-muted);">Seu progresso é guardado automaticamente. Ao abrir o jogo de novo, é só clicar em <strong>Continuar</strong>. Peças soltas arrastadas até a beirada da tela rolam a mesa sozinhas.</p>
         </div>
       </div>
       <div style="text-align: right;">
@@ -1566,6 +1574,23 @@
       <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
         <button class="btn" id="btn-v-replay">Jogar Novamente</button>
         <button class="btn btn-primary" id="btn-v-platform">Escolher Outro Quebra-Cabeça</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BEM-VINDO DE VOLTA -->
+  <div class="modal-overlay" id="modal-welcome">
+    <div class="modal-card" style="text-align: center; max-width: 440px;">
+      <div style="font-size: 34px; margin-bottom: 4px;">👋</div>
+      <h3 id="welcome-name" style="font-size: 22px; margin-bottom: 4px;">Bem-vindo de volta!</h3>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 14px;">Seu quebra-cabeça está exatamente como você deixou.</p>
+      <div class="modal-preview" style="height: 170px; margin-bottom: 12px;"><img id="welcome-img" src="" alt="Último jogo"></div>
+      <div id="welcome-title" style="font-weight: 700; font-size: 16px;"></div>
+      <div class="progress-track" style="height: 8px; margin: 10px 0 6px;"><div class="progress-fill" id="welcome-bar"></div></div>
+      <div id="welcome-meta" style="color: var(--text-muted); font-size: 13px; margin-bottom: 18px;"></div>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="btn-welcome-continue" style="min-width: 160px; font-size: 15px;">▶ Continuar</button>
+        <button class="btn" id="btn-welcome-other">Escolher outro</button>
       </div>
     </div>
   </div>
@@ -1613,18 +1638,20 @@
         const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 250));
         const savedIDB = await Promise.race([idbTry, timeoutPromise]);
 
-        if (savedIDB) {
-          this.data = savedIDB;
-          return this.data;
-        }
-
+        let savedLS = null;
         try {
           const raw = localStorage.getItem(LS_KEY);
-          if (raw) {
-            this.data = JSON.parse(raw);
-            return this.data;
-          }
+          if (raw) savedLS = JSON.parse(raw);
         } catch (e) {}
+
+        // Usa a cópia mais recente entre IndexedDB e localStorage
+        const best = (savedIDB && savedLS)
+          ? ((savedLS.savedAt || 0) > (savedIDB.savedAt || 0) ? savedLS : savedIDB)
+          : (savedIDB || savedLS);
+        if (best && best.profiles && best.profiles.length) {
+          this.data = best;
+          return this.data;
+        }
 
         const defProf = {
           id: 'p_' + Date.now(),
@@ -1651,6 +1678,10 @@
 
       persistImmediate() {
         return new Promise((resolve) => {
+          clearTimeout(this.saveTimer);
+          if (this.data) this.data.savedAt = Date.now();
+          // Cópia síncrona: garante que nada se perde mesmo se a janela fechar na hora
+          try { localStorage.setItem(LS_KEY, JSON.stringify(this.data)); } catch (e) {}
           if (this.db) {
             try {
               const tx = this.db.transaction(STORE_NAME, 'readwrite');
@@ -1660,9 +1691,6 @@
               return;
             } catch (e) {}
           }
-          try {
-            localStorage.setItem(LS_KEY, JSON.stringify(this.data));
-          } catch (e) {}
           resolve();
         });
       }
@@ -1968,6 +1996,7 @@
 
       initRenderLoop() {
         const tick = () => {
+          if (this.draggedGroup && this.lastPtr) this.edgeAutoPan();
           const hasAnims = this.snapPulses.length > 0 || this.hintAnim !== null ||
                            (this.isFinished && (this.confetti.length > 0 || this.victoryWaveProgress >= 0));
           if (this.dirty || hasAnims) {
@@ -1981,6 +2010,19 @@
 
       requestRender() {
         this.dirty = true;
+      }
+
+      // Ao arrastar uma peça até a beirada da tela, a mesa rola sozinha (útil em quebra-cabeças grandes)
+      edgeAutoPan() {
+        const m = 56, { x, y } = this.lastPtr;
+        let vx = 0, vy = 0;
+        if (x < m) vx = (m - x) / m; else if (x > this.width - m) vx = -(x - (this.width - m)) / m;
+        if (y < m) vy = (m - y) / m; else if (y > this.height - m) vy = -(y - (this.height - m)) / m;
+        if (!vx && !vy) return;
+        const sp = 15;
+        this.panX += Math.max(-1, Math.min(1, vx)) * sp;
+        this.panY += Math.max(-1, Math.min(1, vy)) * sp;
+        this.onPointerMove(x, y);
       }
 
       resize() {
@@ -2054,6 +2096,7 @@
           this.startTimer();
           this.updateHUD();
           this.requestRender();
+          maybeShowFirstHelp();
           const demoMsg = demoOutside > 0 ? ` (${demoOutside} pré-montadas fora)` : '';
           showToast(`${title} • ${this.totalPieces} peças${demoMsg}`);
         };
@@ -2185,14 +2228,20 @@
         const loadingText = document.getElementById('loading-text');
         if (this.totalPieces > 150) loadingEl.classList.add('active');
 
+        // Se a janela mudou de tamanho desde o último jogo, reescala as peças soltas
+        const oldBw = state.boardWidth || this.boardWidth;
+        const oldBh = state.boardHeight || this.boardHeight;
+        const kk = this.boardWidth / oldBw;
+
         let processed = 0;
         for (const sp of state.pieces) {
+          const inPocket = sp.x === -99999;
           const piece = {
             id: sp.id, row: sp.row, col: sp.col, isEdge: sp.isEdge, edges: sp.edges,
             targetX: this.boardX + sp.col * this.pieceWidth,
             targetY: this.boardY + sp.row * this.pieceHeight,
-            x: sp.locked ? (this.boardX + sp.col * this.pieceWidth) : sp.x,
-            y: sp.locked ? (this.boardY + sp.row * this.pieceHeight) : sp.y,
+            x: sp.locked ? (this.boardX + sp.col * this.pieceWidth) : (inPocket ? -99999 : this.boardX + (sp.x + oldBw / 2) * kk),
+            y: sp.locked ? (this.boardY + sp.row * this.pieceHeight) : (inPocket ? -99999 : this.boardY + (sp.y + oldBh / 2) * kk),
             rotation: sp.rotation || 0, locked: sp.locked, group: null, cachedCanvas: null,
             offsetX: 0, offsetY: 0, drawW: 0, drawH: 0
           };
@@ -2217,6 +2266,7 @@
             this.groups.push(grp);
           }
         });
+        this.pocket = this.pieces.filter(p => p.x === -99999).slice(0, 15);
         loadingEl.classList.remove('active');
       }
 
@@ -2554,19 +2604,44 @@
         window.addEventListener('mouseup', () => this.onPointerUp());
 
         // Touch para tablets / telas sensíveis ao toque
+        let pinch = null;
+        const pinchGeom = (ts) => {
+          const a = ts[0], b = ts[1];
+          return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1,
+                   cx: (a.clientX + b.clientX) / 2, cy: (a.clientY + b.clientY) / 2 };
+        };
         this.canvas.addEventListener('touchstart', (e) => {
-          if (e.touches.length === 1) {
+          if (e.touches.length >= 2) {
+            if (this.draggedGroup || this.isPanning) this.onPointerUp();
+            const g = pinchGeom(e.touches);
+            pinch = { d: g.d, scale: this.scale, wb: this.screenToWorld(g.cx, g.cy) };
+          } else if (e.touches.length === 1 && !pinch) {
             const t = e.touches[0];
             this.onPointerDown(t.clientX, t.clientY, 0);
           }
         }, { passive: true });
         window.addEventListener('touchmove', (e) => {
-          if (e.touches.length === 1 && (this.isPanning || this.draggedGroup)) {
+          if (pinch && e.touches.length >= 2) {
+            const g = pinchGeom(e.touches);
+            this.scale = Math.max(0.18, Math.min(3.2, pinch.scale * (g.d / pinch.d)));
+            this.panX = g.cx - pinch.wb.x * this.scale;
+            this.panY = g.cy - pinch.wb.y * this.scale;
+            this.requestRender();
+          } else if (!pinch && e.touches.length === 1 && (this.isPanning || this.draggedGroup)) {
             const t = e.touches[0];
             this.onPointerMove(t.clientX, t.clientY);
           }
         }, { passive: true });
-        window.addEventListener('touchend', () => this.onPointerUp());
+        window.addEventListener('touchend', (e) => {
+          if (pinch) { if (e.touches.length < 2) pinch = null; return; }
+          this.onPointerUp();
+        });
+        window.addEventListener('touchcancel', () => { pinch = null; this.onPointerUp(); });
+
+        // Qualquer interação reinicia o contador de inatividade do cronômetro
+        const markActive = () => { this.lastActive = Date.now(); };
+        ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart'].forEach(ev =>
+          window.addEventListener(ev, markActive, { passive: true }));
 
         this.canvas.addEventListener('wheel', (e) => {
           e.preventDefault();
@@ -2600,6 +2675,25 @@
 
         window.addEventListener('keydown', (e) => {
           if (!document.getElementById('platform-shell').classList.contains('hidden')) return;
+          if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+          if (e.ctrlKey || e.metaKey || e.altKey) return;
+          const step = 70;
+          if (e.code === 'Escape') {
+            const open = document.querySelector('.modal-overlay.open');
+            if (open) { open.classList.remove('open'); return; }
+            document.getElementById('color-popover').classList.remove('open');
+            if (!document.getElementById('game-toolbar').classList.contains('collapsed')) {
+              document.getElementById('btn-reopen-toolbar').click();
+            }
+            return;
+          }
+          if (e.code === 'ArrowLeft' || e.code === 'KeyA') { this.panX += step; this.requestRender(); e.preventDefault(); return; }
+          if (e.code === 'ArrowRight' || e.code === 'KeyD') { this.panX -= step; this.requestRender(); e.preventDefault(); return; }
+          if (e.code === 'ArrowUp' || e.code === 'KeyW') { this.panY += step; this.requestRender(); e.preventDefault(); return; }
+          if (e.code === 'ArrowDown' || e.code === 'KeyS') { this.panY -= step; this.requestRender(); e.preventDefault(); return; }
+          if (e.code === 'Equal' || e.code === 'NumpadAdd') { this.zoomBy(1.2); return; }
+          if (e.code === 'Minus' || e.code === 'NumpadSubtract') { this.zoomBy(1 / 1.2); return; }
+          if (e.code === 'KeyH') { this.triggerHint(); return; }
           if (e.code === 'KeyX') { this.centerView(); showToast('Tabuleiro centralizado'); }
           else if (e.code === 'KeyO') { this.organizeOutsideFrame(); showToast('Peças organizadas'); }
           else if (e.code === 'KeyK') { this.shuffleOutsideFrame(); showToast('Peças misturadas'); }
@@ -2661,6 +2755,7 @@
       }
 
       onPointerMove(cx, cy) {
+        this.lastPtr = { x: cx, y: cy };
         this.updatePocketBadge(cx, cy);
         if (this.isPanning) {
           this.panX = cx - this.panStartX;
@@ -2797,9 +2892,12 @@
           hardmode: this.hardmode,
           elapsedSeconds: this.elapsedSeconds,
           updatedAt: Date.now(),
+          boardWidth: this.boardWidth,
+          boardHeight: this.boardHeight,
           pieces: this.pieces.map(p => ({
             id: p.id, row: p.row, col: p.col, isEdge: p.isEdge, edges: p.edges,
-            x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10,
+            x: p.x === -99999 ? -99999 : Math.round(p.x * 10) / 10,
+            y: p.y === -99999 ? -99999 : Math.round(p.y * 10) / 10,
             rotation: p.rotation, locked: p.locked
           })),
           groups: this.groups.map(g => ({ id: g.id, locked: g.locked, pieceIds: g.pieces.map(p => p.id) }))
@@ -2839,12 +2937,14 @@
 
       startTimer() {
         this.stopTimer();
-        this.startTime = Date.now() - this.elapsedSeconds * 1000;
+        this.lastActive = Date.now();
         const el = document.getElementById('hud-timer');
         const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
         el.textContent = fmt(this.elapsedSeconds);
         this.timerInterval = setInterval(() => {
-          this.elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+          // Pausa sozinho quando a aba está escondida ou a pessoa ficou 1 min sem mexer
+          if (document.hidden || this.isFinished || Date.now() - this.lastActive > 60000) return;
+          this.elapsedSeconds++;
           el.textContent = fmt(this.elapsedSeconds);
         }, 1000);
       }
@@ -2999,6 +3099,36 @@
     let pendingItem = null;
     let pendingPieces = 100;
     let pendingHard = false;
+
+    const PREFS_KEY = 'quebra_cabeca_ray_prefs_v1';
+    function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } }
+    function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
+    let prefs = loadPrefs();
+
+    // Na primeira vez que a pessoa abre um quebra-cabeça, mostra o "Como Jogar" automaticamente
+    function maybeShowFirstHelp() {
+      if (prefs.seenHelp || new URLSearchParams(window.location.search).has('demo')) return;
+      prefs.seenHelp = true; savePrefs(prefs);
+      setTimeout(() => document.getElementById('modal-help').classList.add('open'), 700);
+    }
+
+    function showWelcomeBack(save) {
+      const prof = storage.getActiveProfile();
+      const mins = Math.floor((save.elapsedSeconds || 0) / 60);
+      document.getElementById('welcome-name').textContent = `Bem-vindo de volta, ${prof.name}!`;
+      document.getElementById('welcome-img').src = save.imageSrc;
+      document.getElementById('welcome-title').textContent = save.title;
+      document.getElementById('welcome-bar').style.width = `${save.pct}%`;
+      document.getElementById('welcome-meta').textContent =
+        `${save.lockedCount} de ${save.totalPieces} peças • ${save.pct}% • ${mins} min jogados`;
+      document.getElementById('btn-welcome-continue').onclick = () => {
+        document.getElementById('modal-welcome').classList.remove('open');
+        openSavedPuzzle(save);
+      };
+      document.getElementById('btn-welcome-other').onclick = () =>
+        document.getElementById('modal-welcome').classList.remove('open');
+      document.getElementById('modal-welcome').classList.add('open');
+    }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -3268,6 +3398,18 @@
         showToast('Aplicação zerada com sucesso!');
       }
 
+      // Aplica preferências salvas (cor da mesa e som)
+      if (prefs.bg) {
+        engine.boardBgColor = prefs.bg;
+        document.getElementById('game-stage').style.backgroundColor = prefs.bg;
+        document.querySelectorAll('.color-swatch').forEach(sw =>
+          sw.classList.toggle('selected', sw.dataset.color === prefs.bg));
+      }
+      if (prefs.muted) {
+        audio.muted = true;
+        document.getElementById('btn-g-sound').textContent = '🔇';
+      }
+
       // Suporte à demonstração direta (?demo=50 ou ?pieces=500&demoOutside=10)
       const demoN = parseInt(params.get('demo')) || 0;
       const demoOutsideN = parseInt(params.get('demoOutside')) || 0;
@@ -3277,6 +3419,27 @@
         document.getElementById('platform-shell').classList.add('hidden');
         engine.startPuzzle(gallery[0].src, gallery[0].title, demoPiecesN, false, null, { mounted: demoN, outside: demoOutsideN });
       }
+
+      // Retomar: ao abrir o arquivo de novo, oferece continuar o último jogo
+      if (params.get('reset') !== '1' && !(demoN > 0 || demoOutsideN > 0)) {
+        const actives = storage.getActiveProfile().activePuzzles || [];
+        if (actives.length && params.get('continuar') === '1') openSavedPuzzle(actives[0]);
+        else if (actives.length) showWelcomeBack(actives[0]);
+      }
+
+      // Salvamento automático: a cada 20s, ao esconder a aba e ao fechar a janela
+      const flushGame = () => {
+        try {
+          if (engine.imageLoaded && engine.saveId &&
+              document.getElementById('platform-shell').classList.contains('hidden')) engine.saveToAccount();
+        } catch (e) {}
+        storage.persistImmediate();
+      };
+      setInterval(() => {
+        if (document.getElementById('platform-shell').classList.contains('hidden') && !document.hidden) flushGame();
+      }, 20000);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) flushGame(); });
+      window.addEventListener('pagehide', flushGame);
 
       // Navegação em Abas
       document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -3460,6 +3623,7 @@
           document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
           sw.classList.add('selected');
           engine.boardBgColor = sw.dataset.color;
+          prefs.bg = sw.dataset.color; savePrefs(prefs);
           document.getElementById('game-stage').style.backgroundColor = sw.dataset.color;
           colorPop.classList.remove('open');
           engine.requestRender();
@@ -3471,6 +3635,7 @@
       document.getElementById('btn-g-center').addEventListener('click', () => engine.centerView());
       document.getElementById('btn-g-sound').addEventListener('click', (e) => {
         audio.muted = !audio.muted;
+        prefs.muted = audio.muted; savePrefs(prefs);
         e.currentTarget.textContent = audio.muted ? '🔇' : '🔊';
       });
 
