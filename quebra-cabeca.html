@@ -1367,19 +1367,25 @@
         margin-bottom: 8px;
       }
       .account-col .analytics-grid {
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 7px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
         margin-bottom: 10px;
       }
       .account-col .metric-card {
-        padding: 8px 10px;
+        padding: 10px 12px;
       }
       .account-col .metric-val {
-        font-size: 18px;
+        font-size: 20px;
         margin-bottom: 2px;
       }
       .account-col .metric-label {
-        font-size: 10.5px;
+        font-size: 11px;
+      }
+      .usage-split {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 12px;
+        align-items: start;
       }
       .account-col .usage-panel {
         padding: 10px 12px;
@@ -1399,16 +1405,16 @@
         font-size: 14px;
       }
       .account-col .usage-chart {
-        height: 86px;
-        padding: 8px 6px 3px;
+        height: 148px;
+        padding: 10px 6px 4px;
       }
       .account-col .usage-bar-detail {
         margin-top: 5px;
         font-size: 11px;
       }
       .account-col .usage-explicit-list {
-        margin-top: 6px;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        margin-top: 0;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 4px;
       }
       .account-col .usage-explicit-row {
@@ -1871,6 +1877,10 @@
       inset: 0;
       background: #18121d;
       overflow: hidden;
+      touch-action: none;
+      overscroll-behavior: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     #game-canvas {
@@ -1878,6 +1888,40 @@
       width: 100%;
       height: 100%;
       touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* Discreto aviso de Pausa na tela toda após 30s sem atividade */
+    .pause-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 12, 18, 0.36);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 42;
+    }
+
+    .pause-overlay.show {
+      opacity: 1;
+    }
+
+    .pause-pill {
+      background: rgba(22, 25, 34, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 13.5px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      text-align: center;
+      max-width: calc(100vw - 32px);
     }
 
     /* Controles Fixos no Canto Superior Esquerdo (Avatar + Voltar) */
@@ -1889,6 +1933,11 @@
       align-items: center;
       gap: 8px;
       z-index: 52;
+      transition: left 0.15s ease;
+    }
+
+    body.ipad-native-fs .game-top-dock {
+      left: calc(68px + env(safe-area-inset-left, 0px));
     }
 
     .game-avatar-chip {
@@ -1959,13 +2008,13 @@
       color: #ffffff;
     }
 
-    /* Dropdown Autoexplicativo de Ferramentas no Lado Direito (Opaco e Compacto) */
+    /* Dropdown Autoexplicativo de Ferramentas no Lado Direito (Opaco, Compacto, 1 Linha) */
     .game-toolbar {
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      width: min(268px, calc(100vw - 24px));
-      max-height: calc(100dvh - 200px);
+      width: min(410px, calc(100vw - 24px));
+      max-height: calc(100dvh - 180px);
       overflow-y: auto;
       background: #161922;
       border: 1px solid rgba(255, 255, 255, 0.22);
@@ -2005,10 +2054,10 @@
       width: 100%;
       justify-content: flex-start;
       align-items: center;
-      gap: 7px;
-      white-space: normal;
+      gap: 8px;
+      white-space: nowrap;
       text-align: left;
-      padding: 4px 7px;
+      padding: 4px 8px;
     }
 
     .tool-icon {
@@ -2020,22 +2069,29 @@
 
     .tool-copy {
       display: flex;
-      flex-direction: column;
-      gap: 0px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex: 1;
       min-width: 0;
     }
 
     .tool-title {
       font-size: 12px;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.25;
+      white-space: nowrap;
     }
 
     .tool-desc {
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 400;
       color: var(--hud-muted);
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .game-toolbar .tool-btn.active .tool-desc {
@@ -2135,8 +2191,8 @@
     /* Canto Inferior Esquerdo: Contador + Escolha de Fundos em um Único Widget */
     .game-bottom-left {
       position: absolute;
-      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-      left: calc(14px + env(safe-area-inset-left, 0px));
+      bottom: 10px;
+      left: calc(12px + env(safe-area-inset-left, 0px));
       z-index: 48;
     }
 
@@ -2174,15 +2230,59 @@
     /* Canto Inferior Direito Global (Site Todo): Relógio Discreto + Player de Música */
     .global-media-dock {
       position: fixed;
-      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-      right: calc(14px + env(safe-area-inset-right, 0px));
+      bottom: 10px;
+      right: calc(12px + env(safe-area-inset-right, 0px));
       width: 278px;
-      max-width: calc(100vw - 28px);
+      max-width: calc(100vw - 24px);
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 6px;
+      gap: 5px;
       z-index: 125;
+    }
+
+    .global-media-dock.minimized {
+      width: auto;
+    }
+
+    .global-media-dock.minimized .hud-clock-pill,
+    .global-media-dock.minimized .music-player-dock {
+      display: none;
+    }
+
+    .media-dock-mini-pill {
+      display: none;
+      background: #161922;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.40);
+      align-items: center;
+      gap: 6px;
+    }
+
+    .global-media-dock.minimized .media-dock-mini-pill {
+      display: inline-flex;
+    }
+
+    .music-station-group-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      padding: 6px 8px 2px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 2px;
+    }
+
+    .music-station-group-title:first-child {
+      border-top: none;
+      margin-top: 0;
     }
 
     .hud-clock-pill {
@@ -2359,7 +2459,8 @@
     }
 
     .music-vol {
-      flex: 1;
+      width: 62px;
+      flex: 0 0 62px;
       accent-color: var(--accent);
       cursor: pointer;
       height: 4px;
@@ -2826,59 +2927,23 @@
                 <div class="analytics-grid">
                   <div class="metric-card">
                     <div class="metric-val green" id="m-completed">0</div>
-                    <div class="metric-label">Puzzles Concluídos</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-active">0</div>
-                    <div class="metric-label">Em Andamento</div>
+                    <div class="metric-label">🏆 Concluídos</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Em andamento: <strong id="m-active">0</strong> • Média: <strong id="m-avg-win-time">0s</strong></div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-pieces">0</div>
-                    <div class="metric-label">Peças Encaixadas</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-biggest">0 pcs</div>
-                    <div class="metric-label">Maior Desafio</div>
+                    <div class="metric-label">🧩 Peças Encaixadas</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Maior: <strong id="m-biggest">0 pcs</strong> • Média: <strong id="m-avg-pieces">0 pcs</strong></div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val blue" id="m-time-active">0s</div>
-                    <div class="metric-label">Tempo Jogando</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-time-idle" style="color: var(--warning);">0s</div>
-                    <div class="metric-label">Tempo Pausado</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-time-total">0s</div>
-                    <div class="metric-label">Tempo Total</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-clicks">0</div>
-                    <div class="metric-label">Cliques na Mesa</div>
+                    <div class="metric-label">⏱️ Tempo Jogando</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Pausado: <strong id="m-time-idle">0s</strong> • Total: <strong id="m-time-total">0s</strong></div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val blue" id="m-speed">0 pç/min</div>
-                    <div class="metric-label">Peças por Minuto</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val green" id="m-best-pace">0 pç/min</div>
-                    <div class="metric-label">Melhor Velocidade</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-avg-pieces">0 pcs</div>
-                    <div class="metric-label">Tamanho Médio</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-cpp">0</div>
-                    <div class="metric-label">Cliques por Peça</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val green" id="m-focus-pct">100%</div>
-                    <div class="metric-label">Tempo Ativo (%)</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-val" id="m-avg-win-time">0s</div>
-                    <div class="metric-label">Média por Vitória</div>
+                    <div class="metric-label">⚡ Ritmo &amp; Eficiência</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Recorde: <strong id="m-best-pace">0 pç/min</strong> • <strong id="m-clicks">0</strong> cliques (<strong id="m-cpp">0</strong>/pç) • Foco: <strong id="m-focus-pct">100%</strong></div>
                   </div>
                 </div>
 
@@ -2897,9 +2962,13 @@
                     </div>
                   </div>
                   <div class="usage-summary-row" id="usage-summary-row"></div>
-                  <div class="usage-chart" id="usage-chart"></div>
-                  <div class="usage-bar-detail" id="usage-bar-detail">Passe o mouse ou toque em uma barra para ver detalhes.</div>
-                  <div class="usage-explicit-list" id="usage-explicit-list"></div>
+                  <div class="usage-split">
+                    <div>
+                      <div class="usage-chart" id="usage-chart"></div>
+                      <div class="usage-bar-detail" id="usage-bar-detail">Passe o mouse ou toque em uma barra para ver detalhes.</div>
+                    </div>
+                    <div class="usage-explicit-list" id="usage-explicit-list" style="margin-top:0;"></div>
+                  </div>
                   <div class="usage-blocks-grid" id="usage-blocks-grid"></div>
                 </div>
 
@@ -2978,6 +3047,11 @@
   <div id="game-stage">
     <canvas id="game-canvas"></canvas>
 
+    <!-- Aviso discreto na tela toda quando pausar por 30s sem mexer -->
+    <div class="pause-overlay" id="pause-overlay">
+      <div class="pause-pill">⏸️ Jogo pausado após 30s • Mexa o mouse ou toque na tela para continuar</div>
+    </div>
+
     <!-- Avatar (esquerda) + Voltar + Zoom logo ao lado -->
     <div class="game-top-dock">
       <div class="game-avatar-chip" title="Jogador ativo">
@@ -2994,60 +3068,57 @@
 
     <div class="milestone-toast" id="milestone-toast"></div>
 
-    <!-- Lado direito superior: Ferramentas (fixo ou dropdown configurável) -->
+    <!-- Lado direito superior: Ferramentas (1 linha compacta) + Tela Cheia apartado na extremidade -->
     <div class="game-right-dock">
-      <div class="tools-dropdown-wrap" style="position: relative; order: 1;">
+      <div class="tools-dropdown-wrap" style="position: relative;">
         <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Abrir ferramentas">☰ Ferramentas</button>
         <div class="game-toolbar collapsed" id="game-toolbar">
-          <button class="tool-btn" id="btn-toggle-tools-pin" style="background: rgba(45,127,249,0.16); border-color: rgba(45,127,249,0.4);">
+          <button class="tool-btn" id="btn-toggle-tools-pin" style="background: rgba(45,127,249,0.18); border-color: rgba(45,127,249,0.45);">
             <span class="tool-icon" id="tools-pin-icon">📌</span>
-            <span class="tool-copy"><span class="tool-title" id="tools-pin-label">Menu Fixo (Não fecha só)</span><span class="tool-desc">Clique para alternar entre menu fixo ou dropdown</span></span>
+            <span class="tool-copy"><span class="tool-title" id="tools-pin-label">Fixar Menu na Tela</span><span class="tool-desc">Dropdown</span></span>
           </button>
           <div class="tool-sep"></div>
           <button class="tool-btn" id="btn-g-preview">
             <span class="tool-icon">🖼️</span>
-            <span class="tool-copy"><span class="tool-title">Ver Foto de Referência</span><span class="tool-desc">Abre ou fecha a miniatura com a imagem completa [F]</span></span>
+            <span class="tool-copy"><span class="tool-title">Foto de Referência</span><span class="tool-desc">Miniatura [F]</span></span>
           </button>
           <button class="tool-btn" id="btn-g-ghost">
             <span class="tool-icon">👻</span>
-            <span class="tool-copy"><span class="tool-title">Guia no Fundo</span><span class="tool-desc">Mostra a imagem bem clarinha no centro do tabuleiro</span></span>
+            <span class="tool-copy"><span class="tool-title">Guia no Fundo</span><span class="tool-desc">Transparência</span></span>
           </button>
           <button class="tool-btn" id="btn-g-edges">
             <span class="tool-icon">📐</span>
-            <span class="tool-copy"><span class="tool-title">Mostrar Só Bordas</span><span class="tool-desc">Deixa apenas as peças retas dos cantos visíveis</span></span>
+            <span class="tool-copy"><span class="tool-title">Mostrar Só Bordas</span><span class="tool-desc">Cantos retos</span></span>
           </button>
           <button class="tool-btn" id="btn-g-highlight">
             <span class="tool-icon">✨</span>
-            <span class="tool-copy"><span class="tool-title">Destacar Peças Soltas</span><span class="tool-desc">Contorna as peças que ainda faltam encaixar [R]</span></span>
+            <span class="tool-copy"><span class="tool-title">Destacar Peças Soltas</span><span class="tool-desc">Contorno [R]</span></span>
           </button>
           <button class="tool-btn" id="btn-g-hint">
             <span class="tool-icon">💡</span>
-            <span class="tool-copy"><span class="tool-title">Dica de Encaixe</span><span class="tool-desc">Pisca uma peça solta e o lugar exato onde ela vai [H]</span></span>
+            <span class="tool-copy"><span class="tool-title">Dica de Encaixe</span><span class="tool-desc">Mostrar 1 peça [H]</span></span>
           </button>
           <div class="tool-sep"></div>
           <button class="tool-btn" id="btn-g-organize">
             <span class="tool-icon">🗂️</span>
-            <span class="tool-copy"><span class="tool-title">Organizar ao Redor</span><span class="tool-desc">Alinha todas as peças livres em volta da mesa [O]</span></span>
+            <span class="tool-copy"><span class="tool-title">Organizar ao Redor</span><span class="tool-desc">Alinhar [O]</span></span>
           </button>
           <button class="tool-btn" id="btn-g-shuffle">
             <span class="tool-icon">🔀</span>
-            <span class="tool-copy"><span class="tool-title">Misturar Peças</span><span class="tool-desc">Espalha novamente as peças livres mantendo blocos montados [K]</span></span>
+            <span class="tool-copy"><span class="tool-title">Misturar Peças</span><span class="tool-desc">Espalhar [K]</span></span>
           </button>
           <button class="tool-btn" id="btn-g-center">
             <span class="tool-icon">🎯</span>
-            <span class="tool-copy"><span class="tool-title">Centralizar Mesa</span><span class="tool-desc">Enquadra todo o tabuleiro no meio da tela [X]</span></span>
+            <span class="tool-copy"><span class="tool-title">Centralizar Mesa</span><span class="tool-desc">Enquadrar [X]</span></span>
           </button>
           <div class="tool-sep"></div>
-          <button class="tool-btn" id="btn-g-full">
-            <span class="tool-icon">⛶</span>
-            <span class="tool-copy"><span class="tool-title">Tela Cheia</span><span class="tool-desc">Expande o jogo para ocupar 100% do monitor ou tablet</span></span>
-          </button>
           <button class="tool-btn" id="btn-g-sound">
             <span class="tool-icon" id="btn-g-sound-icon">🔊</span>
-            <span class="tool-copy"><span class="tool-title" id="btn-g-sound-label">Som dos Encaixes</span><span class="tool-desc">Liga ou desliga os efeitos sonoros das peças</span></span>
+            <span class="tool-copy"><span class="tool-title" id="btn-g-sound-label">Som dos Encaixes</span><span class="tool-desc">Efeitos</span></span>
           </button>
         </div>
       </div>
+      <button class="game-dock-btn" id="btn-g-full" title="Tela Cheia" style="padding: 0 14px;">⛶</button>
     </div>
 
     <!-- Canto Inferior Esquerdo: Contador + Escolha de Fundos em um Único Widget -->
@@ -3146,19 +3217,24 @@
 
   <!-- DOCK GLOBAL: DATA/HORA + RÁDIO ONLINE NO SITE TODO -->
   <div class="global-media-dock" id="global-media-dock">
-    <div class="hud-clock-pill" id="hud-clock-date">🕒 00:00 • Sáb, 21/11/2026</div>
+    <button type="button" class="media-dock-mini-pill" id="btn-expand-media-dock" title="Mostrar Rádio e Relógio">🎵 Rádio &amp; Hora ▴</button>
+    <div class="hud-clock-pill" id="hud-clock-row" style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+      <span id="hud-clock-date" style="flex:1;text-align:center;">🕒 00:00 • Sáb, 21/11/2026</span>
+      <button type="button" id="btn-clock-chime" title="Aviso sonoro de hora em hora (clique para testar)" style="background:transparent;border:none;color:var(--hud-muted);cursor:pointer;font-size:12px;padding:0 2px;">🔔</button>
+    </div>
     <div class="music-player-dock" id="music-player-dock">
       <div class="music-station-list hidden" id="music-station-list"></div>
       <div class="music-player-top">
         <span style="color:var(--accent);">🎵</span>
         <span class="music-station-name" id="music-station-name">Rádio Riacho FM (Agreste PE)</span>
+        <button type="button" id="btn-toggle-media-dock" title="Minimizar rádio e relógio" style="background:transparent;border:none;color:var(--hud-muted);cursor:pointer;font-size:13px;padding:0 3px;">▾</button>
       </div>
       <div class="music-track-info" id="music-track-info">Pesqueira / Agreste PE • Brega, Forró e Sertanejo</div>
       <div class="music-controls-row">
         <button type="button" class="music-btn" id="btn-music-play" title="Tocar ou pausar rádio">▶</button>
         <button type="button" class="music-btn" id="btn-music-next" title="Trocar de rádio aleatoriamente">🔀</button>
         <button type="button" class="music-btn" id="btn-music-list" title="Ver e escolher entre todas as rádios">📻</button>
-        <span style="font-size:12px;">🔊</span>
+        <span style="font-size:11px;margin-left:auto;">🔊</span>
         <input type="range" class="music-vol" id="music-vol" min="0" max="1" step="0.05" value="1" title="Volume da música (100%)">
       </div>
       <audio id="bg-music-audio" preload="none"></audio>
@@ -3591,6 +3667,24 @@
             gain.connect(this.ctx.destination);
             osc.start(t);
             osc.stop(t + 0.25);
+          });
+        } catch (e) {}
+      }
+      playHourlyChime() {
+        try {
+          this.init();
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const t = this.ctx.currentTime + idx * 0.11;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.20, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.36);
           });
         } catch (e) {}
       }
@@ -4373,6 +4467,7 @@
                    cx: (a.clientX + b.clientX) / 2, cy: (a.clientY + b.clientY) / 2 };
         };
         this.canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
           if (e.touches.length >= 2) {
             if (this.draggedGroup || this.isPanning) this.onPointerUp();
             const g = pinchGeom(e.touches);
@@ -4381,8 +4476,9 @@
             const t = e.touches[0];
             this.onPointerDown(t.clientX, t.clientY, 0);
           }
-        }, { passive: true });
-        window.addEventListener('touchmove', (e) => {
+        }, { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => {
+          e.preventDefault();
           if (pinch && e.touches.length >= 2) {
             const g = pinchGeom(e.touches);
             this.scale = Math.max(0.18, Math.min(3.2, pinch.scale * (g.d / pinch.d)));
@@ -4394,7 +4490,7 @@
             this.pendingMove = { x: t.clientX, y: t.clientY };
             this.requestRender();
           }
-        }, { passive: true });
+        }, { passive: false });
         window.addEventListener('touchend', (e) => {
           if (pinch) { if (e.touches.length < 2) pinch = null; return; }
           if (this.pendingMove) { this.applyPointerMove(this.pendingMove.x, this.pendingMove.y); this.pendingMove = null; }
@@ -4402,8 +4498,11 @@
         });
         window.addEventListener('touchcancel', () => { pinch = null; this.pendingMove = null; this.onPointerUp(); });
 
-        // Movimentar mouse, teclado, toque ou clique reinicia os 30s de inatividade
-        const markActive = () => { this.lastActive = Date.now(); };
+        // Movimentar mouse, teclado, toque ou clique reinicia os 30s de inatividade e oculta aviso de pausa
+        const markActive = () => {
+          this.lastActive = Date.now();
+          document.getElementById('pause-overlay')?.classList.remove('show');
+        };
         ['pointerdown', 'keydown', 'wheel', 'touchstart', 'touchmove', 'pointermove'].forEach(ev =>
           window.addEventListener(ev, markActive, { passive: true }));
 
@@ -4749,10 +4848,12 @@
         const el = document.getElementById('hud-timer');
         const idleBadge = document.getElementById('hud-idle-badge');
         const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        const pauseOverlay = document.getElementById('pause-overlay');
         const renderTimer = (paused) => {
           el.textContent = `${paused ? '⏸️' : '⏱️'} ${fmt(this.elapsedSeconds)}`;
           el.classList.toggle('paused', paused);
           if (idleBadge) idleBadge.style.display = paused ? 'inline' : 'none';
+          if (pauseOverlay) pauseOverlay.classList.toggle('show', paused);
         };
         renderTimer(false);
         this.timerInterval = setInterval(() => {
@@ -4773,6 +4874,7 @@
 
       stopTimer() {
         if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+        document.getElementById('pause-overlay')?.classList.remove('show');
       }
 
       drawLoosePiece(ctx, p) {
@@ -5152,14 +5254,32 @@
       setTimeout(() => t.classList.remove('show'), 2600);
     }
 
+    const isIPadDevice = /iPad/i.test(navigator.userAgent) || (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+    function syncFullscreenUI() {
+      const cur = document.fullscreenElement || document.webkitFullscreenElement;
+      document.body.classList.toggle('ipad-native-fs', Boolean(cur && isIPadDevice));
+      const dockFsBtn = document.getElementById('btn-g-full');
+      if (dockFsBtn) dockFsBtn.textContent = cur ? '✕' : '⛶';
+    }
+    document.addEventListener('fullscreenchange', syncFullscreenUI);
+    document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
+
     function toggleFullScreen() {
       const docEl = document.documentElement;
       const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
       const exit = document.exitFullscreen || document.webkitExitFullscreen;
       const cur = document.fullscreenElement || document.webkitFullscreenElement;
       if (!cur) {
-        if (req) req.call(docEl).catch(() => showToast('Tela cheia não permitida neste navegador.'));
-        else showToast('No iPhone/iPad, use Compartilhar → Tela de Início para tela cheia.');
+        if (req) {
+          try {
+            const p = req.call(docEl, { navigationUI: 'hide' });
+            if (p && typeof p.catch === 'function') p.catch(() => showToast('Tela cheia não permitida neste navegador.'));
+          } catch (e) {
+            try { req.call(docEl); } catch (_) {}
+          }
+        } else {
+          showToast('No iPhone/iPad, use Compartilhar → Tela de Início para tela cheia.');
+        }
       } else if (exit) {
         exit.call(document);
       }
@@ -6067,13 +6187,11 @@
       const syncToolsPinUI = () => {
         document.getElementById('tools-pin-icon').textContent = toolsPinned ? '🔽' : '📌';
         document.getElementById('tools-pin-label').textContent = toolsPinned
-          ? 'Voltar para Modo Dropdown'
+          ? 'Voltar para Dropdown'
           : 'Fixar Menu na Tela';
         const desc = document.querySelector('#btn-toggle-tools-pin .tool-desc');
         if (desc) {
-          desc.textContent = toolsPinned
-            ? 'Atualmente fixo. Clique para fechar ao usar ou clicar fora'
-            : 'Atualmente dropdown. Clique para manter sempre aberto';
+          desc.textContent = toolsPinned ? 'Fixo' : 'Dropdown';
         }
       };
       syncToolsPinUI();
@@ -6108,8 +6226,60 @@
         }
       });
 
-      // Relógio e Data discretos no canto inferior direito
+      // Relógio, Data e Aviso Sonoro de Hora Cheia (estilo "Deu meio-dia!")
       const clockEl = document.getElementById('hud-clock-date');
+      const btnClockChime = document.getElementById('btn-clock-chime');
+      let hourlyChimeEnabled = prefs.hourlyChime !== false;
+      let lastChimeHour = new Date().getHours();
+
+      const announceHour = (hour, isTest = false) => {
+        audio.playHourlyChime();
+        let phrase = '';
+        if (hour === 12) phrase = 'Atenção! Deu meio-dia!';
+        else if (hour === 0) phrase = 'Atenção! Deu meia-noite!';
+        else if (hour === 1 || hour === 13) phrase = 'Atenção! É uma hora!';
+        else phrase = `Atenção! São ${hour} horas!`;
+        showToast(`🔔 ${phrase}`);
+        try {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const ut = new SpeechSynthesisUtterance(phrase);
+            ut.lang = 'pt-BR';
+            ut.rate = 1.05;
+            ut.pitch = 1.1;
+            ut.volume = 1.0;
+            window.speechSynthesis.speak(ut);
+          }
+        } catch (e) {}
+      };
+
+      if (btnClockChime) {
+        const syncChimeUI = () => {
+          btnClockChime.textContent = hourlyChimeEnabled ? '🔔' : '🔕';
+          btnClockChime.title = hourlyChimeEnabled
+            ? 'Aviso de hora cheia ativado (clique para testar ou segure para silenciar)'
+            : 'Aviso de hora cheia silenciado (clique para ativar)';
+        };
+        syncChimeUI();
+        btnClockChime.addEventListener('click', () => {
+          if (!hourlyChimeEnabled) {
+            hourlyChimeEnabled = true;
+            prefs.hourlyChime = true;
+            savePrefs(prefs);
+            syncChimeUI();
+          }
+          announceHour(new Date().getHours(), true);
+        });
+        btnClockChime.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          hourlyChimeEnabled = !hourlyChimeEnabled;
+          prefs.hourlyChime = hourlyChimeEnabled;
+          savePrefs(prefs);
+          syncChimeUI();
+          showToast(hourlyChimeEnabled ? '🔔 Aviso de hora cheia ativado' : '🔕 Aviso de hora cheia silenciado');
+        });
+      }
+
       const updateGameClock = () => {
         if (!clockEl) return;
         const d = new Date();
@@ -6119,24 +6289,48 @@
         const dd = String(d.getDate()).padStart(2, '0');
         const mo = String(d.getMonth() + 1).padStart(2, '0');
         clockEl.textContent = `🕒 ${hh}:${mm} • ${wd}, ${dd}/${mo}/${d.getFullYear()}`;
+        if (hourlyChimeEnabled && d.getMinutes() === 0 && d.getHours() !== lastChimeHour) {
+          lastChimeHour = d.getHours();
+          announceHour(d.getHours());
+        }
       };
       updateGameClock();
       setInterval(updateGameClock, 15000);
 
-      // Player Online Simples (Pesqueira/PE primeiro + Brega, Sertanejo Raiz, Amado Batista, Leonardo, Eduardo Costa)
+      // Minimizar / Expandir Dock de Rádio e Relógio
+      const globalDock = document.getElementById('global-media-dock');
+      const btnMinDock = document.getElementById('btn-toggle-media-dock');
+      const btnExpDock = document.getElementById('btn-expand-media-dock');
+      if (globalDock && btnMinDock && btnExpDock) {
+        if (prefs.mediaMinimized) globalDock.classList.add('minimized');
+        btnMinDock.addEventListener('click', () => {
+          globalDock.classList.add('minimized');
+          prefs.mediaMinimized = true; savePrefs(prefs);
+        });
+        btnExpDock.addEventListener('click', () => {
+          globalDock.classList.remove('minimized');
+          prefs.mediaMinimized = false; savePrefs(prefs);
+        });
+      }
+
+      // Player Online Simples Agrupado (Pesqueira & PE primeiro + Brega + Sertanejo Raiz)
       const BREGA_SERTANEJO_STREAMS = [
-        { name: 'Rádio Riacho FM (Agreste PE)', info: 'Pesqueira / Agreste PE • Brega, Forró e Sertanejo', url: 'https://stm23.srvaudio.com.br:10974/stream' },
-        { name: 'Rádio Som Brega (Pernambuco)', info: 'Pernambuco • Clássicos do Brega', url: 'https://stm5.painelcast.com:7588/stream' },
-        { name: 'Rádio Sertaneja (Pernambuco)', info: 'Pernambuco • Sertanejo & Modão', url: 'https://stm5.painelcast.com:7584/stream' },
-        { name: 'Rádio Vilabela 94.3 FM (PE)', info: 'Sertão de Pernambuco • Ao vivo', url: 'https://audio01.stmserver.com/radio/8010/radio' },
-        { name: 'Rádio Marano FM (Agreste PE)', info: 'Garanhuns, PE • Sucessos Populares', url: 'https://streaming.livespanel.com:21023/maranofm' },
-        { name: 'Rádio Clube FM 99.1 (Recife PE)', info: 'Recife, PE • Forró e Música Nordestina', url: 'https://radio.saopaulo01.com.br/8016/stream' },
-        { name: 'Brega Hits (Clássicos)', info: 'Amado Batista, Brega e Românticas', url: 'https://stream.zeno.fm/m3h4eakvsy8uv', zeno: 'm3h4eakvsy8uv' },
-        { name: 'Rádio Buteco Sertanejo', info: 'Leonardo, Eduardo Costa e Modão', url: 'https://stream.zeno.fm/6kumndewqbruv', zeno: '6kumndewqbruv' },
-        { name: 'Casa dos Caipiras (Modão)', info: 'Sertanejo Raiz e Moda de Viola', url: 'https://8758.brasilstream.com.br/stream' },
-        { name: 'Rádio Café Viola', info: 'Clássicos Sertanejos e Viola', url: 'https://stm6.xcast.com.br:9328/;?1685284162874' },
-        { name: 'Amigos do Sertanejo', info: 'Sertanejo Romântico e Modão', url: 'https://stm4.voxhd.com.br:7086/' },
-        { name: 'Rádio Zé Ramalho (Forró & MPB)', info: 'Nordeste • Forró e MPB Clássica', url: 'https://stream.zeno.fm/qnx6k0pfmxhvv', zeno: 'qnx6k0pfmxhvv' }
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Riacho FM (Agreste PE)', info: 'Pesqueira / Agreste PE • Brega, Forró e Sertanejo', url: 'https://stm23.srvaudio.com.br:10974/stream' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Cidade 99.5 FM (Caruaru PE)', info: 'Agreste PE • Sucessos Populares', url: 'https://stm18.voxhd.com.br:10762/' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Bezerros FM (Agreste PE)', info: 'Agreste Pernambucano • Ao vivo', url: 'https://sv10.hdradios.net:8616/stream' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Sete Colinas FM (Garanhuns PE)', info: 'Agreste PE • Clássicos e Notícias', url: 'https://streaming.livespanel.com:20107/setecolinas' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Marano FM (Garanhuns PE)', info: 'Agreste PE • Programação Regional', url: 'https://streaming.livespanel.com:21023/maranofm' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Vilabela 94.3 FM (PE)', info: 'Sertão de Pernambuco • Ao vivo', url: 'https://audio01.stmserver.com/radio/8010/radio' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Som Brega (Pernambuco)', info: 'Pernambuco • Clássicos do Brega', url: 'https://stm5.painelcast.com:7588/stream' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Sertaneja (Pernambuco)', info: 'Pernambuco • Sertanejo & Modão', url: 'https://stm5.painelcast.com:7584/stream' },
+        { group: '🏰 Pesqueira & Agreste / PE', name: 'Rádio Clube FM 99.1 (Recife PE)', info: 'Recife, PE • Forró e Música Nordestina', url: 'https://radio.saopaulo01.com.br/8016/stream' },
+        { group: '💔 Brega & Românticas (Amado Batista)', name: 'Brega Hits (Clássicos)', info: 'Amado Batista, Brega e Românticas', url: 'https://stream.zeno.fm/m3h4eakvsy8uv', zeno: 'm3h4eakvsy8uv' },
+        { group: '💔 Brega & Românticas (Amado Batista)', name: 'Rádio Brega Paraense', info: 'Brega Clássico e Seresta', url: 'https://stream-178.surfernetwork.com/6a4genq4by8uv' },
+        { group: '🤠 Sertanejo Raiz & Modão', name: 'Rádio Buteco Sertanejo', info: 'Leonardo, Eduardo Costa e Modão', url: 'https://stream.zeno.fm/6kumndewqbruv', zeno: '6kumndewqbruv' },
+        { group: '🤠 Sertanejo Raiz & Modão', name: 'Casa dos Caipiras (Modão)', info: 'Sertanejo Raiz e Moda de Viola', url: 'https://8758.brasilstream.com.br/stream' },
+        { group: '🤠 Sertanejo Raiz & Modão', name: 'Rádio Café Viola', info: 'Clássicos Sertanejos e Viola', url: 'https://stm6.xcast.com.br:9328/;?1685284162874' },
+        { group: '🤠 Sertanejo Raiz & Modão', name: 'Amigos do Sertanejo', info: 'Sertanejo Romântico e Modão', url: 'https://stm4.voxhd.com.br:7086/' },
+        { group: '🤠 Sertanejo Raiz & Modão', name: 'Rádio Zé Ramalho (Forró & MPB)', info: 'Nordeste • Forró e MPB Clássica', url: 'https://stream.zeno.fm/qnx6k0pfmxhvv', zeno: 'qnx6k0pfmxhvv' }
       ];
       const bgAudio = document.getElementById('bg-music-audio');
       const btnMusicPlay = document.getElementById('btn-music-play');
@@ -6162,12 +6356,19 @@
 
       const renderStationList = () => {
         if (!stationListEl) return;
-        stationListEl.innerHTML = BREGA_SERTANEJO_STREAMS.map((st, idx) => `
-          <button type="button" class="music-station-opt ${idx === musicIdx ? 'active' : ''}" data-st-idx="${idx}">
-            <span style="font-size:12px;font-weight:700;">${st.name}</span>
-            <span style="font-size:10px;opacity:0.82;">${st.info}</span>
-          </button>
-        `).join('');
+        let lastGroup = '';
+        stationListEl.innerHTML = BREGA_SERTANEJO_STREAMS.map((st, idx) => {
+          const grpHtml = st.group !== lastGroup
+            ? `<div class="music-station-group-title">${st.group}</div>`
+            : '';
+          lastGroup = st.group;
+          return `${grpHtml}
+            <button type="button" class="music-station-opt ${idx === musicIdx ? 'active' : ''}" data-st-idx="${idx}">
+              <span style="font-size:11.5px;font-weight:700;">${st.name}</span>
+              <span style="font-size:10px;opacity:0.82;">${st.info}</span>
+            </button>
+          `;
+        }).join('');
       };
       renderStationList();
 
