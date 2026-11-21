@@ -27088,13 +27088,6 @@ window.RAY_PUZZLE_CATALOG = [
     "src": "imagens/c_2cc6827553.jpg"
   },
   {
-    "id": "c_48fdf8cd6d",
-    "title": "Cachorros Golden Retriever: \"poop\" graffiti 2021-09-26",
-    "cat": "animals",
-    "tags": "cachorro cachorros cao caes pet filhote animal",
-    "src": "imagens/c_48fdf8cd6d.jpg"
-  },
-  {
     "id": "c_4989e3ff36",
     "title": "Cachorros Golden Retriever: panoramio - Lub0t",
     "cat": "animals",
@@ -27130,13 +27123,6 @@ window.RAY_PUZZLE_CATALOG = [
     "src": "imagens/c_e308295f13.jpg"
   },
   {
-    "id": "c_108709fa73",
-    "title": "Cachorros Golden Retriever: 12.24 副總統出席「2019耶誕感恩活動」",
-    "cat": "animals",
-    "tags": "cachorro cachorros cao caes pet filhote animal",
-    "src": "imagens/c_108709fa73.jpg"
-  },
-  {
     "id": "c_fd4ebf4071",
     "title": "Cachorros Golden Retriever: 2 golden retrievere 2021",
     "cat": "animals",
@@ -27170,13 +27156,6 @@ window.RAY_PUZZLE_CATALOG = [
     "cat": "animals",
     "tags": "cachorro cachorros cao caes pet filhote animal",
     "src": "imagens/c_df3ef8fe3f.jpg"
-  },
-  {
-    "id": "c_ba432badb2",
-    "title": "Cachorros Golden Retriever: 220-Départ au parc des sports Raphaël",
-    "cat": "animals",
-    "tags": "cachorro cachorros cao caes pet filhote animal",
-    "src": "imagens/c_ba432badb2.jpg"
   },
   {
     "id": "c_9ef08056a5",
@@ -27590,13 +27569,6 @@ window.RAY_PUZZLE_CATALOG = [
     "cat": "animals",
     "tags": "cachorro cachorros cao caes pet filhote animal",
     "src": "imagens/c_17b0de8f38.jpg"
-  },
-  {
-    "id": "c_dec4843bd8",
-    "title": "Filhotes de Cachorro: Tri Delta Parents Weekend Banner 2024",
-    "cat": "animals",
-    "tags": "cachorro cachorros cao caes pet filhote animal",
-    "src": "imagens/c_dec4843bd8.jpg"
   },
   {
     "id": "c_b057e87257",

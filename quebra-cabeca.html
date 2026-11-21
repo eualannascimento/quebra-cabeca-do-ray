@@ -4213,33 +4213,44 @@
     let pendingHard = false;
 
     const TASTE_QUERIES = {
-      renegade: ['renegade'],
-      bronco: ['bronco'],
-      byd: ['byd'],
-      jeep: ['jeep'],
-      mercedes: ['mercedes'],
-      bmw: ['bmw'],
+      renegade: { terms: ['renegade'], cats: ['vehicles'] },
+      bronco: { terms: ['bronco'], cats: ['vehicles'] },
+      byd: { terms: ['byd'], cats: ['vehicles'] },
+      jeep: { terms: ['jeep'], cats: ['vehicles'] },
+      mercedes: { terms: ['mercedes'], cats: ['vehicles'] },
+      bmw: { terms: ['bmw'], cats: ['vehicles', 'aviation'] },
       camilopolis: ['camilopolis', 'santo andre'],
       pesqueira: ['pesqueira'],
       minas: ['minas', 'canastra', 'ouro preto', 'tiradentes', 'araxa'],
-      queijo: ['queijo'],
+      queijo: { terms: ['queijo', 'queijos'], cats: ['gastronomy'] },
       foz: ['foz', 'iguacu'],
       paraguai: ['paraguai'],
       argentina: ['argentina'],
-      cachorros: ['cachorro', 'cachorros', 'cao', 'caes', 'filhote', 'golden retriever', 'dog'],
-      natal: ['natal', 'christmas', 'natalina'],
-      presidentes: ['presidente'],
-      cafe: ['cafe', 'expresso', 'espresso'],
-      vinho: ['vinho'],
-      churrasco: ['churrasco', 'churrascaria'],
+      cachorros: ['cachorro', 'cachorros', 'cao', 'caes', 'filhote', 'filhotes', 'golden retriever', 'dog', 'dogs', 'puppy', 'puppies'],
+      natal: ['natal', 'christmas', 'natalina', 'papai noel'],
+      presidentes: ['presidente', 'presidentes'],
+      cafe: { terms: ['cafe', 'expresso', 'espresso'], cats: ['gastronomy'] },
+      vinho: { terms: ['vinho', 'vinhos', 'vinhedo', 'adega'], cats: ['gastronomy'] },
+      churrasco: { terms: ['churrasco', 'churrascaria'], cats: ['gastronomy'] },
       mercados: ['supermercado', 'mercado', 'nagumo', 'drogasil', 'farmacia'],
       diy: ['diy', 'construcao', 'marcenaria'],
-      redes: ['rede', 'cabeamento', 'fibra', 'servidor', 'cabo'],
-      apartamentos: ['apartamento', 'edificio'],
-      aeroporto: ['aeroporto', 'aviao'],
+      redes: ['rede', 'redes', 'cabeamento', 'fibra', 'servidor', 'servidores', 'cabo', 'cabos', 'ethernet', 'roteador', 'switch'],
+      apartamentos: ['apartamento', 'apartamentos', 'edificio', 'edificios', 'predio', 'predios'],
+      aeroporto: ['aeroporto', 'aeroportos', 'aviao', 'avioes'],
       wally: ['wally', 'whaly', 'cena detalhada', 'multidao'],
-      musica: ['musica', 'amado batista', 'sidney magal', 'violao', 'show', 'palco']
+      musica: ['musica', 'amado batista', 'sidney magal', 'violao', 'show ao vivo', 'palco', 'concerto', 'guitarra']
     };
+    const TASTE_REGEX_CACHE = {};
+    function getTasteRule(tasteKey) {
+      if (TASTE_REGEX_CACHE[tasteKey]) return TASTE_REGEX_CACHE[tasteKey];
+      const spec = TASTE_QUERIES[tasteKey];
+      if (!spec) return null;
+      const terms = Array.isArray(spec) ? spec : spec.terms;
+      const cats = Array.isArray(spec) ? null : (spec.cats || null);
+      const escaped = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const regex = new RegExp(`(?:^|[^a-z0-9])(?:${escaped.join('|')})(?:$|[^a-z0-9])`);
+      return (TASTE_REGEX_CACHE[tasteKey] = { regex, cats });
+    }
 
     const PREFS_KEY = 'quebra_cabeca_ray_prefs_v1';
     function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } }
@@ -4300,10 +4311,11 @@
     }
 
     function itemMatchesTaste(item, tasteKey) {
-      const kws = TASTE_QUERIES[tasteKey];
-      if (!kws) return true;
+      const rule = getTasteRule(tasteKey);
+      if (!rule) return true;
+      if (rule.cats && !rule.cats.includes(item.cat)) return false;
       const hay = normalizeText(`${item.title} ${item.tags || ''}`);
-      return kws.some(k => hay.includes(k));
+      return rule.regex.test(hay);
     }
 
     function getCreatedSrcSet(prof) {
