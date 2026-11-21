@@ -962,6 +962,174 @@
       font-size: 12.5px;
     }
 
+    .usage-panel {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .usage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .usage-tabs {
+      display: inline-flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+
+    .usage-tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .usage-tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .usage-summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .usage-summary-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .usage-blocks-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .analytics-bars-wrap {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    .usage-mini-stat {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+    }
+
+    .usage-mini-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .usage-mini-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .usage-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 145px;
+      padding: 12px 6px 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+    }
+
+    .usage-bar-col {
+      flex: 1 1 0;
+      min-width: 10px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .usage-bar-track {
+      width: 100%;
+      max-width: 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(128, 128, 128, 0.08);
+    }
+
+    .usage-bar-fill {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.2s ease, opacity 0.15s;
+      opacity: 0.85;
+    }
+
+    .usage-bar-col.today .usage-bar-fill,
+    .usage-bar-col:hover .usage-bar-fill,
+    .usage-bar-col.selected .usage-bar-fill {
+      opacity: 1;
+      background: var(--success);
+    }
+
+    .usage-bar-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .usage-bar-detail {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .usage-blocks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .usage-block-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+    }
+
     .backup-details {
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -2308,6 +2476,26 @@
                   </div>
                 </div>
 
+                <div class="usage-panel" id="usage-panel">
+                  <div class="usage-header">
+                    <div>
+                      <div style="font-weight: 700; font-size: 14px;">📱 Tempo de Uso (Estilo Celular)</div>
+                      <div id="usage-streak-meta" style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Acompanhe seu uso por dia, semana, mês, ano e bloco de hora</div>
+                    </div>
+                    <div class="usage-tabs" id="usage-tabs">
+                      <button class="usage-tab-btn active" data-usage-range="day">Dia</button>
+                      <button class="usage-tab-btn" data-usage-range="week">Semana</button>
+                      <button class="usage-tab-btn" data-usage-range="month">Mês</button>
+                      <button class="usage-tab-btn" data-usage-range="year">Ano</button>
+                      <button class="usage-tab-btn" data-usage-range="blocks">Blocos de Hora</button>
+                    </div>
+                  </div>
+                  <div class="usage-summary-row" id="usage-summary-row"></div>
+                  <div class="usage-chart" id="usage-chart"></div>
+                  <div class="usage-bar-detail" id="usage-bar-detail">Passe o mouse ou toque em uma barra para ver detalhes.</div>
+                  <div class="usage-blocks-grid" id="usage-blocks-grid"></div>
+                </div>
+
                 <div class="analytics-bars-wrap">
                   <div class="analytics-bar-box" id="analytics-focus-box">
                     <div style="font-weight: 700; margin-bottom: 6px;">⏱️ Distribuição de Tempo (Ativo vs Parado)</div>
@@ -2752,6 +2940,81 @@
         });
 
         this.persistImmediate();
+      }
+
+      getLocalDateKey(d = new Date()) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      ensureUsageLog(prof) {
+        if (!prof.usageLog || !prof.usageLog.days) {
+          prof.usageLog = { days: {}, _backfilled: false };
+        }
+        if (!prof.usageLog._backfilled) {
+          prof.usageLog._backfilled = true;
+          const addHist = (key, active, idle, pieces, clicks, hour) => {
+            if (!key) return;
+            const d = this.ensureUsageDay(prof, key);
+            d.active += active || 0;
+            d.idle += idle || 0;
+            d.pieces += pieces || 0;
+            d.clicks += clicks || 0;
+            if (typeof hour === 'number' && hour >= 0 && hour < 24) {
+              d.hours[hour] += active || 0;
+            }
+          };
+          (prof.trophies || []).forEach(tr => {
+            const parts = String(tr.date || '').split('/');
+            if (parts.length === 3) {
+              const key = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+              addHist(key, tr.timeSec || 0, tr.idleSec || 0, tr.pieces || 0, tr.clicks || 0, 20);
+            }
+          });
+          (prof.activePuzzles || []).forEach(s => {
+            const key = s.updatedAt ? this.getLocalDateKey(new Date(s.updatedAt)) : this.getLocalDateKey();
+            const hr = s.updatedAt ? new Date(s.updatedAt).getHours() : new Date().getHours();
+            addHist(key, s.elapsedSeconds || 0, s.idleSeconds || 0, s.lockedCount || 0, s.clicks || 0, hr);
+          });
+        }
+        return prof.usageLog;
+      }
+
+      ensureUsageDay(prof, key) {
+        if (!prof.usageLog || !prof.usageLog.days) prof.usageLog = { days: {}, _backfilled: true };
+        if (!prof.usageLog.days[key]) {
+          prof.usageLog.days[key] = { active: 0, idle: 0, app: 0, pieces: 0, clicks: 0, hours: new Array(24).fill(0) };
+        }
+        const day = prof.usageLog.days[key];
+        if (!Array.isArray(day.hours) || day.hours.length !== 24) day.hours = new Array(24).fill(0);
+        return day;
+      }
+
+      recordUsageSecond(mode) {
+        const prof = this.getActiveProfile();
+        this.ensureUsageLog(prof);
+        const now = new Date();
+        const day = this.ensureUsageDay(prof, this.getLocalDateKey(now));
+        const hr = now.getHours();
+        if (mode === 'active') {
+          day.active = (day.active || 0) + 1;
+          day.hours[hr] = (day.hours[hr] || 0) + 1;
+        } else if (mode === 'idle') {
+          day.idle = (day.idle || 0) + 1;
+        } else if (mode === 'app') {
+          day.app = (day.app || 0) + 1;
+          day.hours[hr] = (day.hours[hr] || 0) + 1;
+        }
+      }
+
+      recordUsageInteraction(piecesDelta, clicksDelta) {
+        const prof = this.getActiveProfile();
+        this.ensureUsageLog(prof);
+        const day = this.ensureUsageDay(prof, this.getLocalDateKey());
+        if (piecesDelta > 0) day.pieces = (day.pieces || 0) + piecesDelta;
+        if (clicksDelta > 0) day.clicks = (day.clicks || 0) + clicksDelta;
       }
 
       exportJSON() {
@@ -3757,6 +4020,7 @@
       onPointerDown(cx, cy, btn) {
         this.clicks = (this.clicks || 0) + 1;
         this.lastActive = Date.now();
+        storage.recordUsageInteraction(0, 1);
         const pos = this.screenToWorld(cx, cy);
         const hit = this.getPieceAt(pos.x, pos.y);
 
@@ -3912,7 +4176,12 @@
       }
 
       updateHUD() {
+        const prevCompleted = this.completedPieces || 0;
         this.completedPieces = this.pieces.filter(p => p.locked).length;
+        const deltaCompleted = this.completedPieces - prevCompleted;
+        if (deltaCompleted > 0 && this.timerInterval) {
+          storage.recordUsageInteraction(deltaCompleted, 0);
+        }
         const pct = Math.round((this.completedPieces / this.totalPieces) * 100);
         document.getElementById('hud-pieces').textContent = `${this.completedPieces} / ${this.totalPieces} peças`;
         document.getElementById('hud-pct').textContent = `${pct}%`;
@@ -4001,10 +4270,12 @@
           const paused = document.hidden || (Date.now() - this.lastActive >= 30000);
           if (paused) {
             this.idleSeconds = (this.idleSeconds || 0) + 1;
+            storage.recordUsageSecond('idle');
             renderTimer(true);
             return;
           }
           this.elapsedSeconds++;
+          storage.recordUsageSecond('active');
           renderTimer(false);
         }, 1000);
       }
@@ -4865,6 +5136,8 @@
         ? topCats.map(([c, n]) => `<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>${CAT_NAMES[c] || 'Fotos Próprias'}</span><strong>${n} ${n === 1 ? 'puzzle' : 'puzzles'}</strong></div>`).join('')
         : 'Ainda sem histórico';
 
+      renderUsageAnalytics(prof);
+
       // Troféus recentes na conta
       const tCont = document.getElementById('trophies-container');
       if (doneList.length === 0) {
@@ -5344,7 +5617,299 @@
         window.addEventListener('pointermove', onMove);
         window.addEventListener('pointerup', onUp);
       };
+
+      // Tempo de Uso (Estilo Celular): Abas Dia / Semana / Mês / Ano / Blocos de Hora
+      const usageTabsEl = document.getElementById('usage-tabs');
+      if (usageTabsEl) {
+        usageTabsEl.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-usage-range]');
+          if (!btn) return;
+          currentUsageRange = btn.getAttribute('data-usage-range');
+          usageTabsEl.querySelectorAll('.usage-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+          renderUsageAnalytics(storage.getActiveProfile());
+        });
+      }
+
+      // Rastreia tempo ativo nos menus (lobby) sem pesar na CPU
+      let lastLobbyActivity = Date.now();
+      const markLobbyActivity = () => { lastLobbyActivity = Date.now(); };
+      window.addEventListener('pointermove', markLobbyActivity, { passive: true });
+      window.addEventListener('keydown', markLobbyActivity, { passive: true });
+      window.addEventListener('touchstart', markLobbyActivity, { passive: true });
+      let lobbyTickCount = 0;
+      setInterval(() => {
+        if (document.hidden) return;
+        const shellVisible = !document.getElementById('platform-shell').classList.contains('hidden');
+        if (shellVisible && (Date.now() - lastLobbyActivity < 30000)) {
+          storage.recordUsageSecond('app');
+          lobbyTickCount++;
+          if (lobbyTickCount % 20 === 0) storage.persistDebounced();
+        }
+      }, 1000);
     });
+
+    let currentUsageRange = 'day';
+    function renderUsageAnalytics(prof) {
+      const summaryEl = document.getElementById('usage-summary-row');
+      const chartEl = document.getElementById('usage-chart');
+      const detailEl = document.getElementById('usage-bar-detail');
+      const blocksEl = document.getElementById('usage-blocks-grid');
+      const metaEl = document.getElementById('usage-streak-meta');
+      if (!summaryEl || !chartEl || !blocksEl) return;
+
+      const log = storage.ensureUsageLog(prof);
+      const daysMap = log.days || {};
+      const now = new Date();
+      const todayKey = storage.getLocalDateKey(now);
+      const getDay = (key) => daysMap[key] || { active: 0, idle: 0, app: 0, pieces: 0, clicks: 0, hours: new Array(24).fill(0) };
+
+      // Calcula sequência (streak) de dias seguidos com uso ativo
+      let streak = 0;
+      const cursor = new Date(now);
+      for (let i = 0; i < 365; i++) {
+        const k = storage.getLocalDateKey(cursor);
+        const d = daysMap[k];
+        if (d && ((d.active || 0) + (d.app || 0)) > 0) {
+          streak++;
+          cursor.setDate(cursor.getDate() - 1);
+        } else if (i === 0) {
+          cursor.setDate(cursor.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+
+      // Blocos de hora acumulados (00-04, 04-08, 08-12, 12-16, 16-20, 20-24)
+      const blockDefs = [
+        { label: '00h as 04h', name: 'Madrugada', icon: '🦉', start: 0, end: 4 },
+        { label: '04h as 08h', name: 'Amanhecer', icon: '🌅', start: 4, end: 8 },
+        { label: '08h as 12h', name: 'Manhã', icon: '☕', start: 8, end: 12 },
+        { label: '12h as 16h', name: 'Tarde', icon: '☀️', start: 12, end: 16 },
+        { label: '16h as 20h', name: 'Fim de Tarde', icon: '🌇', start: 16, end: 20 },
+        { label: '20h as 24h', name: 'Noite', icon: '🌙', start: 20, end: 24 }
+      ];
+      const allHours = new Array(24).fill(0);
+      Object.values(daysMap).forEach(d => {
+        if (Array.isArray(d.hours)) {
+          for (let h = 0; h < 24; h++) allHours[h] += (d.hours[h] || 0);
+        }
+      });
+      const blockTotals = blockDefs.map(b => {
+        let sec = 0;
+        for (let h = b.start; h < b.end; h++) sec += allHours[h];
+        return { ...b, sec };
+      });
+      const totalBlockSec = blockTotals.reduce((a, b) => a + b.sec, 0);
+      const favBlock = blockTotals.reduce((best, b) => b.sec > best.sec ? b : best, blockTotals[0]);
+
+      if (metaEl) {
+        const favTxt = favBlock && favBlock.sec > 0 ? ` • Pico: ${favBlock.icon} ${favBlock.name} (${favBlock.label})` : '';
+        metaEl.textContent = `🔥 Sequência: ${streak} ${streak === 1 ? 'dia' : 'dias'}${favTxt}`;
+      }
+
+      let bars = [];
+      let periodActive = 0, periodApp = 0, periodIdle = 0, periodPieces = 0, periodClicks = 0;
+      let compareText = '';
+
+      if (currentUsageRange === 'day') {
+        const today = getDay(todayKey);
+        const yest = new Date(now); yest.setDate(yest.getDate() - 1);
+        const yestData = getDay(storage.getLocalDateKey(yest));
+        periodActive = today.active || 0;
+        periodApp = today.app || 0;
+        periodIdle = today.idle || 0;
+        periodPieces = today.pieces || 0;
+        periodClicks = today.clicks || 0;
+        const todayTotal = periodActive + periodApp;
+        const yestTotal = (yestData.active || 0) + (yestData.app || 0);
+        if (yestTotal > 0) {
+          const diffPct = Math.round(((todayTotal - yestTotal) / yestTotal) * 100);
+          compareText = diffPct >= 0 ? `+${diffPct}% vs ontem` : `${diffPct}% vs ontem`;
+        } else {
+          compareText = 'Hoje (24h)';
+        }
+        for (let h = 0; h < 24; h++) {
+          const sec = (today.hours && today.hours[h]) || 0;
+          bars.push({
+            label: (h % 4 === 0 || h === 23) ? `${String(h).padStart(2, '0')}h` : '',
+            title: `${String(h).padStart(2, '0')}h as ${String((h + 1) % 24).padStart(2, '0')}h`,
+            val: sec,
+            detail: `${String(h).padStart(2, '0')}h: ${formatDuration(sec)} de uso ativo`,
+            isCurrent: h === now.getHours()
+          });
+        }
+      } else if (currentUsageRange === 'week') {
+        const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        let prevWeekTotal = 0;
+        for (let i = 13; i >= 7; i--) {
+          const d = new Date(now); d.setDate(d.getDate() - i);
+          const dd = getDay(storage.getLocalDateKey(d));
+          prevWeekTotal += (dd.active || 0) + (dd.app || 0);
+        }
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(now); d.setDate(d.getDate() - i);
+          const k = storage.getLocalDateKey(d);
+          const dd = getDay(k);
+          const tot = (dd.active || 0) + (dd.app || 0);
+          periodActive += dd.active || 0;
+          periodApp += dd.app || 0;
+          periodIdle += dd.idle || 0;
+          periodPieces += dd.pieces || 0;
+          periodClicks += dd.clicks || 0;
+          const lbl = i === 0 ? 'Hoje' : WEEKDAYS[d.getDay()];
+          bars.push({
+            label: lbl,
+            title: `${WEEKDAYS[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`,
+            val: tot,
+            detail: `${WEEKDAYS[d.getDay()]} (${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}): ${formatDuration(dd.active || 0)} jogando + ${formatDuration(dd.app || 0)} menus • ${dd.pieces || 0} pç • ${dd.clicks || 0} cliques`,
+            isCurrent: i === 0
+          });
+        }
+        const curWeekTotal = periodActive + periodApp;
+        compareText = prevWeekTotal > 0
+          ? `${curWeekTotal >= prevWeekTotal ? '+' : ''}${Math.round(((curWeekTotal - prevWeekTotal) / prevWeekTotal) * 100)}% vs semana passada`
+          : `Média ${formatDuration(Math.round(curWeekTotal / 7))}/dia`;
+      } else if (currentUsageRange === 'month') {
+        const year = now.getFullYear(), month = now.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let activeDaysCount = 0;
+        for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+          const k = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+          const dd = getDay(k);
+          const tot = (dd.active || 0) + (dd.app || 0);
+          if (tot > 0) activeDaysCount++;
+          periodActive += dd.active || 0;
+          periodApp += dd.app || 0;
+          periodIdle += dd.idle || 0;
+          periodPieces += dd.pieces || 0;
+          periodClicks += dd.clicks || 0;
+          bars.push({
+            label: (dayNum === 1 || dayNum % 5 === 0 || dayNum === daysInMonth) ? String(dayNum) : '',
+            title: `Dia ${String(dayNum).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`,
+            val: tot,
+            detail: `Dia ${String(dayNum).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}: ${formatDuration(dd.active || 0)} jogando + ${formatDuration(dd.app || 0)} menus • ${dd.pieces || 0} pç`,
+            isCurrent: dayNum === now.getDate()
+          });
+        }
+        compareText = `${activeDaysCount} ${activeDaysCount === 1 ? 'dia ativo' : 'dias ativos'} no mês`;
+      } else if (currentUsageRange === 'year') {
+        const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const year = now.getFullYear();
+        const monthTotals = Array.from({ length: 12 }, () => ({ active: 0, app: 0, idle: 0, pieces: 0, clicks: 0 }));
+        Object.entries(daysMap).forEach(([k, dd]) => {
+          if (k.startsWith(`${year}-`)) {
+            const mIdx = parseInt(k.slice(5, 7), 10) - 1;
+            if (mIdx >= 0 && mIdx < 12) {
+              monthTotals[mIdx].active += dd.active || 0;
+              monthTotals[mIdx].app += dd.app || 0;
+              monthTotals[mIdx].idle += dd.idle || 0;
+              monthTotals[mIdx].pieces += dd.pieces || 0;
+              monthTotals[mIdx].clicks += dd.clicks || 0;
+            }
+          }
+        });
+        monthTotals.forEach((mt, mIdx) => {
+          const tot = mt.active + mt.app;
+          periodActive += mt.active;
+          periodApp += mt.app;
+          periodIdle += mt.idle;
+          periodPieces += mt.pieces;
+          periodClicks += mt.clicks;
+          bars.push({
+            label: MONTHS[mIdx],
+            title: `${MONTHS[mIdx]}/${year}`,
+            val: tot,
+            detail: `${MONTHS[mIdx]}/${year}: ${formatDuration(mt.active)} jogando + ${formatDuration(mt.app)} menus • ${mt.pieces} pç`,
+            isCurrent: mIdx === now.getMonth()
+          });
+        });
+        compareText = `Ano ${year}`;
+      } else {
+        Object.values(daysMap).forEach(dd => {
+          periodActive += dd.active || 0;
+          periodApp += dd.app || 0;
+          periodIdle += dd.idle || 0;
+          periodPieces += dd.pieces || 0;
+          periodClicks += dd.clicks || 0;
+        });
+        compareText = `Histórico completo por bloco`;
+        bars = blockTotals.map(b => ({
+          label: `${b.icon} ${String(b.start).padStart(2, '0')}-${String(b.end).padStart(2, '0')}h`,
+          title: `${b.name} (${b.label})`,
+          val: b.sec,
+          detail: `${b.icon} ${b.name} (${b.label}): ${formatDuration(b.sec)} (${totalBlockSec > 0 ? Math.round((b.sec / totalBlockSec) * 100) : 0}% do uso)`,
+          isCurrent: now.getHours() >= b.start && now.getHours() < b.end
+        }));
+      }
+
+      const periodTotalUse = periodActive + periodApp;
+      summaryEl.innerHTML = `
+        <div class="usage-mini-stat">
+          <div class="usage-mini-val" style="color:var(--accent);">${formatDuration(periodTotalUse)}</div>
+          <div class="usage-mini-lbl">Tempo de Uso (${compareText})</div>
+        </div>
+        <div class="usage-mini-stat">
+          <div class="usage-mini-val" style="color:var(--success);">${formatDuration(periodActive)}</div>
+          <div class="usage-mini-lbl">Jogando na Mesa</div>
+        </div>
+        <div class="usage-mini-stat">
+          <div class="usage-mini-val" style="color:var(--info);">${formatDuration(periodApp)}</div>
+          <div class="usage-mini-lbl">Navegando / Menus</div>
+        </div>
+        <div class="usage-mini-stat">
+          <div class="usage-mini-val">${periodPieces.toLocaleString('pt-BR')} pç</div>
+          <div class="usage-mini-lbl">${periodClicks.toLocaleString('pt-BR')} cliques • ${formatDuration(periodIdle)} parado</div>
+        </div>
+      `;
+
+      const maxVal = Math.max(1, ...bars.map(b => b.val));
+      chartEl.innerHTML = '';
+      let defaultDetail = 'Passe o mouse ou toque em uma barra para ver detalhes.';
+      let bestBar = bars[0];
+      bars.forEach(b => { if (b.val > (bestBar ? bestBar.val : 0)) bestBar = b; });
+      if (bestBar && bestBar.val > 0) defaultDetail = `Pico: ${bestBar.detail}`;
+      else if (bars.length) {
+        const cur = bars.find(b => b.isCurrent) || bars[0];
+        defaultDetail = cur.detail;
+      }
+      if (detailEl) detailEl.textContent = defaultDetail;
+
+      bars.forEach(b => {
+        const col = document.createElement('div');
+        col.className = `usage-bar-col ${b.isCurrent ? 'today' : ''}`;
+        col.title = b.detail;
+        const pct = b.val > 0 ? Math.max(4, Math.round((b.val / maxVal) * 100)) : 0;
+        col.innerHTML = `
+          <div class="usage-bar-track">
+            <div class="usage-bar-fill" style="height:${pct}%;"></div>
+          </div>
+          <div class="usage-bar-lbl">${b.label}</div>
+        `;
+        const showBarDetail = () => {
+          chartEl.querySelectorAll('.usage-bar-col.selected').forEach(el => el.classList.remove('selected'));
+          col.classList.add('selected');
+          if (detailEl) detailEl.textContent = b.detail;
+        };
+        col.addEventListener('mouseenter', showBarDetail);
+        col.addEventListener('click', showBarDetail);
+        chartEl.appendChild(col);
+      });
+
+      blocksEl.innerHTML = blockTotals.map(b => {
+        const pct = totalBlockSec > 0 ? Math.round((b.sec / totalBlockSec) * 100) : 0;
+        return `
+          <div class="usage-block-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px;">
+              <span>${b.icon} <strong>${b.name}</strong> <span style="color:var(--text-muted);font-size:10.5px;">(${b.label})</span></span>
+              <strong>${formatDuration(b.sec)}</strong>
+            </div>
+            <div class="progress-track" style="height:6px;">
+              <div class="progress-fill" style="width:${pct}%;background:var(--accent);"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
   </script>
 </body>
 </html>
