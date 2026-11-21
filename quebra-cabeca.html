@@ -2726,7 +2726,7 @@
       .zoom-controls-pill { height: 38px; padding: 0 4px; }
       .game-bottom-left { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); left: calc(10px + env(safe-area-inset-left, 0px)); }
       .hud-unified-left { min-width: 170px; padding: 7px 10px; gap: 6px; }
-      .global-media-dock { width: 178px; gap: 5px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
+      .global-media-dock { width: min(312px, calc(100vw - 20px)); gap: 5px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
       .music-player-dock { padding: 6px 9px; }
       .hud-timer-pill, .hud-pct-big { font-size: 14px; }
       .color-dock-label { display: none; }
@@ -6218,6 +6218,10 @@
 
       // Barra de Ferramentas da Mesa (Dropdown na direita) & Voltar / Avatar na esquerda
       const exitToLobby = async (targetTab) => {
+        engine.draggedGroup = null;
+        engine.isPanning = false;
+        engine.hintAnim = null;
+        engine.milestoneParticles = [];
         engine.saveToAccount();
         await storage.persistImmediate();
         engine.stopTimer();
@@ -6225,6 +6229,10 @@
         if (targetTab) switchTab(targetTab);
         refreshAllUI();
       };
+      window.addEventListener('pagehide', () => {
+        if (engine && engine.saveId && !engine.isFinished) engine.saveToAccount();
+        storage.persistImmediate();
+      });
       document.getElementById('btn-g-exit').addEventListener('click', () => exitToLobby(null));
       document.getElementById('btn-game-avatar')?.addEventListener('click', () => exitToLobby('account'));
 
