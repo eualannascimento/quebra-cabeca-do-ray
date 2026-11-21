@@ -680,7 +680,8 @@
       border-color: var(--border-strong);
     }
 
-    .sidebar-item.active {
+    .sidebar-item.active,
+    .sidebar-item.active:hover {
       background: var(--accent);
       border-color: var(--accent);
       color: #ffffff;
@@ -919,12 +920,13 @@
     .save-stats-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px 10px;
+      gap: 6px 8px;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 8px 10px;
-      font-size: 11.5px;
+      font-size: 11px;
+      min-width: 0;
     }
 
     .save-stat-item {
@@ -933,13 +935,22 @@
       align-items: center;
       gap: 4px;
       color: var(--text-muted);
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .save-stat-item span {
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
 
     .save-stat-item strong {
       color: var(--text-main);
       font-weight: 700;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .save-thumb-btn {
@@ -1397,14 +1408,12 @@
       }
       .account-col .usage-explicit-list {
         margin-top: 6px;
-        grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 4px;
-        max-height: 62px;
-        overflow-y: auto;
       }
       .account-col .usage-explicit-row {
-        padding: 4px 8px;
-        font-size: 11px;
+        padding: 3px 6px;
+        font-size: 10.5px;
       }
       .account-col .usage-blocks-grid {
         grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1950,25 +1959,25 @@
       color: #ffffff;
     }
 
-    /* Dropdown Autoexplicativo de Ferramentas no Lado Direito */
+    /* Dropdown Autoexplicativo de Ferramentas no Lado Direito (Opaco e Compacto) */
     .game-toolbar {
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      width: min(325px, calc(100vw - 24px));
-      max-height: calc(100dvh - 235px);
+      width: min(268px, calc(100vw - 24px));
+      max-height: calc(100dvh - 200px);
       overflow-y: auto;
-      background: var(--hud-surface);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 14px;
-      padding: 6px;
+      background: #161922;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 5px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
       z-index: 60;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
       transform-origin: top right;
-      transition: transform 0.18s ease, opacity 0.14s ease;
+      transition: transform 0.16s ease, opacity 0.12s ease;
     }
 
     .game-toolbar.collapsed {
@@ -1981,9 +1990,9 @@
       background: transparent;
       border: 1px solid transparent;
       color: var(--hud-text);
-      padding: 6px 9px;
-      border-radius: 8px;
-      font-size: 12.5px;
+      padding: 5px 8px;
+      border-radius: 7px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -1996,15 +2005,15 @@
       width: 100%;
       justify-content: flex-start;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       white-space: normal;
       text-align: left;
-      padding: 5px 8px;
+      padding: 4px 7px;
     }
 
     .tool-icon {
-      font-size: 17px;
-      width: 24px;
+      font-size: 15px;
+      width: 20px;
       text-align: center;
       flex-shrink: 0;
     }
@@ -2012,33 +2021,34 @@
     .tool-copy {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 0px;
       min-width: 0;
     }
 
     .tool-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
     .tool-desc {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 400;
       color: var(--hud-muted);
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
     .game-toolbar .tool-btn.active .tool-desc {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 0.88);
     }
 
     .tool-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.14);
       color: #ffffff;
     }
 
-    .tool-btn.active {
+    .tool-btn.active,
+    .tool-btn.active:hover {
       background: var(--accent);
       border-color: var(--accent);
       color: #ffffff;
@@ -2161,24 +2171,28 @@
       gap: 7px;
     }
 
-    /* Canto Inferior Direito: Relógio Discreto + Player de Música Online */
-    .game-bottom-right {
-      position: absolute;
+    /* Canto Inferior Direito Global (Site Todo): Relógio Discreto + Player de Música */
+    .global-media-dock {
+      position: fixed;
       bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       right: calc(14px + env(safe-area-inset-right, 0px));
+      width: 278px;
+      max-width: calc(100vw - 28px);
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-      z-index: 48;
+      align-items: stretch;
+      gap: 6px;
+      z-index: 125;
     }
 
     .hud-clock-pill {
-      background: var(--hud-surface);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      width: 100%;
+      text-align: center;
+      background: #161922;
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: var(--hud-muted);
-      border-radius: 999px;
-      padding: 4px 12px;
+      border-radius: 10px;
+      padding: 5px 12px;
       font-size: 11.5px;
       font-weight: 600;
       font-variant-numeric: tabular-nums;
@@ -2186,17 +2200,113 @@
     }
 
     .music-player-dock {
-      background: var(--hud-surface);
-      border: 1px solid rgba(255, 255, 255, 0.20);
+      position: relative;
+      width: 100%;
+      background: #161922;
+      border: 1px solid rgba(255, 255, 255, 0.22);
       color: var(--hud-text);
       border-radius: 14px;
       padding: 8px 12px;
-      min-width: 250px;
-      max-width: min(300px, calc(100vw - 28px));
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
+    }
+
+    .music-station-list {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      width: 100%;
+      max-height: 260px;
+      overflow-y: auto;
+      background: #161922;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 12px;
+      padding: 5px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 135;
+    }
+
+    .music-station-list.hidden {
+      display: none;
+    }
+
+    .music-station-opt {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #eef2f7;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .music-station-opt:hover {
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    .music-station-opt.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .music-track-info {
+      font-size: 10.5px;
+      color: var(--hud-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .usage-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .usage-cal-head {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+    }
+
+    .usage-cal-cell {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      font-size: 10px;
+    }
+
+    .usage-cal-cell.has-use {
+      border-color: rgba(45, 127, 249, 0.45);
+      background: var(--accent-soft);
+    }
+
+    .usage-cal-cell.is-today {
+      border-color: var(--success);
+      box-shadow: 0 0 0 1px var(--success);
+    }
+
+    .usage-cal-cell.empty {
+      background: transparent;
+      border-color: transparent;
     }
 
     .music-player-top {
@@ -2237,7 +2347,13 @@
       flex-shrink: 0;
     }
 
-    .music-btn.playing {
+    .music-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: var(--accent);
+    }
+
+    .music-btn.playing,
+    .music-btn.playing:hover {
       background: var(--accent);
       border-color: var(--accent);
     }
@@ -2448,9 +2564,9 @@
       .game-avatar-chip { padding: 2px; }
       .zoom-controls-pill { height: 38px; padding: 0 4px; }
       .game-bottom-left { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); left: calc(10px + env(safe-area-inset-left, 0px)); }
-      .hud-unified-left { min-width: 175px; padding: 7px 10px; gap: 6px; }
-      .game-bottom-right { gap: 6px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
-      .music-player-dock { min-width: 165px; max-width: 48vw; padding: 6px 9px; }
+      .hud-unified-left { min-width: 170px; padding: 7px 10px; gap: 6px; }
+      .global-media-dock { width: 178px; gap: 5px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
+      .music-player-dock { padding: 6px 9px; }
       .hud-timer-pill, .hud-pct-big { font-size: 14px; }
       .color-dock-label { display: none; }
       .color-swatch { width: 19px; height: 19px; }
@@ -2539,6 +2655,7 @@
                 <span>🔍</span>
                 <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Renegade, Bronco, BYD, Pesqueira, Camilópolis, Cachorro, Natal, Presidente...)">
               </div>
+              <button type="button" class="btn" id="btn-clear-filters" style="height: 40px; display: none;" title="Limpar busca e filtros ativos">✕ Limpar Filtros</button>
               <div class="count-pill" id="gallery-count-pill">0 imagens</div>
             </div>
           </div>
@@ -2583,7 +2700,7 @@
                 </div>
               </details>
 
-              <details class="sidebar-group" open>
+              <details class="sidebar-group">
                 <summary class="sidebar-group-title"><span>🗂️ Categorias Gerais</span><span>▾</span></summary>
                 <div class="sidebar-list" id="sidebar-general-list">
                   <button type="button" class="sidebar-item" data-cat="nature"><span class="sidebar-item-label">🌿 Natureza</span><span class="cat-count">0</span></button>
@@ -2963,24 +3080,6 @@
       </div>
     </div>
 
-    <!-- Canto Inferior Direito: Relógio Discreto + Player Online Brega & Sertanejo -->
-    <div class="game-bottom-right">
-      <div class="hud-clock-pill" id="hud-clock-date">🕒 00:00 • Sáb, 21/11</div>
-      <div class="music-player-dock" id="music-player-dock">
-        <div class="music-player-top">
-          <span style="color:var(--accent);">🎵</span>
-          <span class="music-station-name" id="music-station-name">Rádio Brega &amp; Sertanejo</span>
-        </div>
-        <div class="music-controls-row">
-          <button type="button" class="music-btn" id="btn-music-play" title="Tocar ou pausar rádio">▶</button>
-          <button type="button" class="music-btn" id="btn-music-next" title="Trocar de rádio aleatoriamente">🔀</button>
-          <span style="font-size:12px;">🔊</span>
-          <input type="range" class="music-vol" id="music-vol" min="0" max="1" step="0.05" value="0.45" title="Volume da música">
-        </div>
-        <audio id="bg-music-audio" preload="none"></audio>
-      </div>
-    </div>
-
     <!-- Miniatura Flutuante (fechada por padrão) -->
     <div class="floating-guide hidden" id="floating-guide">
       <div class="guide-header" id="guide-drag-handle">
@@ -3038,10 +3137,31 @@
       <div id="welcome-title" style="font-weight: 700; font-size: 16px;"></div>
       <div class="progress-track" style="height: 8px; margin: 10px 0 6px;"><div class="progress-fill" id="welcome-bar"></div></div>
       <div id="welcome-meta" style="color: var(--text-muted); font-size: 13px; margin-bottom: 18px;"></div>
-      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button class="btn btn-primary" id="btn-welcome-continue" style="min-width: 160px; font-size: 15px;">▶ Continuar</button>
-        <button class="btn" id="btn-welcome-other">Escolher outro</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+        <button class="btn btn-primary" id="btn-welcome-continue" style="height: 44px; font-size: 14px; width: 100%;">▶ Continuar</button>
+        <button class="btn" id="btn-welcome-other" style="height: 44px; font-size: 14px; width: 100%;">Escolher outro</button>
       </div>
+    </div>
+  </div>
+
+  <!-- DOCK GLOBAL: DATA/HORA + RÁDIO ONLINE NO SITE TODO -->
+  <div class="global-media-dock" id="global-media-dock">
+    <div class="hud-clock-pill" id="hud-clock-date">🕒 00:00 • Sáb, 21/11/2026</div>
+    <div class="music-player-dock" id="music-player-dock">
+      <div class="music-station-list hidden" id="music-station-list"></div>
+      <div class="music-player-top">
+        <span style="color:var(--accent);">🎵</span>
+        <span class="music-station-name" id="music-station-name">Rádio Riacho FM (Agreste PE)</span>
+      </div>
+      <div class="music-track-info" id="music-track-info">Pesqueira / Agreste PE • Brega, Forró e Sertanejo</div>
+      <div class="music-controls-row">
+        <button type="button" class="music-btn" id="btn-music-play" title="Tocar ou pausar rádio">▶</button>
+        <button type="button" class="music-btn" id="btn-music-next" title="Trocar de rádio aleatoriamente">🔀</button>
+        <button type="button" class="music-btn" id="btn-music-list" title="Ver e escolher entre todas as rádios">📻</button>
+        <span style="font-size:12px;">🔊</span>
+        <input type="range" class="music-vol" id="music-vol" min="0" max="1" step="0.05" value="1" title="Volume da música (100%)">
+      </div>
+      <audio id="bg-music-audio" preload="none"></audio>
     </div>
   </div>
 
@@ -5117,6 +5237,11 @@
       }
 
       countPill.textContent = `${list.length} ${list.length === 1 ? 'imagem' : 'imagens'}`;
+      const clearBtn = document.getElementById('btn-clear-filters');
+      if (clearBtn) {
+        const hasFilter = Boolean(currentSearch || currentTaste || currentCat !== 'all');
+        clearBtn.style.display = hasFilter ? 'inline-flex' : 'none';
+      }
       if (list.length === 0) {
         loadMoreBox.style.display = 'none';
         grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria no menu lateral.</p></div>`;
@@ -5998,29 +6123,35 @@
       updateGameClock();
       setInterval(updateGameClock, 15000);
 
-      // Player Online Simples (Brega, Sertanejo Raiz, Amado Batista, Leonardo, Eduardo Costa)
+      // Player Online Simples (Pesqueira/PE primeiro + Brega, Sertanejo Raiz, Amado Batista, Leonardo, Eduardo Costa)
       const BREGA_SERTANEJO_STREAMS = [
-        { name: 'Brega Hits (Clássicos)', url: 'https://stream.zeno.fm/m3h4eakvsy8uv' },
-        { name: 'Rádio Riacho FM (Brega)', url: 'https://stm23.srvaudio.com.br:10974/stream' },
-        { name: 'Rádio Buteco Sertanejo', url: 'https://stream.zeno.fm/6kumndewqbruv' },
-        { name: 'Casa dos Caipiras (Modão)', url: 'https://8758.brasilstream.com.br/stream' },
-        { name: 'Rádio Café Viola', url: 'https://stm6.xcast.com.br:9328/;?1685284162874' },
-        { name: 'Amigos do Sertanejo', url: 'https://stm4.voxhd.com.br:7086/' },
-        { name: 'Sertaneja 106.7 FM', url: 'https://sc4s.cdn.upx.com:8067/stream' },
-        { name: 'Rádio Liberdade 92.9 FM', url: 'https://8335.brasilstream.com.br/stream' },
-        { name: 'Hunter FM Hits Brasil', url: 'https://live.hunter.fm/hitsbrasil_normal' },
-        { name: 'Rádio 89.3 FM Imbituba', url: 'https://live.paineldj.com.br/proxy/radiofm89f?mp=/stream' },
-        { name: 'BH FM 102,1 MHz', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/BHFMAAC.aac' }
+        { name: 'Rádio Riacho FM (Agreste PE)', info: 'Pesqueira / Agreste PE • Brega, Forró e Sertanejo', url: 'https://stm23.srvaudio.com.br:10974/stream' },
+        { name: 'Rádio Som Brega (Pernambuco)', info: 'Pernambuco • Clássicos do Brega', url: 'https://stm5.painelcast.com:7588/stream' },
+        { name: 'Rádio Sertaneja (Pernambuco)', info: 'Pernambuco • Sertanejo & Modão', url: 'https://stm5.painelcast.com:7584/stream' },
+        { name: 'Rádio Vilabela 94.3 FM (PE)', info: 'Sertão de Pernambuco • Ao vivo', url: 'https://audio01.stmserver.com/radio/8010/radio' },
+        { name: 'Rádio Marano FM (Agreste PE)', info: 'Garanhuns, PE • Sucessos Populares', url: 'https://streaming.livespanel.com:21023/maranofm' },
+        { name: 'Rádio Clube FM 99.1 (Recife PE)', info: 'Recife, PE • Forró e Música Nordestina', url: 'https://radio.saopaulo01.com.br/8016/stream' },
+        { name: 'Brega Hits (Clássicos)', info: 'Amado Batista, Brega e Românticas', url: 'https://stream.zeno.fm/m3h4eakvsy8uv', zeno: 'm3h4eakvsy8uv' },
+        { name: 'Rádio Buteco Sertanejo', info: 'Leonardo, Eduardo Costa e Modão', url: 'https://stream.zeno.fm/6kumndewqbruv', zeno: '6kumndewqbruv' },
+        { name: 'Casa dos Caipiras (Modão)', info: 'Sertanejo Raiz e Moda de Viola', url: 'https://8758.brasilstream.com.br/stream' },
+        { name: 'Rádio Café Viola', info: 'Clássicos Sertanejos e Viola', url: 'https://stm6.xcast.com.br:9328/;?1685284162874' },
+        { name: 'Amigos do Sertanejo', info: 'Sertanejo Romântico e Modão', url: 'https://stm4.voxhd.com.br:7086/' },
+        { name: 'Rádio Zé Ramalho (Forró & MPB)', info: 'Nordeste • Forró e MPB Clássica', url: 'https://stream.zeno.fm/qnx6k0pfmxhvv', zeno: 'qnx6k0pfmxhvv' }
       ];
       const bgAudio = document.getElementById('bg-music-audio');
       const btnMusicPlay = document.getElementById('btn-music-play');
       const btnMusicNext = document.getElementById('btn-music-next');
+      const btnMusicList = document.getElementById('btn-music-list');
+      const stationListEl = document.getElementById('music-station-list');
       const musicVol = document.getElementById('music-vol');
       const musicNameEl = document.getElementById('music-station-name');
-      let musicIdx = Math.floor(Math.random() * BREGA_SERTANEJO_STREAMS.length);
+      const musicTrackEl = document.getElementById('music-track-info');
+      let musicIdx = 0; // Começa nas rádios de Pesqueira / Pernambuco
       let musicPlaying = false;
+      let trackMetaTimer = null;
+
       if (bgAudio && musicVol) {
-        bgAudio.volume = prefs.musicVol !== undefined ? prefs.musicVol : 0.45;
+        bgAudio.volume = prefs.musicVol !== undefined ? prefs.musicVol : 1.0;
         musicVol.value = bgAudio.volume;
         musicVol.addEventListener('input', () => {
           bgAudio.volume = parseFloat(musicVol.value);
@@ -6028,17 +6159,48 @@
           savePrefs(prefs);
         });
       }
+
+      const renderStationList = () => {
+        if (!stationListEl) return;
+        stationListEl.innerHTML = BREGA_SERTANEJO_STREAMS.map((st, idx) => `
+          <button type="button" class="music-station-opt ${idx === musicIdx ? 'active' : ''}" data-st-idx="${idx}">
+            <span style="font-size:12px;font-weight:700;">${st.name}</span>
+            <span style="font-size:10px;opacity:0.82;">${st.info}</span>
+          </button>
+        `).join('');
+      };
+      renderStationList();
+
+      const fetchTrackMeta = async (st) => {
+        if (!musicTrackEl) return;
+        musicTrackEl.textContent = st.info;
+        if (!st.zeno) return;
+        try {
+          const r = await fetch(`https://api.zeno.fm/mounts/metadata/latest/${st.zeno}`);
+          if (r.ok) {
+            const d = await r.json();
+            if (d && d.streamTitle) {
+              musicTrackEl.textContent = `🎶 Tocando: ${d.streamTitle}`;
+            }
+          }
+        } catch (e) {}
+      };
+
       const playStation = (idx) => {
         if (!bgAudio) return;
         musicIdx = ((idx % BREGA_SERTANEJO_STREAMS.length) + BREGA_SERTANEJO_STREAMS.length) % BREGA_SERTANEJO_STREAMS.length;
         const st = BREGA_SERTANEJO_STREAMS[musicIdx];
         if (musicNameEl) musicNameEl.textContent = st.name;
+        renderStationList();
+        fetchTrackMeta(st);
+        clearInterval(trackMetaTimer);
+        if (st.zeno) trackMetaTimer = setInterval(() => fetchTrackMeta(st), 30000);
         bgAudio.src = st.url;
         bgAudio.play().then(() => {
           musicPlaying = true;
           if (btnMusicPlay) { btnMusicPlay.textContent = '⏸'; btnMusicPlay.classList.add('playing'); }
         }).catch(() => {
-          if (musicNameEl) musicNameEl.textContent = `${st.name} (clique ▶)`;
+          if (musicTrackEl) musicTrackEl.textContent = `${st.info} (clique ▶)`;
           musicPlaying = false;
           if (btnMusicPlay) { btnMusicPlay.textContent = '▶'; btnMusicPlay.classList.remove('playing'); }
         });
@@ -6068,9 +6230,44 @@
           playStation(next);
         });
       }
+      if (btnMusicList && stationListEl) {
+        btnMusicList.addEventListener('click', (e) => {
+          e.stopPropagation();
+          stationListEl.classList.toggle('hidden');
+          btnMusicList.classList.toggle('playing', !stationListEl.classList.contains('hidden'));
+        });
+        stationListEl.addEventListener('click', (e) => {
+          const opt = e.target.closest('[data-st-idx]');
+          if (!opt) return;
+          stationListEl.classList.add('hidden');
+          btnMusicList.classList.remove('playing');
+          playStation(parseInt(opt.dataset.stIdx, 10));
+        });
+        document.addEventListener('click', (e) => {
+          if (!stationListEl.classList.contains('hidden') && !stationListEl.contains(e.target) && e.target !== btnMusicList) {
+            stationListEl.classList.add('hidden');
+            btnMusicList.classList.remove('playing');
+          }
+        });
+      }
       if (bgAudio) {
         bgAudio.addEventListener('error', () => {
           if (musicPlaying) playStation(musicIdx + 1);
+        });
+      }
+
+      // Botão Limpar Filtros na tela inicial
+      const btnClearFilters = document.getElementById('btn-clear-filters');
+      if (btnClearFilters) {
+        btnClearFilters.addEventListener('click', () => {
+          currentSearch = '';
+          currentCat = 'all';
+          currentTaste = null;
+          document.getElementById('search-input').value = '';
+          document.querySelectorAll('#discover-sidebar .sidebar-item').forEach(b => {
+            b.classList.toggle('active', b.dataset.cat === 'all');
+          });
+          renderGallery(true);
         });
       }
 
@@ -6391,24 +6588,32 @@
       });
 
       if (explicitEl) {
-        let rowsToShow = [];
-        if (currentUsageRange === 'week' || currentUsageRange === 'year' || currentUsageRange === 'blocks') {
-          rowsToShow = bars;
-        } else {
-          rowsToShow = bars.filter(b => b.val > 0);
-        }
         const totalForPct = Math.max(1, periodTotalUse);
-        explicitEl.innerHTML = rowsToShow.length
-          ? rowsToShow.map(b => {
-              const p = b.val > 0 ? Math.round((b.val / totalForPct) * 100) : 0;
-              return `
-                <div class="usage-explicit-row ${b.isCurrent ? 'is-current' : ''}">
-                  <span><strong>${b.title}</strong></span>
-                  <span style="color:var(--text-muted);text-align:right;"><strong>${formatDuration(b.val)}</strong> (${p}%)</span>
-                </div>
-              `;
-            }).join('')
-          : `<div class="usage-explicit-row" style="grid-column:1/-1;color:var(--text-muted);">Nenhum uso registrado neste período ainda.</div>`;
+        if (currentUsageRange === 'month') {
+          const year = now.getFullYear(), month = now.getMonth();
+          const firstDow = new Date(year, month, 1).getDay();
+          const heads = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(w => `<div class="usage-cal-head">${w}</div>`).join('');
+          const blanks = Array.from({ length: firstDow }, () => `<div class="usage-cal-cell empty"></div>`).join('');
+          const cells = bars.map((b, idx) => `
+            <div class="usage-cal-cell ${b.val > 0 ? 'has-use' : ''} ${b.isCurrent ? 'is-today' : ''}" title="${b.detail}">
+              <span style="font-weight:700;">${idx + 1}</span>
+              <span style="color:var(--text-muted);font-size:9.5px;">${formatDuration(b.val)}</span>
+            </div>
+          `).join('');
+          explicitEl.style.display = 'block';
+          explicitEl.innerHTML = `<div class="usage-calendar-grid">${heads}${blanks}${cells}</div>`;
+        } else {
+          explicitEl.style.display = '';
+          explicitEl.innerHTML = bars.map(b => {
+            const p = b.val > 0 ? Math.round((b.val / totalForPct) * 100) : 0;
+            return `
+              <div class="usage-explicit-row ${b.isCurrent ? 'is-current' : ''}">
+                <span><strong>${b.title}</strong></span>
+                <span style="color:var(--text-muted);text-align:right;"><strong>${formatDuration(b.val)}</strong> (${p}%)</span>
+              </div>
+            `;
+          }).join('');
+        }
       }
 
       blocksEl.innerHTML = blockTotals.map(b => {

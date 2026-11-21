@@ -29242,5 +29242,208 @@ window.RAY_PUZZLE_CATALOG = [
     "cat": "countries",
     "src": "imagens/c_f20b009d04.jpg",
     "tags": "paraguai ciudad del este saltos del monday cachoeira"
+  },
+  {
+    "id": "c_6528f6a722",
+    "title": "Pesqueira, PE (Agreste e Zona Rural): Trilha na Caatinga perto de Cabeça de Boi",
+    "cat": "countries",
+    "src": "imagens/c_6528f6a722.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_7cc3f47f97",
+    "title": "Pesqueira, PE (Centro): Igreja e Antiga Fábrica Peixe vistas do alto",
+    "cat": "countries",
+    "src": "imagens/c_7cc3f47f97.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_2bfe886db4",
+    "title": "Pesqueira, PE: Vista aérea dos bairros de Pesqueira",
+    "cat": "countries",
+    "src": "imagens/c_2bfe886db4.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_2dbb604808",
+    "title": "Pesqueira, PE (Centro): Chaminé histórica da Fábrica Peixe",
+    "cat": "countries",
+    "src": "imagens/c_2dbb604808.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_a6b4ae36db",
+    "title": "Pesqueira, PE: Castelo de Pesqueira visto de drone",
+    "cat": "countries",
+    "src": "imagens/c_a6b4ae36db.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_2a383881e7",
+    "title": "Pesqueira, PE: Serra do Ororubá e entrada da cidade",
+    "cat": "countries",
+    "src": "imagens/c_2a383881e7.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_889f2c7de1",
+    "title": "Pesqueira, PE: Estádio e área urbana vistos do alto",
+    "cat": "countries",
+    "src": "imagens/c_889f2c7de1.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_3517efb195",
+    "title": "Pesqueira, PE (Centro): Avenida central de Pesqueira vista aérea",
+    "cat": "countries",
+    "src": "imagens/c_3517efb195.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_b03249bbb6",
+    "title": "Pesqueira, PE (Centro): Praça Dom José Lopes e Catedral de Santa Águeda",
+    "cat": "countries",
+    "src": "imagens/c_b03249bbb6.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_d2af1056c6",
+    "title": "Pesqueira, PE (Centro): Torres do Castelo de Pesqueira",
+    "cat": "countries",
+    "src": "imagens/c_d2af1056c6.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_c5a60aa8d5",
+    "title": "Pesqueira, PE: Castelo de Pesqueira sob céu azul",
+    "cat": "countries",
+    "src": "imagens/c_c5a60aa8d5.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_89ce8c3cb3",
+    "title": "Pesqueira, PE (Serra do Ororubá): Capela e Cristo no alto da serra",
+    "cat": "countries",
+    "src": "imagens/c_89ce8c3cb3.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_b18aff733a",
+    "title": "Pesqueira, PE: Vista panorâmica da serra para o Centro",
+    "cat": "countries",
+    "src": "imagens/c_b18aff733a.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_ca2ecbe97f",
+    "title": "Pesqueira, PE: Mirante e Igreja no alto da cidade",
+    "cat": "countries",
+    "src": "imagens/c_ca2ecbe97f.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_87d9a78b6f",
+    "title": "Pesqueira, PE (Centro): Ruas centrais e casario histórico",
+    "cat": "countries",
+    "src": "imagens/c_87d9a78b6f.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_079b6e4cd3",
+    "title": "Pesqueira, PE: Letreiro Eu Amo Pesqueira",
+    "cat": "countries",
+    "src": "imagens/c_079b6e4cd3.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_085d80b7e9",
+    "title": "Pesqueira, PE: Capela azul no alto da pedra",
+    "cat": "countries",
+    "src": "imagens/c_085d80b7e9.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_1566ebf9a1",
+    "title": "Pesqueira, PE (Serra do Ororubá): Paisagem verde do Agreste",
+    "cat": "countries",
+    "src": "imagens/c_1566ebf9a1.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_d7ede345dd",
+    "title": "Pesqueira, PE: Interior iluminado do Castelo de São João",
+    "cat": "countries",
+    "src": "imagens/c_d7ede345dd.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_32babea0ff",
+    "title": "Pesqueira, PE (Centro): Rua central com vista da serra",
+    "cat": "countries",
+    "src": "imagens/c_32babea0ff.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_9cf771b8f7",
+    "title": "Pesqueira, PE (Centro): Rotatória e comércio central",
+    "cat": "countries",
+    "src": "imagens/c_9cf771b8f7.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_3d7720c35c",
+    "title": "Pesqueira, PE (Centro): Avenida comercial no Centro",
+    "cat": "countries",
+    "src": "imagens/c_3d7720c35c.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_3f5ec38c3b",
+    "title": "Pesqueira, PE (Centro): Rua do comércio e Banco do Nordeste",
+    "cat": "countries",
+    "src": "imagens/c_3f5ec38c3b.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_60468aa8ff",
+    "title": "Pesqueira, PE (Centro): Avenida rumo à Catedral de Santa Águeda",
+    "cat": "countries",
+    "src": "imagens/c_60468aa8ff.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_19f09ae195",
+    "title": "Pesqueira, PE (Centro): Antigo prédio da Fábrica Peixe",
+    "cat": "countries",
+    "src": "imagens/c_19f09ae195.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_122d263ef5",
+    "title": "Pesqueira, PE (Centro): Fachada histórica da Fábrica Peixe",
+    "cat": "countries",
+    "src": "imagens/c_122d263ef5.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_4804e03ebf",
+    "title": "Pesqueira, PE: Estrada rumo à zona rural e Cabeça de Boi",
+    "cat": "countries",
+    "src": "imagens/c_4804e03ebf.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_5daf68b614",
+    "title": "Pesqueira, PE (Centro): Rua residencial típica perto da Rua São Félix",
+    "cat": "countries",
+    "src": "imagens/c_5daf68b614.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
+  },
+  {
+    "id": "c_52c31a55d8",
+    "title": "Pesqueira, PE (Centro): Rua central com a serra ao fundo",
+    "cat": "countries",
+    "src": "imagens/c_52c31a55d8.jpg",
+    "tags": "pesqueira pernambuco pe centro rua sao felix cabeca de boi ororuba agreste"
   }
 ];
