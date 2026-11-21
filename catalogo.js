@@ -28969,5 +28969,278 @@ window.RAY_PUZZLE_CATALOG = [
     "cat": "countries",
     "tags": "natal arvore luzes decoracao festa christmas",
     "src": "imagens/c_427f18f86f.jpg"
+  },
+  {
+    "id": "c_f7a1884403",
+    "title": "Pesqueira, PE (Centro e Redondezas): Vista da cidade de Pesqueira",
+    "cat": "countries",
+    "src": "imagens/c_f7a1884403.jpg",
+    "tags": "pesqueira pernambuco pe centro cidade rua sao felix"
+  },
+  {
+    "id": "c_97df50e1d2",
+    "title": "Pesqueira, PE: Panorama da cidade de Pesqueira",
+    "cat": "countries",
+    "src": "imagens/c_97df50e1d2.jpg",
+    "tags": "pesqueira pernambuco pe centro cidade"
+  },
+  {
+    "id": "c_61ac25c5c1",
+    "title": "Pesqueira, PE: Castelo de Pesqueira em Pernambuco",
+    "cat": "countries",
+    "src": "imagens/c_61ac25c5c1.jpg",
+    "tags": "pesqueira pernambuco pe cidade castelo"
+  },
+  {
+    "id": "c_2989e2335e",
+    "title": "Vila Camilópolis, Santo André, SP: Vista do bairro Camilópolis",
+    "cat": "countries",
+    "src": "imagens/c_2989e2335e.jpg",
+    "tags": "vila camilopolis santo andre sp rua santa isabel"
+  },
+  {
+    "id": "c_6480b81f96",
+    "title": "Vila Camilópolis & Redondezas, Santo André: Vista do Curuçá ao Parque das Nações",
+    "cat": "countries",
+    "src": "imagens/c_6480b81f96.jpg",
+    "tags": "vila camilopolis santo andre sp curuca parque das nacoes"
+  },
+  {
+    "id": "c_ac00c9ff36",
+    "title": "Vila Camilópolis & Redondezas, Santo André: Rua Anhembi sentido Araci",
+    "cat": "countries",
+    "src": "imagens/c_ac00c9ff36.jpg",
+    "tags": "vila camilopolis santo andre sp rua anhembi"
+  },
+  {
+    "id": "c_aaec35ae5a",
+    "title": "Vila Camilópolis & Redondezas, Santo André: Vila Lucinda",
+    "cat": "countries",
+    "src": "imagens/c_aaec35ae5a.jpg",
+    "tags": "vila camilopolis santo andre sp vila lucinda"
+  },
+  {
+    "id": "c_8fe11c2d9e",
+    "title": "Santo André, SP (Redondezas de Camilópolis): Parque Duque de Caxias",
+    "cat": "countries",
+    "src": "imagens/c_8fe11c2d9e.jpg",
+    "tags": "vila camilopolis santo andre sp parque"
+  },
+  {
+    "id": "c_f5c6c2ec1e",
+    "title": "Santo André, SP: Bairro Jardim e arredores",
+    "cat": "countries",
+    "src": "imagens/c_f5c6c2ec1e.jpg",
+    "tags": "vila camilopolis santo andre sp bairro"
+  },
+  {
+    "id": "c_ef26ff9586",
+    "title": "Santo André, SP: Rua das Figueiras",
+    "cat": "countries",
+    "src": "imagens/c_ef26ff9586.jpg",
+    "tags": "vila camilopolis santo andre sp rua"
+  },
+  {
+    "id": "c_d96f309f6d",
+    "title": "Vila Camilópolis & Utinga, Santo André: Estação Utinga CPTM",
+    "cat": "countries",
+    "src": "imagens/c_d96f309f6d.jpg",
+    "tags": "vila camilopolis utinga santo andre sp estacao"
+  },
+  {
+    "id": "c_cf344fc445",
+    "title": "Santo André, SP (Redondezas de Camilópolis): Panorama da cidade",
+    "cat": "countries",
+    "src": "imagens/c_cf344fc445.jpg",
+    "tags": "vila camilopolis santo andre sp cidade"
+  },
+  {
+    "id": "c_7b3b1fbf51",
+    "title": "Santo André, SP: Vista urbana",
+    "cat": "countries",
+    "src": "imagens/c_7b3b1fbf51.jpg",
+    "tags": "vila camilopolis santo andre sp"
+  },
+  {
+    "id": "c_ebf0b9e397",
+    "title": "Foz do Iguaçu, PR (Centro): Avenida Brasil",
+    "cat": "countries",
+    "src": "imagens/c_ebf0b9e397.jpg",
+    "tags": "foz do iguacu avenida brasil centro rua"
+  },
+  {
+    "id": "c_73a0b3c9c3",
+    "title": "Foz do Iguaçu, PR: Ruas do Centro de Foz do Iguaçu",
+    "cat": "countries",
+    "src": "imagens/c_73a0b3c9c3.jpg",
+    "tags": "foz do iguacu centro rua"
+  },
+  {
+    "id": "c_6ca5e1f9d7",
+    "title": "Foz do Iguaçu, PR: Vista urbana do Centro",
+    "cat": "countries",
+    "src": "imagens/c_6ca5e1f9d7.jpg",
+    "tags": "foz do iguacu centro rua"
+  },
+  {
+    "id": "c_eb50b7bb70",
+    "title": "Foz do Iguaçu, PR (Fronteira): Vila Portes próximo à Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_eb50b7bb70.jpg",
+    "tags": "foz do iguacu vila portes ponte da amizade fronteira"
+  },
+  {
+    "id": "c_ae641203dc",
+    "title": "Foz do Iguaçu, PR (Centro): Igreja Matriz São João Batista",
+    "cat": "countries",
+    "src": "imagens/c_ae641203dc.jpg",
+    "tags": "foz do iguacu centro igreja"
+  },
+  {
+    "id": "c_536575b5fa",
+    "title": "Foz do Iguaçu, PR (Fronteira): Aduana na Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_536575b5fa.jpg",
+    "tags": "foz do iguacu ponte da amizade fronteira paraguai"
+  },
+  {
+    "id": "c_5791bdaf9b",
+    "title": "Foz do Iguaçu, PR: Obelisco do Marco das Três Fronteiras",
+    "cat": "countries",
+    "src": "imagens/c_5791bdaf9b.jpg",
+    "tags": "foz do iguacu paraguai argentina fronteira"
+  },
+  {
+    "id": "c_da312ae6a3",
+    "title": "Foz do Iguaçu, PR: Templo Budista Chen Tien",
+    "cat": "countries",
+    "src": "imagens/c_da312ae6a3.jpg",
+    "tags": "foz do iguacu templo budista"
+  },
+  {
+    "id": "c_6605bb0b57",
+    "title": "Foz do Iguaçu, PR: Mesquita Omar Ibn Al-Khattab",
+    "cat": "countries",
+    "src": "imagens/c_6605bb0b57.jpg",
+    "tags": "foz do iguacu mesquita"
+  },
+  {
+    "id": "c_f6826857ea",
+    "title": "Fronteira Brasil e Paraguai: Ponte Internacional da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_f6826857ea.jpg",
+    "tags": "foz do iguacu paraguai ciudad del este ponte da amizade fronteira"
+  },
+  {
+    "id": "c_f74770fb1e",
+    "title": "Fronteira Brasil e Paraguai: Rio Paraná e Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_f74770fb1e.jpg",
+    "tags": "foz do iguacu paraguai ciudad del este ponte da amizade"
+  },
+  {
+    "id": "c_57d5b1c813",
+    "title": "Fronteira Foz e Ciudad del Este: Vista aérea da Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_57d5b1c813.jpg",
+    "tags": "foz do iguacu paraguai ciudad del este ponte da amizade"
+  },
+  {
+    "id": "c_b8c0d3ecd3",
+    "title": "Fronteira Foz e Ciudad del Este: Travessia da Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_b8c0d3ecd3.jpg",
+    "tags": "foz do iguacu paraguai ciudad del este ponte da amizade"
+  },
+  {
+    "id": "c_9e79652982",
+    "title": "Ciudad del Este, Paraguai: Chegada pela Ponte da Amizade",
+    "cat": "countries",
+    "src": "imagens/c_9e79652982.jpg",
+    "tags": "paraguai ciudad del este ponte da amizade foz do iguacu"
+  },
+  {
+    "id": "c_508a2146ea",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Ruas do Microcentro comercial",
+    "cat": "countries",
+    "src": "imagens/c_508a2146ea.jpg",
+    "tags": "paraguai ciudad del este microcentro rua comercio"
+  },
+  {
+    "id": "c_9e6db695b6",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Rua Boquerón no Centro",
+    "cat": "countries",
+    "src": "imagens/c_9e6db695b6.jpg",
+    "tags": "paraguai ciudad del este rua centro"
+  },
+  {
+    "id": "c_959d687557",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Avenida Adrián Jara",
+    "cat": "countries",
+    "src": "imagens/c_959d687557.jpg",
+    "tags": "paraguai ciudad del este avenida rua centro"
+  },
+  {
+    "id": "c_ecc8abc431",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Calle Abay no Centro",
+    "cat": "countries",
+    "src": "imagens/c_ecc8abc431.jpg",
+    "tags": "paraguai ciudad del este calle rua centro"
+  },
+  {
+    "id": "c_14a5b0b8bf",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Bairro Centro",
+    "cat": "countries",
+    "src": "imagens/c_14a5b0b8bf.jpg",
+    "tags": "paraguai ciudad del este centro rua"
+  },
+  {
+    "id": "c_16956f07df",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Bairro San Blas",
+    "cat": "countries",
+    "src": "imagens/c_16956f07df.jpg",
+    "tags": "paraguai ciudad del este san blas"
+  },
+  {
+    "id": "c_9745d4c1e8",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Vista do Centro na fronteira",
+    "cat": "countries",
+    "src": "imagens/c_9745d4c1e8.jpg",
+    "tags": "paraguai ciudad del este centro"
+  },
+  {
+    "id": "c_13e397ec88",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Avenida Monseñor Rodríguez e galerias",
+    "cat": "countries",
+    "src": "imagens/c_13e397ec88.jpg",
+    "tags": "paraguai ciudad del este centro avenida comercio"
+  },
+  {
+    "id": "c_68edfad341",
+    "title": "Ciudad del Este, Paraguai (Fronteira): Comércio no Centro de Ciudad del Este",
+    "cat": "countries",
+    "src": "imagens/c_68edfad341.jpg",
+    "tags": "paraguai ciudad del este comercio centro"
+  },
+  {
+    "id": "c_5b54ad0805",
+    "title": "Ciudad del Este, Paraguai: Lago de la República e Anfiteatro",
+    "cat": "countries",
+    "src": "imagens/c_5b54ad0805.jpg",
+    "tags": "paraguai ciudad del este lago"
+  },
+  {
+    "id": "c_9c55ebd00a",
+    "title": "Fronteira Paraguai (Presidente Franco): Saltos del Monday perto de Ciudad del Este",
+    "cat": "countries",
+    "src": "imagens/c_9c55ebd00a.jpg",
+    "tags": "paraguai ciudad del este saltos del monday cachoeira"
+  },
+  {
+    "id": "c_f20b009d04",
+    "title": "Fronteira Paraguai: Cataratas dos Saltos del Monday",
+    "cat": "countries",
+    "src": "imagens/c_f20b009d04.jpg",
+    "tags": "paraguai ciudad del este saltos del monday cachoeira"
   }
 ];
