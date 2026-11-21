@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Quebra Cabeça — Plataforma</title>
+  <title>Quebra Cabeça: Plataforma</title>
   <script>
     try {
       var qp = new URLSearchParams(window.location.search).get('theme');
@@ -334,8 +334,8 @@
     }
 
     .account-avatar {
-      width: 38px;
-      height: 38px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: var(--accent-soft);
       color: var(--accent);
@@ -343,7 +343,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 800;
       overflow: hidden;
       flex-shrink: 0;
@@ -576,62 +576,81 @@
     }
 
     .discover-sidebar {
-      width: 248px;
+      width: 348px;
       flex-shrink: 0;
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 12px 10px;
+      padding: 6px 8px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 5px;
+    }
+
+    .sidebar-top-all {
+      width: 100%;
+    }
+
+    .sidebar-group {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 4px 5px;
+      background: var(--bg-base);
     }
 
     .sidebar-group-title {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       color: var(--text-muted);
-      padding: 0 8px 6px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 4px;
+      cursor: pointer;
+      list-style: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 1px 4px;
+    }
+
+    .sidebar-group[open] .sidebar-group-title {
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid var(--border);
     }
 
     .sidebar-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 2px;
     }
 
     .sidebar-item {
       width: 100%;
-      background: transparent;
-      border: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 500;
+      padding: 2.5px 4px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 2px;
       text-align: left;
-      transition: background 0.12s ease;
+      transition: background 0.12s ease, border-color 0.12s ease;
     }
 
     .sidebar-item:hover {
       background: var(--bg-elevated);
+      border-color: var(--border-strong);
     }
 
     .sidebar-item.active {
       background: var(--accent);
+      border-color: var(--accent);
       color: #ffffff;
       font-weight: 700;
     }
@@ -643,13 +662,17 @@
     }
 
     .cat-count {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 1px 7px;
+      padding: 1px 5px;
       border-radius: 999px;
       background: var(--bg-elevated);
       color: var(--text-muted);
       flex-shrink: 0;
+    }
+
+    .puzzle-card.is-created {
+      border-color: rgba(22, 163, 74, 0.45);
     }
 
     .sidebar-item.active .cat-count {
@@ -909,8 +932,8 @@
     }
 
     .account-avatar-lg {
-      width: 58px;
-      height: 58px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
       background: var(--accent-soft);
       color: var(--accent);
@@ -918,10 +941,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 800;
       overflow: hidden;
       flex-shrink: 0;
+    }
+
+    .analytics-bars-wrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .analytics-bar-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12.5px;
     }
 
     .backup-details {
@@ -1537,9 +1575,9 @@
     }
 
     .game-avatar-chip .account-avatar {
-      width: 34px;
-      height: 34px;
-      font-size: 14px;
+      width: 44px;
+      height: 44px;
+      font-size: 17px;
       border-color: rgba(255, 255, 255, 0.28);
     }
 
@@ -1594,8 +1632,8 @@
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      width: min(330px, calc(100vw - 24px));
-      max-height: calc(100dvh - 140px);
+      width: min(325px, calc(100vw - 24px));
+      max-height: calc(100dvh - 235px);
       overflow-y: auto;
       background: var(--hud-surface);
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1757,11 +1795,20 @@
       z-index: 45;
     }
 
-    /* Cores de Fundo Abertas no Canto Inferior Direito */
-    .color-dock-bottom-right {
+    /* Canto Inferior Direito: Timer/Progresso em cima das Cores de Fundo */
+    .game-bottom-right {
       position: absolute;
       bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       right: calc(14px + env(safe-area-inset-right, 0px));
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      z-index: 48;
+    }
+
+    /* Cores de Fundo Abertas abaixo do Timer */
+    .color-dock-bottom-right {
       background: var(--hud-surface);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 999px;
@@ -1769,7 +1816,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      z-index: 45;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
@@ -1799,10 +1845,10 @@
       transform: scale(1.12);
     }
 
-    /* Miniatura Arrastável (posicionada acima das cores no canto inferior direito) */
+    /* Miniatura Arrastável (posicionada acima do bloco Timer + Cores) */
     .floating-guide {
       position: absolute;
-      bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(168px + env(safe-area-inset-bottom, 0px));
       right: calc(14px + env(safe-area-inset-right, 0px));
       width: min(240px, 44vw);
       background: var(--hud-surface);
@@ -1910,7 +1956,10 @@
 
     @media (max-width: 900px) {
       .discover-sidebar {
-        width: 210px;
+        width: 245px;
+      }
+      .sidebar-list {
+        grid-template-columns: 1fr;
       }
       .quick-banner {
         grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -1922,7 +1971,8 @@
       .nav-tabs { order: 3; width: 100%; justify-content: space-between; }
       .nav-tab { flex: 1; justify-content: center; padding: 7px 6px; font-size: 11.5px; gap: 4px; }
       .tab-badge { font-size: 10px; padding: 1px 5px; }
-      #toast.show { transform: translateX(-50%) translateY(-48px); }
+      .account-avatar { width: 40px; height: 40px; font-size: 16px; }
+      #toast.show { transform: translateX(-50%) translateY(-108px); }
       .platform-scroll { padding: 10px 12px 8px; }
       .quick-banner { grid-template-columns: 1fr; gap: 8px; margin-bottom: 10px; }
       .quick-card { padding: 10px 12px; }
@@ -1932,7 +1982,7 @@
         display: none;
         position: absolute;
         left: 0; top: 0; bottom: 0;
-        width: min(280px, 84vw);
+        width: min(300px, 86vw);
         z-index: 40;
         box-shadow: var(--shadow-lg);
       }
@@ -1941,13 +1991,13 @@
       .game-top-dock { gap: 6px; }
       .game-avatar-chip .game-player-name { display: none; }
       .game-avatar-chip { padding: 2px; }
-      .game-right-dock { flex-direction: column; align-items: flex-end; gap: 6px; }
-      .hud-progress { min-width: 165px; padding: 6px 10px; order: 2; }
+      .game-bottom-right { gap: 6px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
+      .hud-progress { min-width: 175px; padding: 6px 10px; }
       .hud-timer-pill, .hud-pct-big { font-size: 14px; }
       .color-dock-label { display: none; }
-      .color-dock-bottom-right { padding: 5px 8px; gap: 6px; }
-      .color-swatch { width: 20px; height: 20px; }
-      .floating-guide { width: 168px; bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+      .color-dock-bottom-right { padding: 5px 8px; gap: 5px; }
+      .color-swatch { width: 19px; height: 19px; }
+      .floating-guide { width: 168px; bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
     }
   </style>
 </head>
@@ -2025,72 +2075,75 @@
               </div>
             </div>
 
-            <!-- Busca & Filtro Novos vs Já Criados -->
+            <!-- Busca e Contagem -->
             <div class="filter-bar">
               <button type="button" class="btn btn-mobile-sidebar" id="btn-toggle-sidebar">☰ Categorias</button>
-              <div class="scope-switcher" role="group" aria-label="Separar novos e já criados">
-                <button type="button" class="scope-btn active" data-scope="new">✨ Novos para Montar <span class="cat-count" id="scope-new-count">0</span></button>
-                <button type="button" class="scope-btn" data-scope="created">📌 Já Criados <span class="cat-count" id="scope-created-count">0</span></button>
-              </div>
               <div class="search-box">
                 <span>🔍</span>
-                <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Renegade, Bronco, BYD, Pesqueira, Camilópolis, Canastra...)">
+                <input type="text" id="search-input" placeholder="Buscar em português (ex: Jeep, Renegade, Bronco, BYD, Pesqueira, Camilópolis, Cachorro, Natal, Presidente...)">
               </div>
               <div class="count-pill" id="gallery-count-pill">0 imagens</div>
             </div>
           </div>
 
           <div class="discover-body">
-            <!-- Menu Fixo Lateral com 2 Níveis (somente na aba Descobrir) -->
+            <!-- Menu Lateral Fixo e Dobrável (somente na aba Descobrir) -->
             <aside class="discover-sidebar" id="discover-sidebar" aria-label="Menu de temas e categorias">
-              <div>
-                <div class="sidebar-group-title"><span>⭐ Seus Gostos</span></div>
+              <button type="button" class="sidebar-item sidebar-top-all active" data-cat="all" style="padding: 8px 10px; font-size: 13px;">
+                <span class="sidebar-item-label">🧩 Todos</span>
+                <span class="cat-count" id="all-cat-count">0</span>
+              </button>
+
+              <details class="sidebar-group" open>
+                <summary class="sidebar-group-title"><span>⭐ Seus Gostos</span><span>▾</span></summary>
                 <div class="sidebar-list" id="sidebar-tastes-list">
-                  <button type="button" class="sidebar-item" data-taste="renegade"><span class="sidebar-item-label">🚗 Jeep Renegade</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="bronco"><span class="sidebar-item-label">🐎 Ford Bronco</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="renegade"><span class="sidebar-item-label">🚗 Renegade</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="bronco"><span class="sidebar-item-label">🐎 Bronco</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="byd"><span class="sidebar-item-label">⚡ BYD</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="jeep"><span class="sidebar-item-label">🚙 Jeep</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="mercedes"><span class="sidebar-item-label">🚘 Mercedes-Benz</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="mercedes"><span class="sidebar-item-label">🚘 Mercedes</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="bmw"><span class="sidebar-item-label">🏁 BMW</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="camilopolis"><span class="sidebar-item-label">🏘️ Vila Camilópolis / ABC</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="pesqueira"><span class="sidebar-item-label">🏰 Pesqueira - PE</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="minas"><span class="sidebar-item-label">⛰️ Minas & Canastra</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="camilopolis"><span class="sidebar-item-label">🏘️ Camilópolis</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="pesqueira"><span class="sidebar-item-label">🏰 Pesqueira</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="minas"><span class="sidebar-item-label">⛰️ Minas</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="queijo"><span class="sidebar-item-label">🧀 Queijos</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="foz"><span class="sidebar-item-label">🌊 Foz do Iguaçu</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="foz"><span class="sidebar-item-label">🌊 Foz Iguaçu</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="paraguai"><span class="sidebar-item-label">🇵🇾 Paraguai</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="argentina"><span class="sidebar-item-label">🇦🇷 Argentina</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="cafe"><span class="sidebar-item-label">☕ Café & Expresso</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="cachorros"><span class="sidebar-item-label">🐶 Cachorros</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="natal"><span class="sidebar-item-label">🎄 Natal</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="presidentes"><span class="sidebar-item-label">🏛️ Presidentes</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="cafe"><span class="sidebar-item-label">☕ Café</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-taste="vinho"><span class="sidebar-item-label">🍷 Vinhos</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="churrasco"><span class="sidebar-item-label">🥩 Churrasco & Parrilha</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="mercados"><span class="sidebar-item-label">🛒 Mercados & Farmácias</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="diy"><span class="sidebar-item-label">🛠️ Construção (DIY)</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="redes"><span class="sidebar-item-label">🌐 Cabeamento & Redes</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="apartamentos"><span class="sidebar-item-label">🏢 Apartamentos</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="aeroporto"><span class="sidebar-item-label">✈️ Aeroportos</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="wally"><span class="sidebar-item-label">🔍 Onde Está / Cenas</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-taste="musica"><span class="sidebar-item-label">🎵 Música & Shows</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="churrasco"><span class="sidebar-item-label">🥩 Churrasco</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="mercados"><span class="sidebar-item-label">🛒 Mercados</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="diy"><span class="sidebar-item-label">🛠️ Construção</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="redes"><span class="sidebar-item-label">🌐 Redes</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="apartamentos"><span class="sidebar-item-label">🏢 Prédios</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="aeroporto"><span class="sidebar-item-label">✈️ Aeroporto</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="wally"><span class="sidebar-item-label">🔍 Onde Está</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-taste="musica"><span class="sidebar-item-label">🎵 Música</span><span class="cat-count">0</span></button>
                 </div>
-              </div>
+              </details>
 
-              <div>
-                <div class="sidebar-group-title"><span>🗂️ Categorias Gerais</span></div>
+              <details class="sidebar-group" open>
+                <summary class="sidebar-group-title"><span>🗂️ Categorias Gerais</span><span>▾</span></summary>
                 <div class="sidebar-list" id="sidebar-general-list">
-                  <button type="button" class="sidebar-item active" data-cat="all"><span class="sidebar-item-label">🧩 Todas</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-cat="nature"><span class="sidebar-item-label">🌿 Natureza</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="countries"><span class="sidebar-item-label">🌎 Lugares & Cidades</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="vehicles"><span class="sidebar-item-label">🚙 Carros & Marcas</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="gastronomy"><span class="sidebar-item-label">☕ Café, Vinho & Churrasco</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="countries"><span class="sidebar-item-label">🌎 Lugares</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="vehicles"><span class="sidebar-item-label">🚙 Carros</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="gastronomy"><span class="sidebar-item-label">☕ Comida</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-cat="animals"><span class="sidebar-item-label">🦁 Animais</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-cat="flowers"><span class="sidebar-item-label">🌸 Flores</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="art"><span class="sidebar-item-label">🎨 Arte & Pinturas</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="diy"><span class="sidebar-item-label">🛠️ Construção, Redes & Casas</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="aviation"><span class="sidebar-item-label">✈️ Aeroportos & Aviação</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="art"><span class="sidebar-item-label">🎨 Arte</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="diy"><span class="sidebar-item-label">🛠️ Obras</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="aviation"><span class="sidebar-item-label">✈️ Aviação</span><span class="cat-count">0</span></button>
                   <button type="button" class="sidebar-item" data-cat="sports"><span class="sidebar-item-label">⚽ Esportes</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="planets"><span class="sidebar-item-label">🪐 Planetas & Espaço</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="wally"><span class="sidebar-item-label">🔍 Onde Está / Música</span><span class="cat-count">0</span></button>
-                  <button type="button" class="sidebar-item" data-cat="photography"><span class="sidebar-item-label">📷 Fotografia</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="planets"><span class="sidebar-item-label">🪐 Espaço</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="wally"><span class="sidebar-item-label">🔍 Cenas</span><span class="cat-count">0</span></button>
+                  <button type="button" class="sidebar-item" data-cat="photography"><span class="sidebar-item-label">📷 Fotos</span><span class="cat-count">0</span></button>
                 </div>
-              </div>
+              </details>
             </aside>
 
             <div class="gallery-scroll-area" id="gallery-scroll-area">
@@ -2103,7 +2156,7 @@
               </div>
 
               <footer style="margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted);">
-                Uso acadêmico, experimental e offline — Sem fins lucrativos.
+                Uso acadêmico, experimental e offline. Sem fins lucrativos.
               </footer>
             </div>
           </div>
@@ -2195,7 +2248,7 @@
             <!-- Coluna Direita: Analytics Expandido -->
             <div class="account-col">
               <div class="panel-box">
-                <div class="panel-title">📊 Analytics Geral — <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
+                <div class="panel-title">📊 Analytics Geral: <span id="stats-owner-label" style="color: var(--accent);">Ray</span></div>
                 <div class="analytics-grid">
                   <div class="metric-card">
                     <div class="metric-val green" id="m-completed">0</div>
@@ -2234,8 +2287,38 @@
                     <div class="metric-label">Ritmo Médio</div>
                   </div>
                   <div class="metric-card">
+                    <div class="metric-val green" id="m-best-pace">0/m</div>
+                    <div class="metric-label">Melhor Ritmo</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-avg-pieces">0 pcs</div>
+                    <div class="metric-label">Média de Peças</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-cpp">0</div>
+                    <div class="metric-label">Cliques por Peça</div>
+                  </div>
+                  <div class="metric-card">
                     <div class="metric-val green" id="m-focus-pct">100%</div>
                     <div class="metric-label">Taxa de Foco Ativo</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-val" id="m-avg-win-time">0s</div>
+                    <div class="metric-label">Média por Vitória</div>
+                  </div>
+                </div>
+
+                <div class="analytics-bars-wrap">
+                  <div class="analytics-bar-box" id="analytics-focus-box">
+                    <div style="font-weight: 700; margin-bottom: 6px;">⏱️ Distribuição de Tempo (Ativo vs Parado)</div>
+                    <div class="progress-track" style="height: 10px; background: rgba(217, 119, 6, 0.25);">
+                      <div class="progress-fill" id="analytics-focus-bar" style="width: 100%; background: var(--success);"></div>
+                    </div>
+                    <div id="analytics-focus-desc" style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">100% do tempo ativo montando</div>
+                  </div>
+                  <div class="analytics-bar-box" id="analytics-cats-box">
+                    <div style="font-weight: 700; margin-bottom: 6px;">🎨 Temas Mais Jogados</div>
+                    <div id="analytics-cats-list" style="font-size: 12px; color: var(--text-muted);">Ainda sem histórico</div>
                   </div>
                 </div>
 
@@ -2309,25 +2392,16 @@
       <button class="game-dock-btn" id="btn-g-exit" title="Salvar e voltar para a tela inicial">← Voltar</button>
     </div>
 
-    <!-- Lado direito: HUD Timer/Progresso destacado + Dropdown de Ferramentas autoexplicativo -->
+    <!-- Lado direito superior: Ferramentas (fixo ou dropdown configurável) -->
     <div class="game-right-dock">
-      <div class="hud-progress">
-        <div class="hud-row-top">
-          <div class="hud-timer-pill" id="hud-timer">⏱️ 00:00</div>
-          <div class="hud-pct-big" id="hud-pct">0%</div>
-        </div>
-        <div class="progress-track" style="height: 8px;">
-          <div class="progress-fill" id="hud-bar"></div>
-        </div>
-        <div class="hud-sub-row">
-          <span id="hud-pieces">0 / 0 peças</span>
-          <span id="hud-idle-badge" style="color: var(--warning); font-weight: 700; display: none;">⏸️ Parado</span>
-        </div>
-      </div>
-
       <div class="tools-dropdown-wrap" style="position: relative; order: 1;">
-        <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Abrir menu de ferramentas">☰ Ferramentas</button>
+        <button class="game-dock-btn" id="btn-reopen-toolbar" aria-expanded="false" title="Abrir ferramentas">☰ Ferramentas</button>
         <div class="game-toolbar collapsed" id="game-toolbar">
+          <button class="tool-btn" id="btn-toggle-tools-pin" style="background: rgba(45,127,249,0.16); border-color: rgba(45,127,249,0.4);">
+            <span class="tool-icon" id="tools-pin-icon">📌</span>
+            <span class="tool-copy"><span class="tool-title" id="tools-pin-label">Menu Fixo (Não fecha só)</span><span class="tool-desc">Clique para alternar entre menu fixo ou dropdown</span></span>
+          </button>
+          <div class="tool-sep"></div>
           <button class="tool-btn" id="btn-g-preview">
             <span class="tool-icon">🖼️</span>
             <span class="tool-copy"><span class="tool-title">Ver Foto de Referência</span><span class="tool-desc">Abre ou fecha a miniatura com a imagem completa [F]</span></span>
@@ -2374,15 +2448,31 @@
       </div>
     </div>
 
-    <!-- Cores de Fundo Sempre Abertas no Canto Inferior Direito -->
-    <div class="color-dock-bottom-right" id="color-dock" title="Trocar cor de fundo da mesa">
-      <span class="color-dock-label">Fundo:</span>
-      <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
-      <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
-      <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
-      <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
-      <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
-      <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
+    <!-- Canto Inferior Direito: Timer e Progresso em cima das Cores de Fundo -->
+    <div class="game-bottom-right">
+      <div class="hud-progress">
+        <div class="hud-row-top">
+          <div class="hud-timer-pill" id="hud-timer">⏱️ 00:00</div>
+          <div class="hud-pct-big" id="hud-pct">0%</div>
+        </div>
+        <div class="progress-track" style="height: 8px;">
+          <div class="progress-fill" id="hud-bar"></div>
+        </div>
+        <div class="hud-sub-row">
+          <span id="hud-pieces">0 / 0 peças</span>
+          <span id="hud-idle-badge" style="color: var(--warning); font-weight: 700; display: none;">⏸️ Parado</span>
+        </div>
+      </div>
+
+      <div class="color-dock-bottom-right" id="color-dock" title="Trocar cor de fundo da mesa">
+        <span class="color-dock-label">Fundo:</span>
+        <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
+        <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
+        <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
+        <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
+        <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
+        <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
+      </div>
     </div>
 
     <!-- Botões de Zoom para Touchpad / Toque -->
@@ -3332,7 +3422,7 @@
         ctx.restore();
         ctx.restore();
 
-        // Empacota no Atlas compartilhado (reduz centenas de texturas GPU para 1–3)
+        // Empacota no Atlas compartilhado (reduz centenas de texturas GPU para 1 a 3)
         let cur = this.atlases[this.atlases.length - 1];
         if (this.atlasX + cw + 2 > cur.canvas.width) {
           this.atlasX = 2;
@@ -4114,7 +4204,6 @@
        5. CONTROLADOR DA PLATAFORMA (UI)
        ========================================================= */
     let engine;
-    let currentScope = 'new'; // 'new' = Novos para Montar (padrão), 'created' = Já Criados
     let currentCat = 'all';
     let currentTaste = ''; // Filtro por gosto no menu lateral (nível 1)
     let currentSearch = '';
@@ -4130,13 +4219,16 @@
       jeep: ['jeep'],
       mercedes: ['mercedes'],
       bmw: ['bmw'],
-      camilopolis: ['camilopolis', 'santo andre', 'paranapiacaba'],
+      camilopolis: ['camilopolis', 'santo andre'],
       pesqueira: ['pesqueira'],
       minas: ['minas', 'canastra', 'ouro preto', 'tiradentes', 'araxa'],
       queijo: ['queijo'],
       foz: ['foz', 'iguacu'],
       paraguai: ['paraguai'],
       argentina: ['argentina'],
+      cachorros: ['cachorro', 'cachorros', 'cao', 'caes', 'filhote', 'golden retriever', 'dog'],
+      natal: ['natal', 'christmas', 'natalina'],
+      presidentes: ['presidente'],
       cafe: ['cafe', 'expresso', 'espresso'],
       vinho: ['vinho'],
       churrasco: ['churrasco', 'churrascaria'],
@@ -4222,30 +4314,23 @@
     }
 
     function updateCategoryCounts() {
-      const prof = storage.getActiveProfile();
-      const createdSet = getCreatedSrcSet(prof);
-      const newTotal = gallery.filter(i => !createdSet.has(i.src)).length;
-      const createdTotal = gallery.filter(i => createdSet.has(i.src)).length;
-      const sNew = document.getElementById('scope-new-count');
-      const sCre = document.getElementById('scope-created-count');
-      if (sNew) sNew.textContent = newTotal.toLocaleString('pt-BR');
-      if (sCre) sCre.textContent = createdTotal.toLocaleString('pt-BR');
+      const allEl = document.getElementById('all-cat-count');
+      if (allEl) allEl.textContent = gallery.length.toLocaleString('pt-BR');
 
-      const scoped = gallery.filter(i => currentScope === 'created' ? createdSet.has(i.src) : !createdSet.has(i.src));
       const counts = {};
-      scoped.forEach(item => {
+      gallery.forEach(item => {
         counts[item.cat] = (counts[item.cat] || 0) + 1;
       });
       document.querySelectorAll('#sidebar-general-list .sidebar-item').forEach(btn => {
         const cat = btn.dataset.cat;
         const badge = btn.querySelector('.cat-count');
-        const val = cat === 'all' ? scoped.length : (counts[cat] || 0);
+        const val = cat === 'all' ? gallery.length : (counts[cat] || 0);
         if (badge) badge.textContent = val.toLocaleString('pt-BR');
       });
       document.querySelectorAll('#sidebar-tastes-list .sidebar-item').forEach(btn => {
         const taste = btn.dataset.taste;
         const badge = btn.querySelector('.cat-count');
-        const val = scoped.filter(i => itemMatchesTaste(i, taste)).length;
+        const val = gallery.filter(i => itemMatchesTaste(i, taste)).length;
         if (badge) badge.textContent = val.toLocaleString('pt-BR');
       });
     }
@@ -4341,7 +4426,7 @@
       const completedSet = new Set((prof.trophies || []).map(x => x.src));
       const createdSet = getCreatedSrcSet(prof);
 
-      let list = gallery.filter(i => currentScope === 'created' ? createdSet.has(i.src) : !createdSet.has(i.src));
+      let list = gallery;
       if (currentTaste) {
         list = list.filter(i => itemMatchesTaste(i, currentTaste));
       } else if (currentCat !== 'all') {
@@ -4362,10 +4447,7 @@
       countPill.textContent = `${list.length} ${list.length === 1 ? 'imagem' : 'imagens'}`;
       if (list.length === 0) {
         loadMoreBox.style.display = 'none';
-        const emptyMsg = currentScope === 'created' && !currentSearch
-          ? `<h4>Nenhum quebra-cabeça criado ainda nesta seleção</h4><p>Escolha qualquer imagem em "✨ Novos para Montar" para começar!</p>`
-          : `<h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria no menu lateral.</p>`;
-        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${emptyMsg}</div>`;
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><h4>Nenhuma imagem encontrada</h4><p>Tente outro termo de busca ou escolha outra categoria no menu lateral.</p></div>`;
         return;
       }
 
@@ -4380,14 +4462,16 @@
       list.slice(0, galleryLimit).forEach(item => {
         const activeSave = inProgressMap.get(item.src);
         const isDone = completedSet.has(item.src);
+        const isCreated = !!(activeSave || isDone);
         const catTag = CAT_LABELS[item.cat] || '🧩 Puzzle';
         const card = document.createElement('div');
-        card.className = 'puzzle-card';
+        card.className = `puzzle-card${isCreated ? ' is-created' : ''}`;
 
-        if (currentScope === 'created') {
-          const badgeHtml = activeSave
-            ? `<div class="puzzle-badge-corner">${activeSave.pct}% montado</div>`
-            : (isDone ? `<div class="puzzle-badge-corner">🏆 Concluído</div>` : '');
+        const badgeHtml = activeSave
+          ? `<div class="puzzle-badge-corner">⏳ Já criado (${activeSave.pct}%)</div>`
+          : (isDone ? `<div class="puzzle-badge-corner">🏆 Já concluído</div>` : '');
+
+        if (isCreated) {
           card.innerHTML = `
             <div class="puzzle-thumb">
               <img src="${item.src}" alt="${item.title}" loading="lazy">
@@ -4398,8 +4482,8 @@
               <div class="puzzle-card-footer">
                 <span class="puzzle-cat-label">${catTag}</span>
                 <div class="puzzle-card-actions">
-                  ${activeSave ? `<div class="puzzle-play-tag btn-act-resume">▶ Retomar</div>` : ''}
-                  <button type="button" class="puzzle-alt-btn btn-act-newcfg" title="Criar outro quebra-cabeça com outra configuração desta foto">+ Outra Config</button>
+                  ${activeSave ? `<div class="puzzle-play-tag btn-act-resume">▶ Retomar</div>` : `<div class="puzzle-play-tag" style="background:var(--success-soft);color:var(--success);">✅ Criado</div>`}
+                  <button type="button" class="puzzle-alt-btn btn-act-newcfg" title="Criar outro quebra-cabeça com esta imagem">+ Novo</button>
                 </div>
               </div>
             </div>
@@ -4692,7 +4776,7 @@
         row.className = `profile-row ${isAct ? 'active' : ''}`;
         row.innerHTML = `
           <div style="display:flex; align-items:center; gap:10px;">
-            <div class="account-avatar" style="width:32px; height:32px; font-size:13px;"></div>
+            <div class="account-avatar" style="width:40px; height:40px; font-size:15px;"></div>
             <div>
               <div style="font-weight:700; font-size:13.5px;">${p.name} ${isAct ? '<span style="color:var(--accent); font-size:11px;">(Ativa)</span>' : ''}</div>
               <div style="font-size:11px; color:var(--text-muted);">🏆 ${p.stats.completed || 0} • ⏳ ${(p.activePuzzles || []).length}</div>
@@ -4727,6 +4811,13 @@
       const speed = totalActiveSec > 20 ? Math.round((totalPieces / totalActiveSec) * 60) : 0;
       const focusPct = totalAllSec > 0 ? Math.round((totalActiveSec / totalAllSec) * 100) : 100;
 
+      const allPlayed = [...doneList.map(t => ({ pieces: t.pieces || 0, pace: t.pace || 0, sec: t.timeSec || 0, src: t.src })),
+                         ...activeList.map(a => ({ pieces: a.totalPieces || 0, pace: 0, sec: 0, src: a.imageSrc }))];
+      const avgPieces = allPlayed.length ? Math.round(allPlayed.reduce((a, b) => a + b.pieces, 0) / allPlayed.length) : 0;
+      const bestPace = doneList.reduce((mx, t) => Math.max(mx, t.pace || (t.timeSec > 10 ? Math.round((t.pieces / t.timeSec) * 60) : 0)), 0);
+      const cpp = totalPieces > 0 ? (totalClicks / totalPieces).toFixed(1).replace('.', ',') : '0';
+      const avgWinTime = doneList.length ? Math.round(doneList.reduce((a, t) => a + (t.timeSec || 0), 0) / doneList.length) : 0;
+
       document.getElementById('m-completed').textContent = doneList.length;
       document.getElementById('m-active').textContent = activeList.length;
       document.getElementById('m-pieces').textContent = totalPieces.toLocaleString('pt-BR');
@@ -4736,7 +4827,31 @@
       document.getElementById('m-time-total').textContent = formatDuration(totalAllSec);
       document.getElementById('m-clicks').textContent = totalClicks.toLocaleString('pt-BR');
       document.getElementById('m-speed').textContent = `${speed}/m`;
+      document.getElementById('m-best-pace').textContent = `${bestPace}/m`;
+      document.getElementById('m-avg-pieces').textContent = `${avgPieces} pcs`;
+      document.getElementById('m-cpp').textContent = cpp;
       document.getElementById('m-focus-pct').textContent = `${focusPct}%`;
+      document.getElementById('m-avg-win-time').textContent = formatDuration(avgWinTime);
+
+      document.getElementById('analytics-focus-bar').style.width = `${focusPct}%`;
+      document.getElementById('analytics-focus-desc').textContent =
+        `${focusPct}% ativo (${formatDuration(totalActiveSec)}) contra ${100 - focusPct}% parado (${formatDuration(totalIdleSec)})`;
+
+      const catBySrc = new Map(gallery.map(g => [g.src, g.cat]));
+      const CAT_NAMES = {
+        nature: 'Natureza', countries: 'Lugares', vehicles: 'Carros', gastronomy: 'Gastronomia',
+        animals: 'Animais', flowers: 'Flores', art: 'Arte', diy: 'Construção e Redes',
+        aviation: 'Aviação', sports: 'Esportes', planets: 'Espaço', wally: 'Cenas e Música', photography: 'Fotografia'
+      };
+      const catCounts = {};
+      allPlayed.forEach(p => {
+        const c = catBySrc.get(p.src) || 'custom';
+        catCounts[c] = (catCounts[c] || 0) + 1;
+      });
+      const topCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+      document.getElementById('analytics-cats-list').innerHTML = topCats.length
+        ? topCats.map(([c, n]) => `<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>${CAT_NAMES[c] || 'Fotos Próprias'}</span><strong>${n} ${n === 1 ? 'puzzle' : 'puzzles'}</strong></div>`).join('')
+        : 'Ainda sem histórico';
 
       // Troféus recentes na conta
       const tCont = document.getElementById('trophies-container');
@@ -4862,16 +4977,7 @@
       });
       document.getElementById('btn-quick-account').addEventListener('click', () => switchTab('account'));
 
-      // Escopo (Novos para Montar vs Já Criados), Busca & Menu Lateral Fixo (2 Níveis)
-      document.querySelectorAll('.scope-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentScope = btn.dataset.scope;
-          updateCategoryCounts();
-          renderGallery(true);
-        });
-      });
+      // Busca & Menu Lateral Fixo/Dobrável (Todos no topo + 2 Níveis)
       document.getElementById('search-input').addEventListener('input', (e) => {
         currentSearch = e.target.value.trim();
         renderGallery(true);
@@ -4880,6 +4986,15 @@
       const discoverSidebar = document.getElementById('discover-sidebar');
       document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
         discoverSidebar.classList.toggle('mobile-open');
+      });
+
+      document.querySelector('.sidebar-top-all').addEventListener('click', (e) => {
+        document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        currentTaste = '';
+        currentCat = 'all';
+        discoverSidebar.classList.remove('mobile-open');
+        renderGallery(true);
       });
 
       document.querySelectorAll('#sidebar-tastes-list .sidebar-item').forEach(btn => {
@@ -5146,9 +5261,26 @@
         document.getElementById('btn-g-sound-label').textContent = audio.muted ? 'Som Desligado' : 'Som dos Encaixes';
       });
 
-      // Dropdown de Ferramentas no lado direito dentro do quebra-cabeça
+      // Ferramentas: ao clicar vira barra fixa por padrão, com alternador para Dropdown auto-fechável
       const gToolbar = document.getElementById('game-toolbar');
       const btnReopen = document.getElementById('btn-reopen-toolbar');
+      let toolsPinned = prefs.toolsPinned !== false; // true = fixo ao abrir (padrão)
+      const syncToolsPinUI = () => {
+        document.getElementById('tools-pin-icon').textContent = toolsPinned ? '📌' : '🔽';
+        document.getElementById('tools-pin-label').textContent = toolsPinned
+          ? 'Menu Fixo (Não fecha só)'
+          : 'Modo Dropdown (Fecha ao clicar fora)';
+      };
+      syncToolsPinUI();
+      document.getElementById('btn-toggle-tools-pin').addEventListener('click', (e) => {
+        e.stopPropagation();
+        toolsPinned = !toolsPinned;
+        prefs.toolsPinned = toolsPinned;
+        savePrefs(prefs);
+        syncToolsPinUI();
+        showToast(toolsPinned ? 'Menu fixado: não fecha ao mexer na mesa' : 'Modo Dropdown: fecha ao clicar fora');
+      });
+
       const setToolbarExpanded = (expanded) => {
         gToolbar.classList.toggle('collapsed', !expanded);
         btnReopen.classList.toggle('active', expanded);
@@ -5160,7 +5292,7 @@
         setToolbarExpanded(gToolbar.classList.contains('collapsed'));
       });
       document.addEventListener('click', (e) => {
-        if (!gToolbar.classList.contains('collapsed') && !gToolbar.contains(e.target) && e.target !== btnReopen) {
+        if (!toolsPinned && !gToolbar.classList.contains('collapsed') && !gToolbar.contains(e.target) && e.target !== btnReopen) {
           setToolbarExpanded(false);
         }
       });
