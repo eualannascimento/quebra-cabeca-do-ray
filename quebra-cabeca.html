@@ -1325,8 +1325,8 @@
        ========================================================= */
     .account-layout {
       display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 20px;
+      grid-template-columns: 320px 1fr;
+      gap: 14px;
       align-items: stretch;
       flex: 1;
       min-height: 0;
@@ -1336,7 +1336,96 @@
     .account-col {
       min-height: 0;
       overflow-y: auto;
-      padding: 2px 4px 16px 2px;
+      padding: 2px 4px 12px 2px;
+    }
+
+    @media (min-width: 1100px) {
+      .account-col {
+        overflow-y: hidden;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .account-col .panel-box {
+        padding: 13px 16px;
+        margin-bottom: 0;
+      }
+      .account-col .panel-title {
+        font-size: 14.5px;
+        margin-bottom: 8px;
+      }
+      .account-col .analytics-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .account-col .metric-card {
+        padding: 8px 10px;
+      }
+      .account-col .metric-val {
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+      .account-col .metric-label {
+        font-size: 10.5px;
+      }
+      .account-col .usage-panel {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+      }
+      .account-col .usage-header {
+        margin-bottom: 8px;
+      }
+      .account-col .usage-summary-row {
+        margin-bottom: 8px;
+        gap: 6px;
+      }
+      .account-col .usage-mini-stat {
+        padding: 6px 8px;
+      }
+      .account-col .usage-mini-val {
+        font-size: 14px;
+      }
+      .account-col .usage-chart {
+        height: 86px;
+        padding: 8px 6px 3px;
+      }
+      .account-col .usage-bar-detail {
+        margin-top: 5px;
+        font-size: 11px;
+      }
+      .account-col .usage-explicit-list {
+        margin-top: 6px;
+        grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+        gap: 4px;
+        max-height: 62px;
+        overflow-y: auto;
+      }
+      .account-col .usage-explicit-row {
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+      .account-col .usage-blocks-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .account-col .usage-block-card {
+        padding: 6px 8px;
+      }
+      .account-col .analytics-bars-wrap {
+        margin-bottom: 10px;
+        gap: 8px;
+      }
+      .account-col .analytics-bar-box {
+        padding: 9px 12px;
+      }
+      .account-col .trophy-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
     }
 
     @media (max-width: 900px) {
@@ -2014,22 +2103,65 @@
       gap: 8px;
     }
 
-    /* Controles de Zoom Visíveis no Canto Inferior Esquerdo */
+    /* Controles de Zoom no Canto Superior Esquerdo ao lado de Voltar */
     .zoom-controls-pill {
+      height: 44px;
+      background: var(--hud-surface);
+      color: var(--hud-text);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 0 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .zoom-controls-pill .tool-btn {
+      padding: 6px 8px;
+      border-radius: 999px;
+    }
+
+    /* Canto Inferior Esquerdo: Contador + Escolha de Fundos em um Único Widget */
+    .game-bottom-left {
       position: absolute;
       bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       left: calc(14px + env(safe-area-inset-left, 0px));
-      background: var(--hud-surface);
-      color: var(--hud-text);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 10px;
-      padding: 4px;
-      display: flex;
-      gap: 4px;
-      z-index: 45;
+      z-index: 48;
     }
 
-    /* Canto Inferior Direito: Timer/Progresso em cima das Cores de Fundo */
+    .hud-unified-left {
+      background: var(--hud-surface);
+      color: var(--hud-text);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      padding: 9px 14px;
+      min-width: 245px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hud-unified-left .hud-progress {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      min-width: 0;
+      box-shadow: none;
+    }
+
+    .color-dock-inline {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+    }
+
+    /* Canto Inferior Direito: Relógio Discreto + Player de Música Online */
     .game-bottom-right {
       position: absolute;
       bottom: calc(14px + env(safe-area-inset-bottom, 0px));
@@ -2041,16 +2173,105 @@
       z-index: 48;
     }
 
-    /* Cores de Fundo Abertas abaixo do Timer */
-    .color-dock-bottom-right {
+    .hud-clock-pill {
       background: var(--hud-surface);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--hud-muted);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 4px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.30);
+    }
+
+    .music-player-dock {
+      background: var(--hud-surface);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      color: var(--hud-text);
+      border-radius: 14px;
+      padding: 8px 12px;
+      min-width: 250px;
+      max-width: min(300px, calc(100vw - 28px));
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .music-player-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .music-station-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--hud-text);
+      flex: 1;
+    }
+
+    .music-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .music-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .music-btn.playing {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .music-vol {
+      flex: 1;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 4px;
+    }
+
+    .milestone-toast {
+      position: absolute;
+      top: calc(64px + env(safe-area-inset-top, 0px));
+      left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      background: linear-gradient(135deg, rgba(45, 127, 249, 0.94), rgba(22, 163, 74, 0.94));
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13.5px;
+      font-weight: 800;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 75;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .milestone-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .color-dock-label {
@@ -2222,16 +2443,18 @@
       }
       .discover-sidebar.mobile-open { display: flex; }
       .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 10px; }
-      .game-top-dock { gap: 6px; }
+      .game-top-dock { gap: 6px; flex-wrap: wrap; max-width: calc(100vw - 150px); }
       .game-avatar-chip .game-player-name { display: none; }
       .game-avatar-chip { padding: 2px; }
+      .zoom-controls-pill { height: 38px; padding: 0 4px; }
+      .game-bottom-left { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); left: calc(10px + env(safe-area-inset-left, 0px)); }
+      .hud-unified-left { min-width: 175px; padding: 7px 10px; gap: 6px; }
       .game-bottom-right { gap: 6px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
-      .hud-progress { min-width: 175px; padding: 6px 10px; }
+      .music-player-dock { min-width: 165px; max-width: 48vw; padding: 6px 9px; }
       .hud-timer-pill, .hud-pct-big { font-size: 14px; }
       .color-dock-label { display: none; }
-      .color-dock-bottom-right { padding: 5px 8px; gap: 5px; }
       .color-swatch { width: 19px; height: 19px; }
-      .floating-guide { width: 168px; bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
+      .floating-guide { width: 168px; bottom: calc(130px + env(safe-area-inset-bottom, 0px)); }
     }
   </style>
 </head>
@@ -2498,35 +2721,35 @@
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-biggest">0 pcs</div>
-                    <div class="metric-label">Maior Quebra-Cabeça</div>
+                    <div class="metric-label">Maior Desafio</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val blue" id="m-time-active">0s</div>
-                    <div class="metric-label">Tempo Atuando</div>
+                    <div class="metric-label">Tempo Jogando</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-time-idle" style="color: var(--warning);">0s</div>
-                    <div class="metric-label">Tempo Parado</div>
+                    <div class="metric-label">Tempo Pausado</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-time-total">0s</div>
-                    <div class="metric-label">Tempo Total na Mesa</div>
+                    <div class="metric-label">Tempo Total</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-clicks">0</div>
-                    <div class="metric-label">Total de Cliques</div>
+                    <div class="metric-label">Cliques na Mesa</div>
                   </div>
                   <div class="metric-card">
-                    <div class="metric-val blue" id="m-speed">0/m</div>
-                    <div class="metric-label">Ritmo Médio</div>
+                    <div class="metric-val blue" id="m-speed">0 pç/min</div>
+                    <div class="metric-label">Peças por Minuto</div>
                   </div>
                   <div class="metric-card">
-                    <div class="metric-val green" id="m-best-pace">0/m</div>
-                    <div class="metric-label">Melhor Ritmo</div>
+                    <div class="metric-val green" id="m-best-pace">0 pç/min</div>
+                    <div class="metric-label">Melhor Velocidade</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-avg-pieces">0 pcs</div>
-                    <div class="metric-label">Média de Peças</div>
+                    <div class="metric-label">Tamanho Médio</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-cpp">0</div>
@@ -2534,7 +2757,7 @@
                   </div>
                   <div class="metric-card">
                     <div class="metric-val green" id="m-focus-pct">100%</div>
-                    <div class="metric-label">Taxa de Foco Ativo</div>
+                    <div class="metric-label">Tempo Ativo (%)</div>
                   </div>
                   <div class="metric-card">
                     <div class="metric-val" id="m-avg-win-time">0s</div>
@@ -2638,14 +2861,21 @@
   <div id="game-stage">
     <canvas id="game-canvas"></canvas>
 
-    <!-- Avatar (esquerda) + Voltar logo ao lado -->
+    <!-- Avatar (esquerda) + Voltar + Zoom logo ao lado -->
     <div class="game-top-dock">
       <div class="game-avatar-chip" title="Jogador ativo">
         <div class="account-avatar" id="hud-avatar">R</div>
         <span class="game-player-name" id="hud-name">Ray</span>
       </div>
       <button class="game-dock-btn" id="btn-g-exit" title="Salvar e voltar para a tela inicial">← Voltar</button>
+      <div class="zoom-controls-pill" title="Controles de zoom da mesa">
+        <button class="tool-btn" id="btn-zoom-out" title="Afastar Zoom">➖</button>
+        <button class="tool-btn" id="btn-zoom-reset" title="Centralizar Mesa [X]">🎯</button>
+        <button class="tool-btn" id="btn-zoom-in" title="Aproximar Zoom">➕</button>
+      </div>
     </div>
+
+    <div class="milestone-toast" id="milestone-toast"></div>
 
     <!-- Lado direito superior: Ferramentas (fixo ou dropdown configurável) -->
     <div class="game-right-dock">
@@ -2703,38 +2933,52 @@
       </div>
     </div>
 
-    <!-- Canto Inferior Direito: Timer e Progresso em cima das Cores de Fundo -->
-    <div class="game-bottom-right">
-      <div class="hud-progress">
-        <div class="hud-row-top">
-          <div class="hud-timer-pill" id="hud-timer">⏱️ 00:00</div>
-          <div class="hud-pct-big" id="hud-pct">0%</div>
+    <!-- Canto Inferior Esquerdo: Contador + Escolha de Fundos em um Único Widget -->
+    <div class="game-bottom-left">
+      <div class="hud-unified-left">
+        <div class="hud-progress">
+          <div class="hud-row-top">
+            <div class="hud-timer-pill" id="hud-timer">⏱️ 00:00</div>
+            <div class="hud-pct-big" id="hud-pct">0%</div>
+          </div>
+          <div class="progress-track" style="height: 8px;">
+            <div class="progress-fill" id="hud-bar"></div>
+          </div>
+          <div class="hud-sub-row">
+            <span id="hud-pieces">0 de 0 peças</span>
+            <span id="hud-idle-badge" style="color: var(--warning); font-weight: 700; display: none;">⏸️ Pausado</span>
+          </div>
         </div>
-        <div class="progress-track" style="height: 8px;">
-          <div class="progress-fill" id="hud-bar"></div>
+        <div class="color-dock-inline" id="color-dock" title="Trocar cor de fundo da mesa">
+          <span class="color-dock-label">Fundo:</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
+            <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
+            <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
+            <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
+            <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
+            <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
+          </div>
         </div>
-        <div class="hud-sub-row">
-          <span id="hud-pieces">0 / 0 peças</span>
-          <span id="hud-idle-badge" style="color: var(--warning); font-weight: 700; display: none;">⏸️ Parado</span>
-        </div>
-      </div>
-
-      <div class="color-dock-bottom-right" id="color-dock" title="Trocar cor de fundo da mesa">
-        <span class="color-dock-label">Fundo:</span>
-        <div class="color-swatch selected" data-color="#18121d" style="background:#18121d;" title="Roxo Clássico"></div>
-        <div class="color-swatch" data-color="#0f0c14" style="background:#0f0c14;" title="Preto Ardósia"></div>
-        <div class="color-swatch" data-color="#0e261d" style="background:#0e261d;" title="Feltro Verde"></div>
-        <div class="color-swatch" data-color="#0c192e" style="background:#0c192e;" title="Azul Noite"></div>
-        <div class="color-swatch" data-color="#241813" style="background:#241813;" title="Madeira"></div>
-        <div class="color-swatch" data-color="#dce2ea" style="background:#dce2ea;" title="Mesa Clara"></div>
       </div>
     </div>
 
-    <!-- Botões de Zoom para Touchpad / Toque -->
-    <div class="zoom-controls-pill">
-      <button class="tool-btn" id="btn-zoom-out" title="Afastar Zoom">➖</button>
-      <button class="tool-btn" id="btn-zoom-reset" title="Centralizar [X]">🎯</button>
-      <button class="tool-btn" id="btn-zoom-in" title="Aproximar Zoom">➕</button>
+    <!-- Canto Inferior Direito: Relógio Discreto + Player Online Brega & Sertanejo -->
+    <div class="game-bottom-right">
+      <div class="hud-clock-pill" id="hud-clock-date">🕒 00:00 • Sáb, 21/11</div>
+      <div class="music-player-dock" id="music-player-dock">
+        <div class="music-player-top">
+          <span style="color:var(--accent);">🎵</span>
+          <span class="music-station-name" id="music-station-name">Rádio Brega &amp; Sertanejo</span>
+        </div>
+        <div class="music-controls-row">
+          <button type="button" class="music-btn" id="btn-music-play" title="Tocar ou pausar rádio">▶</button>
+          <button type="button" class="music-btn" id="btn-music-next" title="Trocar de rádio aleatoriamente">🔀</button>
+          <span style="font-size:12px;">🔊</span>
+          <input type="range" class="music-vol" id="music-vol" min="0" max="1" step="0.05" value="0.45" title="Volume da música">
+        </div>
+        <audio id="bg-music-audio" preload="none"></audio>
+      </div>
     </div>
 
     <!-- Miniatura Flutuante (fechada por padrão) -->
@@ -3211,6 +3455,25 @@
           osc.stop(t + 0.26);
         } catch (e) {}
       }
+      playMilestone() {
+        if (this.muted) return;
+        try {
+          this.init();
+          [523.25, 659.25, 783.99].forEach((freq, idx) => {
+            const t = this.ctx.currentTime + idx * 0.08;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.12, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.25);
+          });
+        } catch (e) {}
+      }
       playVictory() {
         if (this.muted) return;
         try {
@@ -3288,8 +3551,10 @@
         this.onlyEdges = false;
         this.showGhost = false;
 
-        // Animações (Pulsos de encaixe, Dica, Onda de Vitória & Confetes)
+        // Animações (Pulsos de encaixe, Dica, Marcos 25%, Onda de Vitória & Confetes)
         this.snapPulses = [];
+        this.milestoneParticles = [];
+        this.lastMilestonePct = 0;
         this.hintAnim = null;
         this.victoryWaveProgress = -1;
         this.confetti = [];
@@ -3318,8 +3583,8 @@
             this.applyPointerMove(pm.x, pm.y);
           }
           if (this.draggedGroup && this.lastPtr) this.edgeAutoPan();
-          const hasAnims = this.snapPulses.length > 0 || this.hintAnim !== null ||
-                           (this.isFinished && (this.confetti.length > 0 || this.victoryWaveProgress >= 0));
+          const hasAnims = this.snapPulses.length > 0 || (this.milestoneParticles && this.milestoneParticles.length > 0) ||
+                           this.hintAnim !== null || (this.isFinished && (this.confetti.length > 0 || this.victoryWaveProgress >= 0));
           if (this.dirty || this.staticDirty || hasAnims) {
             this.dirty = false;
             this.renderFrame();
@@ -4246,13 +4511,52 @@
         const prevCompleted = this.completedPieces || 0;
         this.completedPieces = this.pieces.filter(p => p.locked).length;
         const deltaCompleted = this.completedPieces - prevCompleted;
-        if (deltaCompleted > 0 && this.timerInterval) {
-          storage.recordUsageInteraction(deltaCompleted, 0);
-        }
         const pct = Math.round((this.completedPieces / this.totalPieces) * 100);
-        document.getElementById('hud-pieces').textContent = `${this.completedPieces} / ${this.totalPieces} peças`;
+        if (!this.timerInterval) {
+          this.lastMilestonePct = Math.floor(pct / 25) * 25;
+        } else if (deltaCompleted > 0) {
+          storage.recordUsageInteraction(deltaCompleted, 0);
+          const milestone = Math.floor(pct / 25) * 25;
+          if (milestone >= 25 && milestone < 100 && milestone > (this.lastMilestonePct || 0)) {
+            this.lastMilestonePct = milestone;
+            this.triggerMilestone(milestone);
+          }
+        }
+        document.getElementById('hud-pieces').textContent = `${this.completedPieces} de ${this.totalPieces} peças`;
         document.getElementById('hud-pct').textContent = `${pct}%`;
         document.getElementById('hud-bar').style.width = `${pct}%`;
+      }
+
+      triggerMilestone(milestone) {
+        audio.playMilestone();
+        const msgs = {
+          25: '✨ 25% concluído! Ótimo começo!',
+          50: '🔥 50%: Metade do caminho!',
+          75: '🚀 75%: Quase lá, falta pouco!'
+        };
+        const toast = document.getElementById('milestone-toast');
+        if (toast) {
+          toast.textContent = msgs[milestone] || `✨ ${milestone}% concluído!`;
+          toast.classList.add('show');
+          clearTimeout(this._milestoneTimer);
+          this._milestoneTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+        this.milestoneParticles = [];
+        const colors = ['#facc15', '#34d399', '#60a5fa', '#f472b6'];
+        const now = performance.now();
+        for (let i = 0; i < 28; i++) {
+          this.milestoneParticles.push({
+            x: this.boardX + Math.random() * this.boardWidth,
+            y: this.boardY + Math.random() * this.boardHeight,
+            vx: (Math.random() - 0.5) * 3.2,
+            vy: -1.5 - Math.random() * 2.8,
+            size: 4 + Math.random() * 4,
+            color: colors[i % colors.length],
+            start: now,
+            dur: 1300
+          });
+        }
+        this.requestRender();
       }
 
       saveToAccount() {
@@ -4438,8 +4742,8 @@
       }
 
       renderFrame() {
-        const hasAnims = this.snapPulses.length > 0 || this.hintAnim !== null ||
-                         this.victoryWaveProgress >= 0 || (this.isFinished && this.confetti.length > 0);
+        const hasAnims = this.snapPulses.length > 0 || (this.milestoneParticles && this.milestoneParticles.length > 0) ||
+                         this.hintAnim !== null || this.victoryWaveProgress >= 0 || (this.isFinished && this.confetti.length > 0);
         const ctx = this.ctx;
         const now = performance.now();
 
@@ -4503,6 +4807,24 @@
             ctx.strokeRect(sp.x, sp.y, sp.w, sp.h);
             ctx.restore();
           });
+
+          // 3b. Partículas discretas dos marcos de 25%, 50%, 75%
+          if (this.milestoneParticles && this.milestoneParticles.length > 0) {
+            this.milestoneParticles = this.milestoneParticles.filter(mp => (now - mp.start) < mp.dur);
+            this.milestoneParticles.forEach(mp => {
+              const prog = (now - mp.start) / mp.dur;
+              mp.x += mp.vx;
+              mp.y += mp.vy;
+              mp.vy += 0.04;
+              ctx.save();
+              ctx.globalAlpha = Math.max(0, 1 - prog);
+              ctx.fillStyle = mp.color;
+              ctx.beginPath();
+              ctx.arc(mp.x, mp.y, mp.size / this.scale, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            });
+          }
 
           // 4. Animação de Dica (💡)
           if (this.hintAnim) {
@@ -5012,9 +5334,9 @@
             </div>
             <div class="progress-track"><div class="progress-fill" style="width:${save.pct}%"></div></div>
             <div class="save-stats-grid">
-              <div class="save-stat-item"><span>⏱️ Atuando</span><strong>${formatDuration(activeSec)}</strong></div>
-              <div class="save-stat-item"><span>⏸️ Parado</span><strong>${formatDuration(idleSec)}</strong></div>
-              <div class="save-stat-item"><span>🕒 Até agora</span><strong>${formatDuration(totalSec)}</strong></div>
+              <div class="save-stat-item"><span>🕹️ Jogando</span><strong>${formatDuration(activeSec)}</strong></div>
+              <div class="save-stat-item"><span>⏸️ Pausado</span><strong>${formatDuration(idleSec)}</strong></div>
+              <div class="save-stat-item"><span>🕒 Tempo total</span><strong>${formatDuration(totalSec)}</strong></div>
               <div class="save-stat-item"><span>🖱️ Cliques</span><strong>${clicks}</strong></div>
               <div class="save-stat-item" style="grid-column: 1 / -1;"><span>⚡ Ritmo de montagem</span><strong>${pace} peças/min</strong></div>
             </div>
@@ -5082,8 +5404,8 @@
               <span style="color:var(--success); font-weight:700;">Concluído em ${tr.date}</span>
             </div>
             <div class="save-stats-grid">
-              <div class="save-stat-item"><span>⏱️ Atuando</span><strong>${formatDuration(activeSec)}</strong></div>
-              <div class="save-stat-item"><span>⏸️ Parado</span><strong>${formatDuration(idleSec)}</strong></div>
+              <div class="save-stat-item"><span>🕹️ Jogando</span><strong>${formatDuration(activeSec)}</strong></div>
+              <div class="save-stat-item"><span>⏸️ Pausado</span><strong>${formatDuration(idleSec)}</strong></div>
               <div class="save-stat-item"><span>🕒 Total</span><strong>${formatDuration(totalSec)}</strong></div>
               <div class="save-stat-item"><span>🖱️ Cliques</span><strong>${clicks}</strong></div>
               <div class="save-stat-item" style="grid-column: 1 / -1;"><span>⚡ Ritmo de montagem</span><strong>${pace} peças/min</strong></div>
@@ -5176,8 +5498,8 @@
       document.getElementById('m-time-idle').textContent = formatDuration(totalIdleSec);
       document.getElementById('m-time-total').textContent = formatDuration(totalAllSec);
       document.getElementById('m-clicks').textContent = totalClicks.toLocaleString('pt-BR');
-      document.getElementById('m-speed').textContent = `${speed}/m`;
-      document.getElementById('m-best-pace').textContent = `${bestPace}/m`;
+      document.getElementById('m-speed').textContent = `${speed} pç/min`;
+      document.getElementById('m-best-pace').textContent = `${bestPace} pç/min`;
       document.getElementById('m-avg-pieces').textContent = `${avgPieces} pcs`;
       document.getElementById('m-cpp').textContent = cpp;
       document.getElementById('m-focus-pct').textContent = `${focusPct}%`;
@@ -5208,11 +5530,11 @@
       // Troféus recentes na conta
       const tCont = document.getElementById('trophies-container');
       if (doneList.length === 0) {
-        tCont.innerHTML = `<div class="empty-state" style="padding: 28px;"><p style="margin-bottom:0;">Nenhum puzzle concluído ainda com esta conta.</p></div>`;
+        tCont.innerHTML = `<div class="empty-state" style="padding: 14px;"><p style="margin-bottom:0;">Nenhum puzzle concluído ainda com esta conta.</p></div>`;
       } else {
         const listEl = document.createElement('div');
         listEl.className = 'trophy-list';
-        doneList.slice(0, 6).forEach(tr => {
+        doneList.slice(0, window.innerWidth >= 1100 ? 3 : 6).forEach(tr => {
           const tc = document.createElement('div');
           tc.className = 'trophy-card';
           tc.style.cursor = 'pointer';
@@ -5613,15 +5935,21 @@
         document.getElementById('btn-g-sound-label').textContent = audio.muted ? 'Som Desligado' : 'Som dos Encaixes';
       });
 
-      // Ferramentas: ao clicar vira barra fixa por padrão, com alternador para Dropdown auto-fechável
+      // Ferramentas: Dropdown por padrão (fecha ao clicar fora ou escolher ação), com botão para Fixar na tela
       const gToolbar = document.getElementById('game-toolbar');
       const btnReopen = document.getElementById('btn-reopen-toolbar');
-      let toolsPinned = prefs.toolsPinned !== false; // true = fixo ao abrir (padrão)
+      let toolsPinned = prefs.toolsPinned === true;
       const syncToolsPinUI = () => {
-        document.getElementById('tools-pin-icon').textContent = toolsPinned ? '📌' : '🔽';
+        document.getElementById('tools-pin-icon').textContent = toolsPinned ? '🔽' : '📌';
         document.getElementById('tools-pin-label').textContent = toolsPinned
-          ? 'Menu Fixo (Não fecha só)'
-          : 'Modo Dropdown (Fecha ao clicar fora)';
+          ? 'Voltar para Modo Dropdown'
+          : 'Fixar Menu na Tela';
+        const desc = document.querySelector('#btn-toggle-tools-pin .tool-desc');
+        if (desc) {
+          desc.textContent = toolsPinned
+            ? 'Atualmente fixo. Clique para fechar ao usar ou clicar fora'
+            : 'Atualmente dropdown. Clique para manter sempre aberto';
+        }
       };
       syncToolsPinUI();
       document.getElementById('btn-toggle-tools-pin').addEventListener('click', (e) => {
@@ -5643,11 +5971,108 @@
         e.stopPropagation();
         setToolbarExpanded(gToolbar.classList.contains('collapsed'));
       });
+      gToolbar.addEventListener('click', (e) => {
+        const tool = e.target.closest('.tool-btn');
+        if (tool && tool.id !== 'btn-toggle-tools-pin' && !toolsPinned) {
+          setToolbarExpanded(false);
+        }
+      });
       document.addEventListener('click', (e) => {
         if (!toolsPinned && !gToolbar.classList.contains('collapsed') && !gToolbar.contains(e.target) && e.target !== btnReopen) {
           setToolbarExpanded(false);
         }
       });
+
+      // Relógio e Data discretos no canto inferior direito
+      const clockEl = document.getElementById('hud-clock-date');
+      const updateGameClock = () => {
+        if (!clockEl) return;
+        const d = new Date();
+        const wd = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d.getDay()];
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        clockEl.textContent = `🕒 ${hh}:${mm} • ${wd}, ${dd}/${mo}/${d.getFullYear()}`;
+      };
+      updateGameClock();
+      setInterval(updateGameClock, 15000);
+
+      // Player Online Simples (Brega, Sertanejo Raiz, Amado Batista, Leonardo, Eduardo Costa)
+      const BREGA_SERTANEJO_STREAMS = [
+        { name: 'Brega Hits (Clássicos)', url: 'https://stream.zeno.fm/m3h4eakvsy8uv' },
+        { name: 'Rádio Riacho FM (Brega)', url: 'https://stm23.srvaudio.com.br:10974/stream' },
+        { name: 'Rádio Buteco Sertanejo', url: 'https://stream.zeno.fm/6kumndewqbruv' },
+        { name: 'Casa dos Caipiras (Modão)', url: 'https://8758.brasilstream.com.br/stream' },
+        { name: 'Rádio Café Viola', url: 'https://stm6.xcast.com.br:9328/;?1685284162874' },
+        { name: 'Amigos do Sertanejo', url: 'https://stm4.voxhd.com.br:7086/' },
+        { name: 'Sertaneja 106.7 FM', url: 'https://sc4s.cdn.upx.com:8067/stream' },
+        { name: 'Rádio Liberdade 92.9 FM', url: 'https://8335.brasilstream.com.br/stream' },
+        { name: 'Hunter FM Hits Brasil', url: 'https://live.hunter.fm/hitsbrasil_normal' },
+        { name: 'Rádio 89.3 FM Imbituba', url: 'https://live.paineldj.com.br/proxy/radiofm89f?mp=/stream' },
+        { name: 'BH FM 102,1 MHz', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/BHFMAAC.aac' }
+      ];
+      const bgAudio = document.getElementById('bg-music-audio');
+      const btnMusicPlay = document.getElementById('btn-music-play');
+      const btnMusicNext = document.getElementById('btn-music-next');
+      const musicVol = document.getElementById('music-vol');
+      const musicNameEl = document.getElementById('music-station-name');
+      let musicIdx = Math.floor(Math.random() * BREGA_SERTANEJO_STREAMS.length);
+      let musicPlaying = false;
+      if (bgAudio && musicVol) {
+        bgAudio.volume = prefs.musicVol !== undefined ? prefs.musicVol : 0.45;
+        musicVol.value = bgAudio.volume;
+        musicVol.addEventListener('input', () => {
+          bgAudio.volume = parseFloat(musicVol.value);
+          prefs.musicVol = bgAudio.volume;
+          savePrefs(prefs);
+        });
+      }
+      const playStation = (idx) => {
+        if (!bgAudio) return;
+        musicIdx = ((idx % BREGA_SERTANEJO_STREAMS.length) + BREGA_SERTANEJO_STREAMS.length) % BREGA_SERTANEJO_STREAMS.length;
+        const st = BREGA_SERTANEJO_STREAMS[musicIdx];
+        if (musicNameEl) musicNameEl.textContent = st.name;
+        bgAudio.src = st.url;
+        bgAudio.play().then(() => {
+          musicPlaying = true;
+          if (btnMusicPlay) { btnMusicPlay.textContent = '⏸'; btnMusicPlay.classList.add('playing'); }
+        }).catch(() => {
+          if (musicNameEl) musicNameEl.textContent = `${st.name} (clique ▶)`;
+          musicPlaying = false;
+          if (btnMusicPlay) { btnMusicPlay.textContent = '▶'; btnMusicPlay.classList.remove('playing'); }
+        });
+      };
+      if (btnMusicPlay && bgAudio) {
+        btnMusicPlay.addEventListener('click', () => {
+          if (musicPlaying && !bgAudio.paused) {
+            bgAudio.pause();
+            musicPlaying = false;
+            btnMusicPlay.textContent = '▶';
+            btnMusicPlay.classList.remove('playing');
+          } else if (bgAudio.src) {
+            bgAudio.play().then(() => {
+              musicPlaying = true;
+              btnMusicPlay.textContent = '⏸';
+              btnMusicPlay.classList.add('playing');
+            }).catch(() => playStation(musicIdx + 1));
+          } else {
+            playStation(musicIdx);
+          }
+        });
+      }
+      if (btnMusicNext) {
+        btnMusicNext.addEventListener('click', () => {
+          let next = Math.floor(Math.random() * BREGA_SERTANEJO_STREAMS.length);
+          if (next === musicIdx) next = (musicIdx + 1) % BREGA_SERTANEJO_STREAMS.length;
+          playStation(next);
+        });
+      }
+      if (bgAudio) {
+        bgAudio.addEventListener('error', () => {
+          if (musicPlaying) playStation(musicIdx + 1);
+        });
+      }
 
       // Zoom Touchpad
       document.getElementById('btn-zoom-in').addEventListener('click', () => engine.zoomBy(1.22));
